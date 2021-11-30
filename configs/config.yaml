@@ -1,0 +1,34 @@
+user:
+  db:
+    host: 'localhost'
+    port: ':3306'
+    user: 'root'
+    password: ''
+    name: 'users'
+  server:
+    host: 'localhost'
+    port: ':50051'
+post:
+  db:
+    host: 'localhost'
+    port: ':3306'
+    user: 'root'
+    password: ''
+    name: 'posts'
+  server:
+    host: 'localhost'
+    port: ':50052'
+comment:
+  db:
+    host: 'localhost'
+    port: ':3306'
+    user: 'root'
+    password: ''
+    name: 'comments'
+  server:
+    host: 'localhost'
+    port: ':50053'
+auth:
+  server:
+    host: 'localhost'
+    port: ':50054'
