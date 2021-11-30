@@ -1,4 +1,4 @@
-create database if not exists user;
+create database if not exists users;
 use users;
 create table if not exists users
 (

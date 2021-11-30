@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package api.protobuf;
+
+option go_package = "github.com/stonecutter/blog-microservices/api/protobuf";
+
+import "google/protobuf/timestamp.proto";
+
+service UserService {
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
+  rpc GetUserByEmail(GetUserByEmailRequest) returns (GetUserResponse) {}
+  rpc GetUserByUsername(GetUserByUsernameRequest) returns (GetUserResponse) {}
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {}
+}
+
+message User {
+  uint64 id = 1;
+  string username = 2;
+  string email = 3;
+  string avatar = 5;
+  string password = 4;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message GetUserRequest {
+  uint64 id = 1;
+}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+message GetUserByEmailRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message GetUserByUsernameRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message CreateUserRequest {
+  User user = 1;
+}
+
+message CreateUserResponse {
+  User user = 1;
+}
+
+message UpdateUserRequest {
+  User user = 1;
+}
+
+message UpdateUserResponse {
+  bool success = 1;
+}
