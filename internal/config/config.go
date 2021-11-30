@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	"time"
 )
 
 type DB struct {
@@ -24,8 +25,19 @@ type User struct {
 	Server Server
 }
 
+type Auth struct {
+	Server Server
+}
+
+type JWT struct {
+	Secret  string        `json:"secret" yaml:"secret"`
+	Expires time.Duration `json:"expires" yaml:"expires"`
+}
+
 type Config struct {
 	User User
+	Auth Auth
+	JWT  JWT
 }
 
 func Load(path string) (*Config, error) {
@@ -48,6 +60,8 @@ func Load(path string) (*Config, error) {
 		conf.User.DB.Port,
 		conf.User.DB.Name,
 	)
+
+	conf.JWT.Expires = conf.JWT.Expires * time.Second
 
 	return conf, nil
 }

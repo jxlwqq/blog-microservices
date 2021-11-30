@@ -32,3 +32,6 @@ auth:
   server:
     host: 'localhost'
     port: ':50054'
+jwt:
+  secret: 'secret'
+  expires: 36000
