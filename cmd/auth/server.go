@@ -5,6 +5,7 @@ import (
 	"github.com/stonecutter/blog-microservices/api/protobuf"
 	"github.com/stonecutter/blog-microservices/internal/auth"
 	"github.com/stonecutter/blog-microservices/internal/config"
+	"github.com/stonecutter/blog-microservices/internal/user"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
@@ -21,12 +22,10 @@ func main() {
 	}
 	grpcServer := grpc.NewServer()
 
-	conn, err := grpc.Dial(conf.User.Server.Host+conf.User.Server.Port, grpc.WithInsecure())
+	userClient, err := user.NewClient(conf.User.Server.Host + conf.User.Server.Port)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer conn.Close()
-	userClient := protobuf.NewUserServiceClient(conn)
 
 	jwtManager := auth.NewJWTManager(conf.JWT.Secret, conf.JWT.Expires)
 	authServer := auth.NewServer(userClient, jwtManager)

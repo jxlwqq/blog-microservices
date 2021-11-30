@@ -25,6 +25,11 @@ type User struct {
 	Server Server
 }
 
+type Post struct {
+	DB     DB
+	Server Server
+}
+
 type Auth struct {
 	Server Server
 }
@@ -36,6 +41,7 @@ type JWT struct {
 
 type Config struct {
 	User User
+	Post Post
 	Auth Auth
 	JWT  JWT
 }
@@ -59,6 +65,15 @@ func Load(path string) (*Config, error) {
 		conf.User.DB.Host,
 		conf.User.DB.Port,
 		conf.User.DB.Name,
+	)
+
+	conf.Post.DB.DSN = fmt.Sprintf(
+		"%s:%s@tcp(%s%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		conf.Post.DB.User,
+		conf.Post.DB.Password,
+		conf.Post.DB.Host,
+		conf.Post.DB.Port,
+		conf.Post.DB.Name,
 	)
 
 	conf.JWT.Expires = conf.JWT.Expires * time.Second
