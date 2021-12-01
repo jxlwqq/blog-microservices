@@ -28,3 +28,9 @@ comment-server:
 .PHONY: auth-server
 auth-server:
 	go run ./cmd/auth/
+
+.PHONY: docker-build
+docker-build:
+	docker build -t blog/user-server:latest -f ./cmd/user/Dockerfile .
+	docker build -t blog/auth-server:latest -f ./cmd/auth/Dockerfile .
+	docker build -t blog/post-server:latest -f ./cmd/post/Dockerfile .

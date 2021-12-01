@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-server
+  labels:
+    app: auth-server
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth-server
+  template:
+    metadata:
+      labels:
+        app: auth-server
+    spec:
+      containers:
+        - name: auth-server
+          image: blog/auth-server
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 50054
+          volumeMounts:
+            - mountPath: /configs # 使用 configmap 覆盖默认的配置文件
+              name: configs
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+      volumes:
+        - name: configs
+          configMap:
+            name: blog-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-server
+  labels:
+    app: auth-server
+spec:
+  selector:
+    app: auth-server
+  ports:
+    - port: 50054
+      targetPort: 50054
+      appProtocol: grpc

@@ -9,4 +9,4 @@ create table if not exists posts
     created_at timestamp       not null default current_timestamp,
     updated_at timestamp       not null default current_timestamp on update current_timestamp,
     index (user_id)
-    )
+);

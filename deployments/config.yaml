@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blog-config
+data:
+  config.yaml: |-
+    user:
+      db:
+        host: 'user-db'
+        port: ':3306'
+        user: 'root'
+        password: ''
+        name: 'users'
+      server:
+        host: 'user-server'
+        port: ':50051'
+    post:
+      db:
+        host: 'post-db'
+        port: ':3306'
+        user: 'root'
+        password: ''
+        name: 'posts'
+      server:
+        host: 'post-server'
+        port: ':50052'
+    comment:
+      db:
+        host: 'comment-db'
+        port: ':3306'
+        user: 'root'
+        password: ''
+        name: 'comments'
+      server:
+        host: 'comment-server'
+        port: ':50053'
+    auth:
+      server:
+        host: 'auth-server'
+        port: ':50054'
+    jwt:
+      secret: 'secret'
+      expires: 36000
