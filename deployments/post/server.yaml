@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-server
+  labels:
+    app: post-server
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: post-server
+  template:
+    metadata:
+      labels:
+        app: post-server
+    spec:
+      containers:
+        - name: post-server
+          image: blog/post-server
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 50052
+          volumeMounts:
+            - mountPath: /configs # 使用 configmap 覆盖默认的配置文件
+              name: configs
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+      volumes:
+        - name: configs
+          configMap:
+            name: blog-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: post-server
+  labels:
+    app: post-server
+spec:
+  selector:
+    app: post-server
+  ports:
+    - port: 50052
+      targetPort: 50052
+      appProtocol: grpc

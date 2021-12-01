@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-db
+  labels:
+    app: user-db
+spec:
+  selector:
+    matchLabels:
+      app: user-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: user-db
+    spec:
+      containers:
+        - name: user-db
+          image: mariadb
+          env:
+            - name: MYSQL_ALLOW_EMPTY_PASSWORD
+              value: 'true'
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: user-db
+            - mountPath: /docker-entrypoint-initdb.d
+              name: user-initdb
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 1000Mi
+            limits:
+              cpu: 1000m
+              memory: 1000Mi
+      volumes:
+        - name: user-db
+          persistentVolumeClaim:
+            claimName: user-db
+        - name: user-initdb
+          configMap:
+            name: user-initdb
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-initdb
+  labels:
+    app: user-db
+data:
+  initdb.sql: |
+    create database if not exists users;
+    use users;
+    create table if not exists users
+    (
+        id         bigint unsigned not null auto_increment primary key,
+        username   varchar(255)    not null unique,
+        email      varchar(255)    not null unique,
+        avatar     varchar(255) default null,
+        password   varchar(255)    not null,
+        created_at timestamp    default current_timestamp,
+        updated_at timestamp    default current_timestamp on update current_timestamp
+    );
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user-db
+  labels:
+    app: user-db
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-db
+  labels:
+    app: user-db
+spec:
+  selector:
+    app: user-db
+  ports:
+    - port: 3306
+      targetPort: 3306
+      appProtocol: mysql
