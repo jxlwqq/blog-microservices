@@ -2,6 +2,7 @@ package post
 
 import (
 	"context"
+
 	"github.com/stonecutter/blog-microservices/api/protobuf"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -102,8 +103,8 @@ func (s Server) ListPosts(ctx context.Context, req *protobuf.ListPostsRequest) (
 
 	var posts []*protobuf.Post
 
-	for key, post := range list {
-		posts[key] = entityToProtobuf(post)
+	for _, post := range list {
+		posts = append(posts, entityToProtobuf(post))
 	}
 
 	resp := &protobuf.ListPostsResponse{
