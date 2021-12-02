@@ -9,7 +9,8 @@ import (
 	"github.com/stonecutter/blog-microservices/internal/user"
 	"github.com/stonecutter/blog-microservices/pkg/dbcontext"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/health"
+	"google.golang.org/grpc/health/grpc_health_v1"
 	"log"
 	"net"
 )
@@ -51,7 +52,9 @@ func main() {
 		grpc.UnaryInterceptor(interceptor.Unary()),
 	)
 	protobuf.RegisterPostServiceServer(grpcServer, postServer)
-	reflection.Register(grpcServer)
+
+	healthServer := health.NewServer()
+	grpc_health_v1.RegisterHealthServer(grpcServer, healthServer)
 
 	log.Println("Starting server on port " + conf.Post.Server.Port)
 

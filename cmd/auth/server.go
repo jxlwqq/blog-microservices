@@ -7,7 +7,8 @@ import (
 	"github.com/stonecutter/blog-microservices/internal/config"
 	"github.com/stonecutter/blog-microservices/internal/user"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/health"
+	"google.golang.org/grpc/health/grpc_health_v1"
 	"log"
 	"net"
 )
@@ -30,7 +31,8 @@ func main() {
 	jwtManager := auth.NewJWTManager(conf.JWT.Secret, conf.JWT.Expires)
 	authServer := auth.NewServer(userClient, jwtManager)
 	protobuf.RegisterAuthServiceServer(grpcServer, authServer)
-	reflection.Register(grpcServer)
+	healthServer := health.NewServer()
+	grpc_health_v1.RegisterHealthServer(grpcServer, healthServer)
 
 	lis, err := net.Listen("tcp", conf.Auth.Server.Port)
 	if err != nil {

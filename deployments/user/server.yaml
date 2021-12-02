@@ -20,6 +20,12 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 50051
+          readinessProbe:
+            exec:
+              command: [ "/grpc-health-probe", "-addr=:50051" ]
+          livenessProbe:
+            exec:
+              command: [ "/grpc-health-probe", "-addr=:50051" ]
           volumeMounts:
             - mountPath: /configs # 使用 configmap 覆盖默认的配置文件
               name: configs

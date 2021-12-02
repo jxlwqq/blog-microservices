@@ -11,10 +11,12 @@ COPY cmd/ cmd/
 COPY internal/ internal/
 COPY pkg/ pkg/
 RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -a -o app ./cmd/comment/
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go install github.com/grpc-ecosystem/grpc-health-probe@latest
 
 FROM --platform=$TARGETPLATFORM alpine
 WORKDIR /
 COPY configs/ configs/
 COPY --from=builder /workspace/app .
+COPY --from=builder /go/bin/grpc-health-probe .
 EXPOSE 50053
 ENTRYPOINT ["/app"]
