@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"fmt"
+
 	"github.com/stonecutter/blog-microservices/api/protobuf"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
@@ -17,6 +18,22 @@ func NewServer(repo Repository) protobuf.UserServiceServer {
 type Server struct {
 	protobuf.UnimplementedUserServiceServer
 	repo Repository
+}
+
+func (s Server) GetUserListByIDs(ctx context.Context, req *protobuf.GetUserListByIDsRequest) (*protobuf.GetUserListByIDsResponse, error) {
+	ids := req.GetIds()
+	users, err := s.repo.GetListByIDs(ids)
+	if err != nil {
+		return nil, err
+	}
+	protoUsers := make([]*protobuf.User, len(users))
+	for i, user := range users {
+		protoUsers[i] = entityToProtobuf(user)
+	}
+	resp := &protobuf.GetUserListByIDsResponse{
+		Users: protoUsers,
+	}
+	return resp, nil
 }
 
 func (s Server) GetUser(ctx context.Context, req *protobuf.GetUserRequest) (*protobuf.GetUserResponse, error) {

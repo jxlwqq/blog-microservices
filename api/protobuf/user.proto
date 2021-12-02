@@ -7,6 +7,7 @@ option go_package = "github.com/stonecutter/blog-microservices/api/protobuf";
 import "google/protobuf/timestamp.proto";
 
 service UserService {
+  rpc GetUserListByIDs(GetUserListByIDsRequest) returns (GetUserListByIDsResponse) {}
   rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
   rpc GetUserByEmail(GetUserByEmailRequest) returns (GetUserResponse) {}
   rpc GetUserByUsername(GetUserByUsernameRequest) returns (GetUserResponse) {}
@@ -22,6 +23,14 @@ message User {
   string password = 4;
   google.protobuf.Timestamp created_at = 6;
   google.protobuf.Timestamp updated_at = 7;
+}
+
+message GetUserListByIDsRequest {
+  repeated uint64 ids = 1;
+}
+
+message GetUserListByIDsResponse {
+  repeated User users = 1;
 }
 
 message GetUserRequest {

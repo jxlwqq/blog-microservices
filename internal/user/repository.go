@@ -9,6 +9,7 @@ func NewRepository(db *dbcontext.DB) Repository {
 }
 
 type Repository interface {
+	GetListByIDs(ids []uint64) ([]*User, error)
 	Get(id uint64) (*User, error)
 	GetByEmail(email string) (*User, error)
 	GetByUsername(username string) (*User, error)
@@ -18,6 +19,12 @@ type Repository interface {
 
 type repository struct {
 	db *dbcontext.DB
+}
+
+func (r repository) GetListByIDs(ids []uint64) ([]*User, error) {
+	users := []*User{}
+	err := r.db.Where("id IN (?)", ids).Find(&users).Error
+	return users, err
 }
 
 func (r repository) Get(id uint64) (*User, error) {

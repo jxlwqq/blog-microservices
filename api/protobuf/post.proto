@@ -5,6 +5,7 @@ package api.protobuf;
 option go_package = "github.com/stonecutter/blog-microservices/api/protobuf";
 
 import "google/protobuf/timestamp.proto";
+import "user.proto";
 
 service PostService {
   rpc GetPost(GetPostRequest) returns (GetPostResponse) {}
@@ -14,13 +15,19 @@ service PostService {
   rpc ListPosts(ListPostsRequest) returns (ListPostsResponse) {}
 }
 
-message Post {
+message ResponsePost {
   uint64 id = 1;
   string title = 2;
   string content = 3;
   uint64 user_id = 4;
   google.protobuf.Timestamp created_at = 5;
   google.protobuf.Timestamp updated_at = 6;
+  User user = 7;
+}
+
+message RequestPost {
+  string title = 1;
+  string content = 2;
 }
 
 message GetPostRequest {
@@ -28,19 +35,20 @@ message GetPostRequest {
 }
 
 message GetPostResponse {
-  Post post = 1;
+  ResponsePost post = 1;
 }
 
 message CreatePostRequest {
-  Post post = 1;
+  RequestPost post = 1;
 }
 
 message CreatePostResponse {
-  Post post = 1;
+  ResponsePost post = 1;
 }
 
 message UpdatePostRequest {
-  Post post = 1;
+  uint64 id = 1;
+  RequestPost post = 2;
 }
 
 message UpdatePostResponse {
@@ -61,6 +69,6 @@ message ListPostsRequest {
 }
 
 message ListPostsResponse {
-  repeated Post posts = 1;
+  repeated ResponsePost posts = 1;
   int32 count = 2;
 }

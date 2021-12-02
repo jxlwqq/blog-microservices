@@ -24,9 +24,13 @@ func (s Server) GetPost(ctx context.Context, request *protobuf.GetPostRequest) (
 	if err != nil {
 		return nil, err
 	}
-
+	user, err := s.userClient.GetUser(ctx, &protobuf.GetUserRequest{Id: post.UserID})
+	if err != nil {
+		return nil, status.Error(codes.NotFound, "user not found")
+	}
+	protobufPost := entityToProtobuf(post, user.User)
 	resp := &protobuf.GetPostResponse{
-		Post: entityToProtobuf(post),
+		Post: protobufPost,
 	}
 
 	return resp, nil
@@ -44,8 +48,13 @@ func (s Server) CreatePost(ctx context.Context, req *protobuf.CreatePostRequest)
 		return nil, err
 	}
 
+	user, err := s.userClient.GetUser(ctx, &protobuf.GetUserRequest{Id: post.UserID})
+	if err != nil {
+		return nil, status.Error(codes.NotFound, "user not found")
+	}
+
 	resp := &protobuf.CreatePostResponse{
-		Post: entityToProtobuf(post),
+		Post: entityToProtobuf(post, user.User),
 	}
 
 	return resp, nil
@@ -53,7 +62,7 @@ func (s Server) CreatePost(ctx context.Context, req *protobuf.CreatePostRequest)
 
 func (s Server) UpdatePost(ctx context.Context, request *protobuf.UpdatePostRequest) (*protobuf.UpdatePostResponse, error) {
 	post := &Post{
-		ID:      request.GetPost().GetId(),
+		ID:      request.GetId(),
 		Title:   request.GetPost().GetTitle(),
 		Content: request.GetPost().GetContent(),
 	}
@@ -101,10 +110,29 @@ func (s Server) ListPosts(ctx context.Context, req *protobuf.ListPostsRequest) (
 		return nil, err
 	}
 
-	var posts []*protobuf.Post
+	var userIDs []uint64
 
 	for _, post := range list {
-		posts = append(posts, entityToProtobuf(post))
+		userIDs = append(userIDs, post.UserID)
+	}
+	userReq := &protobuf.GetUserListByIDsRequest{
+		Ids: userIDs,
+	}
+
+	userResp, err := s.userClient.GetUserListByIDs(ctx, userReq)
+	if err != nil {
+		return nil, status.Error(codes.NotFound, "user not found")
+	}
+	users := userResp.GetUsers()
+	var posts []*protobuf.ResponsePost
+	for _, post := range list {
+		user := protobuf.User{}
+		for _, user := range users {
+			if post.UserID == user.Id {
+				user = user
+			}
+		}
+		posts = append(posts, entityToProtobuf(post, &user))
 	}
 
 	resp := &protobuf.ListPostsResponse{
@@ -113,13 +141,14 @@ func (s Server) ListPosts(ctx context.Context, req *protobuf.ListPostsRequest) (
 	return resp, nil
 }
 
-func entityToProtobuf(post *Post) *protobuf.Post {
-	return &protobuf.Post{
+func entityToProtobuf(post *Post, user *protobuf.User) *protobuf.ResponsePost {
+	return &protobuf.ResponsePost{
 		Id:        post.ID,
 		Title:     post.Title,
 		Content:   post.Content,
 		UserId:    post.UserID,
 		CreatedAt: timestamppb.New(post.CreatedAt),
 		UpdatedAt: timestamppb.New(post.UpdatedAt),
+		User:      user,
 	}
 }
