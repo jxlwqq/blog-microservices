@@ -40,12 +40,12 @@ func main() {
 	jwtManager := auth.NewJWTManager(conf.JWT.Secret, conf.JWT.Expires)
 
 	methods := make(map[string]bool)
-
-	methods["/api.protobuf.PostService/CreatePost"] = true // 需要jwt验证
-	methods["/api.protobuf.PostService/UpdatePost"] = true
-	methods["/api.protobuf.PostService/DeletePost"] = true
-	methods["/api.protobuf.PostService/GetPost"] = false // 不需要jwt验证
-	methods["/api.protobuf.PostService/ListPost"] = false
+	prefix := "/api.protobuf.PostService/"
+	methods[prefix+"CreatePost"] = true // 需要jwt验证
+	methods[prefix+"UpdatePost"] = true
+	methods[prefix+"DeletePost"] = true
+	methods[prefix+"GetPost"] = false // 不需要jwt验证
+	methods[prefix+"ListPost"] = false
 
 	interceptor := auth.NewInterceptor(jwtManager, methods)
 	grpcServer := grpc.NewServer(
