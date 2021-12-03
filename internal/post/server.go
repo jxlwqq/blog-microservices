@@ -2,6 +2,7 @@ package post
 
 import (
 	"context"
+	"github.com/jinzhu/copier"
 
 	"github.com/stonecutter/blog-microservices/api/protobuf"
 	"google.golang.org/grpc/codes"
@@ -146,13 +147,13 @@ func (s Server) ListPosts(ctx context.Context, req *protobuf.ListPostsRequest) (
 	users := userResp.GetUsers()
 	var posts []*protobuf.ResponsePost
 	for _, post := range list {
-		user := protobuf.User{}
-		for _, user := range users {
-			if post.UserID == user.Id {
-				user = user
+		user := &protobuf.User{}
+		for _, item := range users {
+			if post.UserID == item.Id {
+				_ = copier.Copy(user, item)
 			}
 		}
-		posts = append(posts, entityToProtobuf(post, &user))
+		posts = append(posts, entityToProtobuf(post, user))
 	}
 
 	count, err := s.repo.Count()

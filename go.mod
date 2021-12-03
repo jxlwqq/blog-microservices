@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/envoyproxy/protoc-gen-validate v0.6.2
 	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/jinzhu/copier v0.3.4
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.9.0
 	github.com/stretchr/testify v1.7.0
