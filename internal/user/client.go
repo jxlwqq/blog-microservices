@@ -5,10 +5,10 @@ import (
 	"google.golang.org/grpc"
 )
 
-func NewClient(userAddr string) (protobuf.UserServiceClient, error) {
+func NewClient(userAddr string) (protobuf.UserServiceClient, *grpc.ClientConn, error) {
 	conn, err := grpc.Dial(userAddr, grpc.WithInsecure())
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return protobuf.NewUserServiceClient(conn), err
+	return protobuf.NewUserServiceClient(conn), conn, err
 }

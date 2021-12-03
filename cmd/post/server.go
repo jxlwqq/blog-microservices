@@ -30,10 +30,11 @@ func main() {
 	}
 
 	postRepo := post.NewRepository(db)
-	userClient, err := user.NewClient(conf.User.Server.Host + conf.User.Server.Port)
+	userClient, userConn, err := user.NewClient(conf.User.Server.Host + conf.User.Server.Port)
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer userConn.Close()
 
 	postServer := post.NewServer(postRepo, userClient)
 

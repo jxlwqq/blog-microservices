@@ -23,10 +23,11 @@ func main() {
 	}
 	grpcServer := grpc.NewServer()
 
-	userClient, err := user.NewClient(conf.User.Server.Host + conf.User.Server.Port)
+	userClient, userConn, err := user.NewClient(conf.User.Server.Host + conf.User.Server.Port)
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer userConn.Close()
 
 	jwtManager := auth.NewJWTManager(conf.JWT.Secret, conf.JWT.Expires)
 	authServer := auth.NewServer(userClient, jwtManager)
