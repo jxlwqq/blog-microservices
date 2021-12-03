@@ -26,6 +26,10 @@ spec:
           livenessProbe:
             exec:
               command: [ "/grpc-health-probe", "-addr=:50054" ]
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "sh", "-c", "sleep 10" ]
           volumeMounts:
             - mountPath: /configs # 使用 configmap 覆盖默认的配置文件
               name: configs

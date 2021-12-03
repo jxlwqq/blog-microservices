@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	flag "github.com/spf13/pflag"
 	"github.com/stonecutter/blog-microservices/api/protobuf"
 	"github.com/stonecutter/blog-microservices/internal/auth"
@@ -13,6 +15,10 @@ import (
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"log"
 	"net"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 var flagConfig = flag.String("config", "./configs/config.yaml", "config file")
@@ -61,7 +67,22 @@ func main() {
 
 	lis, err := net.Listen("tcp", conf.Post.Server.Port)
 
-	if err = grpcServer.Serve(lis); err != nil {
-		log.Fatal(err)
+	// Start gRPC server
+	ch := make(chan os.Signal, 1)
+	go func() {
+		if err = grpcServer.Serve(lis); err != nil {
+			panic(err)
+		}
+	}()
+
+	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
+	<-ch
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	grpcServer.GracefulStop()
+	select {
+	case <-ctx.Done():
+		close(ch)
 	}
+	fmt.Println("Graceful Shutdown end")
 }
