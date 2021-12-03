@@ -48,3 +48,7 @@ kube-delete:
 	kubectl delete -f ./deployments/user/
 	kubectl delete -f ./deployments/post/
 	kubectl delete -f ./deployments/auth/
+
+.PHONY: test
+test:
+	go test -cover -race ./...
