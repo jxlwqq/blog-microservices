@@ -155,8 +155,14 @@ func (s Server) ListPosts(ctx context.Context, req *protobuf.ListPostsRequest) (
 		posts = append(posts, entityToProtobuf(post, &user))
 	}
 
+	count, err := s.repo.Count()
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to count posts: %v", err)
+	}
+
 	resp := &protobuf.ListPostsResponse{
 		Posts: posts,
+		Count: count,
 	}
 	return resp, nil
 }

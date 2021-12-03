@@ -71,5 +71,5 @@ message ListPostsRequest {
 
 message ListPostsResponse {
   repeated ResponsePost posts = 1;
-  int32 count = 2;
+  uint64 count = 2;
 }

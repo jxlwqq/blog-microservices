@@ -12,6 +12,7 @@ type Repository interface {
 	Update(post *Post) error
 	Delete(id uint64) error
 	List(offset, limit int) ([]*Post, error)
+	Count() (uint64, error)
 }
 
 type repository struct {
@@ -40,4 +41,10 @@ func (r repository) List(offset, limit int) ([]*Post, error) {
 	var posts []*Post
 	err := r.db.Offset(offset).Limit(limit).Find(&posts).Error
 	return posts, err
+}
+
+func (r repository) Count() (uint64, error) {
+	var count int64
+	err := r.db.Model(&Post{}).Count(&count).Error
+	return uint64(count), err
 }
