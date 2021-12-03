@@ -21,6 +21,10 @@ type Server struct {
 }
 
 func (s Server) GetUserListByIDs(ctx context.Context, req *protobuf.GetUserListByIDsRequest) (*protobuf.GetUserListByIDsResponse, error) {
+	err := req.ValidateAll()
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
 	ids := req.GetIds()
 	users, err := s.repo.GetListByIDs(ids)
 	if err != nil {
@@ -37,6 +41,10 @@ func (s Server) GetUserListByIDs(ctx context.Context, req *protobuf.GetUserListB
 }
 
 func (s Server) GetUser(ctx context.Context, req *protobuf.GetUserRequest) (*protobuf.GetUserResponse, error) {
+	err := req.ValidateAll()
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
 	id := req.GetId()
 	user, err := s.repo.Get(id)
 	if err != nil {
@@ -50,6 +58,10 @@ func (s Server) GetUser(ctx context.Context, req *protobuf.GetUserRequest) (*pro
 }
 
 func (s Server) GetUserByEmail(ctx context.Context, req *protobuf.GetUserByEmailRequest) (*protobuf.GetUserResponse, error) {
+	err := req.ValidateAll()
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
 	email := req.GetEmail()
 	user, err := s.repo.GetByEmail(email)
 	if err != nil {
@@ -67,6 +79,10 @@ func (s Server) GetUserByEmail(ctx context.Context, req *protobuf.GetUserByEmail
 }
 
 func (s Server) GetUserByUsername(ctx context.Context, req *protobuf.GetUserByUsernameRequest) (*protobuf.GetUserResponse, error) {
+	err := req.ValidateAll()
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
 	username := req.GetUsername()
 	user, err := s.repo.GetByUsername(username)
 	if err != nil {
@@ -84,6 +100,10 @@ func (s Server) GetUserByUsername(ctx context.Context, req *protobuf.GetUserByUs
 }
 
 func (s Server) CreateUser(ctx context.Context, req *protobuf.CreateUserRequest) (*protobuf.CreateUserResponse, error) {
+	err := req.ValidateAll()
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
 	fmt.Println(req.GetUser().GetPassword())
 	password, err := generateFromPassword(req.GetUser().GetPassword())
 	fmt.Println(password)
@@ -108,7 +128,10 @@ func (s Server) CreateUser(ctx context.Context, req *protobuf.CreateUserRequest)
 }
 
 func (s Server) UpdateUser(ctx context.Context, req *protobuf.UpdateUserRequest) (*protobuf.UpdateUserResponse, error) {
-
+	err := req.ValidateAll()
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
 	user := &User{ID: req.GetUser().GetId()}
 	if req.GetUser().GetUsername() != "" {
 		user.Username = req.GetUser().GetUsername()
@@ -126,7 +149,7 @@ func (s Server) UpdateUser(ctx context.Context, req *protobuf.UpdateUserRequest)
 	if req.GetUser().Avatar != "" {
 		user.Avatar = req.GetUser().Avatar
 	}
-	err := s.repo.Update(user)
+	err = s.repo.Update(user)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update user: %v", err)
 	}

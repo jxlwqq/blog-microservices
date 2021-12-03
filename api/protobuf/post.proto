@@ -6,6 +6,7 @@ option go_package = "github.com/stonecutter/blog-microservices/api/protobuf";
 
 import "google/protobuf/timestamp.proto";
 import "user.proto";
+import "validate/validate.proto";
 
 service PostService {
   rpc GetPost(GetPostRequest) returns (GetPostResponse) {}
@@ -26,8 +27,8 @@ message ResponsePost {
 }
 
 message RequestPost {
-  string title = 1;
-  string content = 2;
+  string title = 1 [(validate.rules).string = {min_len: 1, max_len: 140}];
+  string content = 2 [(validate.rules).string = {min_len: 1, max_len: 3000}];
 }
 
 message GetPostRequest {

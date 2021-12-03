@@ -5,6 +5,7 @@ package api.protobuf;
 option go_package = "github.com/stonecutter/blog-microservices/api/protobuf";
 
 import "google/protobuf/timestamp.proto";
+import "validate/validate.proto";
 
 service UserService {
   rpc GetUserListByIDs(GetUserListByIDsRequest) returns (GetUserListByIDsResponse) {}
@@ -42,12 +43,12 @@ message GetUserResponse {
 }
 
 message GetUserByEmailRequest {
-  string email = 1;
+  string email = 1 [(validate.rules).string.email = true];
   string password = 2;
 }
 
 message GetUserByUsernameRequest {
-  string username = 1;
+  string username = 1 [(validate.rules).string = {min_len: 1, max_len: 30}];
   string password = 2;
 }
 

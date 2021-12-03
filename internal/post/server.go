@@ -19,8 +19,12 @@ type Server struct {
 	userClient protobuf.UserServiceClient
 }
 
-func (s Server) GetPost(ctx context.Context, request *protobuf.GetPostRequest) (*protobuf.GetPostResponse, error) {
-	post, err := s.repo.Get(request.GetId())
+func (s Server) GetPost(ctx context.Context, req *protobuf.GetPostRequest) (*protobuf.GetPostResponse, error) {
+	err := req.ValidateAll()
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+	post, err := s.repo.Get(req.GetId())
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "post not found: %v", err)
 	}
@@ -37,13 +41,17 @@ func (s Server) GetPost(ctx context.Context, request *protobuf.GetPostRequest) (
 }
 
 func (s Server) CreatePost(ctx context.Context, req *protobuf.CreatePostRequest) (*protobuf.CreatePostResponse, error) {
+	err := req.ValidateAll()
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
 	ID := ctx.Value("ID").(uint64)
 	post := &Post{
 		Title:   req.GetPost().GetTitle(),
 		Content: req.GetPost().GetContent(),
 		UserID:  ID,
 	}
-	err := s.repo.Create(post)
+	err = s.repo.Create(post)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create post: %v", err)
 	}
@@ -60,17 +68,21 @@ func (s Server) CreatePost(ctx context.Context, req *protobuf.CreatePostRequest)
 	return resp, nil
 }
 
-func (s Server) UpdatePost(ctx context.Context, request *protobuf.UpdatePostRequest) (*protobuf.UpdatePostResponse, error) {
+func (s Server) UpdatePost(ctx context.Context, req *protobuf.UpdatePostRequest) (*protobuf.UpdatePostResponse, error) {
+	err := req.ValidateAll()
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
 	post := &Post{
-		ID:      request.GetId(),
-		Title:   request.GetPost().GetTitle(),
-		Content: request.GetPost().GetContent(),
+		ID:      req.GetId(),
+		Title:   req.GetPost().GetTitle(),
+		Content: req.GetPost().GetContent(),
 	}
 	ID := ctx.Value("ID").(uint64)
 	if post.UserID != ID {
 		return nil, status.Errorf(codes.Unauthenticated, "user %d is not the owner of post %d", ID, post.ID)
 	}
-	err := s.repo.Update(post)
+	err = s.repo.Update(post)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update post: %v", err)
 	}
@@ -82,10 +94,14 @@ func (s Server) UpdatePost(ctx context.Context, request *protobuf.UpdatePostRequ
 	return resp, nil
 }
 
-func (s Server) DeletePost(ctx context.Context, request *protobuf.DeletePostRequest) (*protobuf.DeletePostResponse, error) {
-	post, err := s.repo.Get(request.GetId())
+func (s Server) DeletePost(ctx context.Context, req *protobuf.DeletePostRequest) (*protobuf.DeletePostResponse, error) {
+	err := req.ValidateAll()
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "post %d not found: %v", request.GetId(), err)
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+	post, err := s.repo.Get(req.GetId())
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "post %d not found", req.GetId())
 	}
 	ID := ctx.Value("ID").(uint64)
 	if post.UserID != ID {
@@ -105,6 +121,10 @@ func (s Server) DeletePost(ctx context.Context, request *protobuf.DeletePostRequ
 }
 
 func (s Server) ListPosts(ctx context.Context, req *protobuf.ListPostsRequest) (*protobuf.ListPostsResponse, error) {
+	err := req.ValidateAll()
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
 	list, err := s.repo.List(int(req.GetOffset()), int(req.GetLimit()))
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to list posts: %v", err)

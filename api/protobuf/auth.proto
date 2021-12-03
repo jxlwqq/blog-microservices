@@ -4,6 +4,8 @@ package api.protobuf;
 
 option go_package = "github.com/stonecutter/blog-microservices/api/protobuf";
 
+import "validate/validate.proto";
+
 service AuthService {
   rpc SignIn(SignInRequest) returns (SignInResponse) {}
   rpc SignUp(SignUpRequest) returns (SignUpResponse) {}
@@ -11,8 +13,8 @@ service AuthService {
 
 message SignInRequest {
   oneof request {
-    string email = 1;
-    string username = 2;
+    string email = 1 [(validate.rules).string.email = true];
+    string username = 2 [(validate.rules).string = {min_len: 1, max_len: 30}];
   }
   string password = 3;
 }
@@ -22,8 +24,8 @@ message SignInResponse {
 }
 
 message SignUpRequest {
-  string email = 1;
-  string username = 2;
+  string email = 1 [(validate.rules).string.email = true];
+  string username = 2 [(validate.rules).string = {min_len: 1, max_len: 30}];
   string password = 3;
 }
 

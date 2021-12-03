@@ -21,6 +21,10 @@ type Server struct {
 }
 
 func (s Server) SignIn(ctx context.Context, req *protobuf.SignInRequest) (*protobuf.SignInResponse, error) {
+	err := req.ValidateAll()
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
 	email := req.GetEmail()
 	username := req.GetUsername()
 	password := req.GetPassword()
@@ -62,6 +66,10 @@ func (s Server) SignIn(ctx context.Context, req *protobuf.SignInRequest) (*proto
 }
 
 func (s Server) SignUp(ctx context.Context, req *protobuf.SignUpRequest) (*protobuf.SignUpResponse, error) {
+	err := req.ValidateAll()
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
 	username := req.GetUsername()
 	email := req.GetEmail()
 	password := req.GetPassword()
