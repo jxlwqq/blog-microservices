@@ -9,7 +9,7 @@ import (
 
 func TestJWTManager_Generate(t *testing.T) {
 	t.Parallel()
-	jwtManager := auth.NewJWTManager("secret", time.Second * 3600)
+	jwtManager := auth.NewJWTManager("secret", time.Second*3600)
 	id := uint64(1)
 	username := "jack"
 	tokenStr, err := jwtManager.Generate(id, username)
@@ -19,7 +19,7 @@ func TestJWTManager_Generate(t *testing.T) {
 
 func TestJWTManager_Verify(t *testing.T) {
 	t.Parallel()
-	jwtManager := auth.NewJWTManager("secret", time.Second * 3600)
+	jwtManager := auth.NewJWTManager("secret", time.Second*3600)
 	id := uint64(2)
 	username := "rose"
 	tokenStr, err := jwtManager.Generate(id, username)

@@ -22,7 +22,7 @@ type Server struct {
 func (s Server) GetPost(ctx context.Context, request *protobuf.GetPostRequest) (*protobuf.GetPostResponse, error) {
 	post, err := s.repo.Get(request.GetId())
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.NotFound, "post not found: %v", err)
 	}
 	user, err := s.userClient.GetUser(ctx, &protobuf.GetUserRequest{Id: post.UserID})
 	if err != nil {
@@ -45,7 +45,7 @@ func (s Server) CreatePost(ctx context.Context, req *protobuf.CreatePostRequest)
 	}
 	err := s.repo.Create(post)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "failed to create post: %v", err)
 	}
 
 	user, err := s.userClient.GetUser(ctx, &protobuf.GetUserRequest{Id: post.UserID})
@@ -72,7 +72,7 @@ func (s Server) UpdatePost(ctx context.Context, request *protobuf.UpdatePostRequ
 	}
 	err := s.repo.Update(post)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "failed to update post: %v", err)
 	}
 
 	resp := &protobuf.UpdatePostResponse{
@@ -85,7 +85,7 @@ func (s Server) UpdatePost(ctx context.Context, request *protobuf.UpdatePostRequ
 func (s Server) DeletePost(ctx context.Context, request *protobuf.DeletePostRequest) (*protobuf.DeletePostResponse, error) {
 	post, err := s.repo.Get(request.GetId())
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "post %d not found", request.GetId())
+		return nil, status.Errorf(codes.NotFound, "post %d not found: %v", request.GetId(), err)
 	}
 	ID := ctx.Value("ID").(uint64)
 	if post.UserID != ID {
@@ -94,7 +94,7 @@ func (s Server) DeletePost(ctx context.Context, request *protobuf.DeletePostRequ
 
 	err = s.repo.Delete(post.ID)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "failed to delete post: %v", err)
 	}
 
 	resp := &protobuf.DeletePostResponse{
@@ -107,7 +107,7 @@ func (s Server) DeletePost(ctx context.Context, request *protobuf.DeletePostRequ
 func (s Server) ListPosts(ctx context.Context, req *protobuf.ListPostsRequest) (*protobuf.ListPostsResponse, error) {
 	list, err := s.repo.List(int(req.GetOffset()), int(req.GetLimit()))
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "failed to list posts: %v", err)
 	}
 
 	var userIDs []uint64
@@ -121,7 +121,7 @@ func (s Server) ListPosts(ctx context.Context, req *protobuf.ListPostsRequest) (
 
 	userResp, err := s.userClient.GetUserListByIDs(ctx, userReq)
 	if err != nil {
-		return nil, status.Error(codes.NotFound, "user not found")
+		return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
 	}
 	users := userResp.GetUsers()
 	var posts []*protobuf.ResponsePost

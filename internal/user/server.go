@@ -24,7 +24,7 @@ func (s Server) GetUserListByIDs(ctx context.Context, req *protobuf.GetUserListB
 	ids := req.GetIds()
 	users, err := s.repo.GetListByIDs(ids)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "failed to get user list by ids: %v", err)
 	}
 	protoUsers := make([]*protobuf.User, len(users))
 	for i, user := range users {
@@ -40,7 +40,7 @@ func (s Server) GetUser(ctx context.Context, req *protobuf.GetUserRequest) (*pro
 	id := req.GetId()
 	user, err := s.repo.Get(id)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "failed to get user: %v", err)
 	}
 	resp := &protobuf.GetUserResponse{
 		User: entityToProtobuf(user),
@@ -53,7 +53,7 @@ func (s Server) GetUserByEmail(ctx context.Context, req *protobuf.GetUserByEmail
 	email := req.GetEmail()
 	user, err := s.repo.GetByEmail(email)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "failed to get user by email: %v", err)
 	}
 	ok := isCorrectPassword(user.Password, req.GetPassword())
 	if !ok {
@@ -70,7 +70,7 @@ func (s Server) GetUserByUsername(ctx context.Context, req *protobuf.GetUserByUs
 	username := req.GetUsername()
 	user, err := s.repo.GetByUsername(username)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "failed to get user by username: %v", err)
 	}
 	ok := isCorrectPassword(user.Password, req.GetPassword())
 	if !ok {
@@ -88,7 +88,7 @@ func (s Server) CreateUser(ctx context.Context, req *protobuf.CreateUserRequest)
 	password, err := generateFromPassword(req.GetUser().GetPassword())
 	fmt.Println(password)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "failed to bcrypt generate password: %v", err)
 	}
 	user := &User{
 		Username: req.GetUser().GetUsername(),
@@ -98,7 +98,7 @@ func (s Server) CreateUser(ctx context.Context, req *protobuf.CreateUserRequest)
 	}
 	err = s.repo.Create(user)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "failed to create user: %v", err)
 	}
 	resp := &protobuf.CreateUserResponse{
 		User: entityToProtobuf(user),
@@ -116,7 +116,7 @@ func (s Server) UpdateUser(ctx context.Context, req *protobuf.UpdateUserRequest)
 	if req.GetUser().GetPassword() != "" {
 		password, err := generateFromPassword(req.GetUser().GetPassword())
 		if err != nil {
-			return nil, err
+			return nil, status.Errorf(codes.Internal, "failed to bcrypt generate password: %v", err)
 		}
 		user.Password = password
 	}
@@ -128,7 +128,7 @@ func (s Server) UpdateUser(ctx context.Context, req *protobuf.UpdateUserRequest)
 	}
 	err := s.repo.Update(user)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "failed to update user: %v", err)
 	}
 	resp := &protobuf.UpdateUserResponse{
 		Success: true,
