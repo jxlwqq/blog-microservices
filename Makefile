@@ -56,6 +56,11 @@ kube-delete:
 	kubectl delete -f ./deployments/post/
 	kubectl delete -f ./deployments/auth/
 
+
+.PHONY: kube-redeploy
+kube-redeploy:
+	./scripts/kube-redeploy.sh
+
 .PHONY: test
 test:
 	go test -cover -race ./...
