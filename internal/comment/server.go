@@ -25,7 +25,10 @@ type Server struct {
 }
 
 func (s Server) CreateComment(ctx context.Context, req *protobuf.CreateCommentRequest) (*protobuf.CreateCommentResponse, error) {
-	userID := ctx.Value("ID").(uint64)
+	userID, ok := ctx.Value("ID").(uint64)
+	if !ok {
+		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
+	}
 	fmt.Println("userID: ", userID)
 	userResp, err := s.userClient.GetUser(ctx, &protobuf.GetUserRequest{Id: userID})
 	user := userResp.GetUser()

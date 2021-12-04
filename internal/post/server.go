@@ -46,11 +46,14 @@ func (s Server) CreatePost(ctx context.Context, req *protobuf.CreatePostRequest)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	ID := ctx.Value("ID").(uint64)
+	userID, ok := ctx.Value("ID").(uint64)
+	if !ok {
+		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
+	}
 	post := &Post{
 		Title:   req.GetPost().GetTitle(),
 		Content: req.GetPost().GetContent(),
-		UserID:  ID,
+		UserID:  userID,
 	}
 	err = s.repo.Create(post)
 	if err != nil {
@@ -79,9 +82,12 @@ func (s Server) UpdatePost(ctx context.Context, req *protobuf.UpdatePostRequest)
 		Title:   req.GetPost().GetTitle(),
 		Content: req.GetPost().GetContent(),
 	}
-	ID := ctx.Value("ID").(uint64)
-	if post.UserID != ID {
-		return nil, status.Errorf(codes.Unauthenticated, "user %d is not the owner of post %d", ID, post.ID)
+	userID, ok := ctx.Value("ID").(uint64)
+	if !ok {
+		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
+	}
+	if post.UserID != userID {
+		return nil, status.Errorf(codes.Unauthenticated, "user %d is not the owner of post %d", userID, post.ID)
 	}
 	err = s.repo.Update(post)
 	if err != nil {
@@ -104,9 +110,12 @@ func (s Server) DeletePost(ctx context.Context, req *protobuf.DeletePostRequest)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "post %d not found", req.GetId())
 	}
-	ID := ctx.Value("ID").(uint64)
-	if post.UserID != ID {
-		return nil, status.Errorf(codes.Unauthenticated, "user %d is not the owner of post %d", ID, post.ID)
+	userID, ok := ctx.Value("ID").(uint64)
+	if !ok {
+		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
+	}
+	if post.UserID != userID {
+		return nil, status.Errorf(codes.Unauthenticated, "user %d is not the owner of post %d", userID, post.ID)
 	}
 
 	err = s.repo.Delete(post.ID)
