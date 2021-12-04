@@ -41,6 +41,7 @@ docker-build:
 	docker build -t blog/user-server:latest -f ./cmd/user/Dockerfile .
 	docker build -t blog/auth-server:latest -f ./cmd/auth/Dockerfile .
 	docker build -t blog/post-server:latest -f ./cmd/post/Dockerfile .
+	docker build -t blog/comment-server:latest -f ./cmd/comment/Dockerfile .
 
 .PHONY: kube-deploy
 kube-deploy:
@@ -48,6 +49,7 @@ kube-deploy:
 	kubectl apply -f ./deployments/user/
 	kubectl apply -f ./deployments/post/
 	kubectl apply -f ./deployments/auth/
+	kubectl apply -f ./deployments/comment/
 
 .PHONY: kube-delete
 kube-delete:
@@ -55,6 +57,7 @@ kube-delete:
 	kubectl delete -f ./deployments/user/
 	kubectl delete -f ./deployments/post/
 	kubectl delete -f ./deployments/auth/
+	kubectl delete -f ./deployments/comment/
 
 
 .PHONY: kube-redeploy

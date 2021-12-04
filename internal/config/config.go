@@ -30,6 +30,11 @@ type Post struct {
 	Server Server
 }
 
+type Comment struct {
+	DB     DB
+	Server Server
+}
+
 type Auth struct {
 	Server Server
 }
@@ -40,10 +45,11 @@ type JWT struct {
 }
 
 type Config struct {
-	User User
-	Post Post
-	Auth Auth
-	JWT  JWT
+	User    User
+	Post    Post
+	Comment Comment
+	Auth    Auth
+	JWT     JWT
 }
 
 func Load(path string) (*Config, error) {
@@ -74,6 +80,15 @@ func Load(path string) (*Config, error) {
 		conf.Post.DB.Host,
 		conf.Post.DB.Port,
 		conf.Post.DB.Name,
+	)
+
+	conf.Comment.DB.DSN = fmt.Sprintf(
+		"%s:%s@tcp(%s%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		conf.Comment.DB.User,
+		conf.Comment.DB.Password,
+		conf.Comment.DB.Host,
+		conf.Comment.DB.Port,
+		conf.Comment.DB.Name,
 	)
 
 	conf.JWT.Expires = conf.JWT.Expires * time.Second

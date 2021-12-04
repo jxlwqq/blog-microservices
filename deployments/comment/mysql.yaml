@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comment-db
+  labels:
+    app: comment-db
+spec:
+  selector:
+    matchLabels:
+      app: comment-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: comment-db
+    spec:
+      containers:
+        - name: comment-db
+          image: mariadb
+          env:
+            - name: MYSQL_ALLOW_EMPTY_PASSWORD
+              value: 'true'
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: comment-db
+            - mountPath: /docker-entrypoint-initdb.d
+              name: comment-initdb
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 1000Mi
+            limits:
+              cpu: 1000m
+              memory: 1000Mi
+      volumes:
+        - name: comment-db
+          persistentVolumeClaim:
+            claimName: comment-db
+        - name: comment-initdb
+          configMap:
+            name: comment-initdb
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: comment-initdb
+  labels:
+    app: comment-db
+data:
+  initdb.sql: |
+    create database if not exists comments;
+    use comments;
+    create table if not exists comments
+    (
+        id         bigint unsigned not null auto_increment primary key,
+        user_id    bigint unsigned not null,
+        post_id    bigint unsigned not null,
+        content    text            not null,
+        created_at timestamp       not null default current_timestamp,
+        updated_at timestamp       not null default current_timestamp on update current_timestamp,
+        index (user_id),
+        index (post_id)
+    );
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: comment-db
+  labels:
+    app: comment-db
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: comment-db
+  labels:
+    app: comment-db
+spec:
+  selector:
+    app: comment-db
+  ports:
+    - port: 3306
+      targetPort: 3306
+      appProtocol: mysql

@@ -39,3 +39,11 @@ spec:
             host: auth-server.default.svc.cluster.local
             port:
               number: 50054
+    - match:
+        - uri:
+            prefix: "/api.protobuf.CommentService"
+      route:
+        - destination:
+            host: comment-server.default.svc.cluster.local
+            port:
+              number: 50053

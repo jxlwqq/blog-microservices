@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comment-server
+  labels:
+    app: comment-server
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: comment-server
+  template:
+    metadata:
+      labels:
+        app: comment-server
+    spec:
+      containers:
+        - name: comment-server
+          image: blog/comment-server
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 50053
+          readinessProbe:
+            exec:
+              command: [ "/grpc-health-probe", "-addr=:50053" ]
+          livenessProbe:
+            exec:
+              command: [ "/grpc-health-probe", "-addr=:50053" ]
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "sh", "-c", "sleep 10" ]
+          volumeMounts:
+            - mountPath: /configs # 使用 configmap 覆盖默认的配置文件
+              name: configs
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+      volumes:
+        - name: configs
+          configMap:
+            name: blog-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: comment-server
+  labels:
+    app: comment-server
+spec:
+  selector:
+    app: comment-server
+  ports:
+    - port: 50053
+      targetPort: 50053
+      appProtocol: grpc
