@@ -1,6 +1,8 @@
 package user
 
-import "github.com/stonecutter/blog-microservices/pkg/dbcontext"
+import (
+	"github.com/stonecutter/blog-microservices/internal/pkg/dbcontext"
+)
 
 func NewRepository(db *dbcontext.DB) Repository {
 	return &repository{

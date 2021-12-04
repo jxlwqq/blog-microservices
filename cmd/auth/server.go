@@ -6,7 +6,7 @@ import (
 	flag "github.com/spf13/pflag"
 	"github.com/stonecutter/blog-microservices/api/protobuf"
 	"github.com/stonecutter/blog-microservices/internal/auth"
-	"github.com/stonecutter/blog-microservices/internal/config"
+	"github.com/stonecutter/blog-microservices/internal/pkg/config"
 	"github.com/stonecutter/blog-microservices/internal/user"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"

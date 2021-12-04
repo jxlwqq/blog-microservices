@@ -30,13 +30,13 @@ func (s Server) CreateComment(ctx context.Context, req *protobuf.CreateCommentRe
 	userResp, err := s.userClient.GetUser(ctx, &protobuf.GetUserRequest{Id: userID})
 	user := userResp.GetUser()
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "user %s not found: %v", userID, err)
+		return nil, status.Errorf(codes.NotFound, "user %d not found: %v", userID, err)
 	}
 	postID := req.GetComment().GetPostId()
 	postResp, err := s.postClient.GetPost(ctx, &protobuf.GetPostRequest{Id: postID})
 	post := postResp.GetPost()
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "post %s not found: %v", postID, err)
+		return nil, status.Errorf(codes.NotFound, "post %d not found: %v", postID, err)
 	}
 	comment := Comment{
 		Content: req.GetComment().GetContent(),
