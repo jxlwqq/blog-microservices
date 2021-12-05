@@ -30,7 +30,7 @@ func main() {
 	grpcServer := grpc.NewServer()
 	fmt.Println(conf.User.DB.DSN)
 	// 注册grpc服务
-	db, err := dbcontext.NewDB(conf.User.DB.DSN)
+	db, err := dbcontext.New(conf.User.DB.DSN)
 	if err != nil {
 		log.Fatal(err)
 	}

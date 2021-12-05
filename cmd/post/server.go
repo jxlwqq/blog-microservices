@@ -30,13 +30,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	db, err := dbcontext.NewDB(conf.Post.DB.DSN)
+	db, err := dbcontext.New(conf.Post.DB.DSN)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	postRepo := post.NewRepository(db)
-	userClient, userConn, err := user.NewClient(conf.User.Server.Host + conf.User.Server.Port)
+	userClient, userConn, err := user.NewClient(conf.User.Server.Addr)
 	if err != nil {
 		log.Fatal(err)
 	}

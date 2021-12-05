@@ -29,7 +29,7 @@ func main() {
 	}
 	grpcServer := grpc.NewServer()
 
-	userClient, userConn, err := user.NewClient(conf.User.Server.Host + conf.User.Server.Port)
+	userClient, userConn, err := user.NewClient(conf.User.Server.Addr)
 	if err != nil {
 		log.Fatal(err)
 	}

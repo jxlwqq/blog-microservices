@@ -31,20 +31,20 @@ func main() {
 		log.Fatal(err)
 	}
 
-	db, err := dbcontext.NewDB(conf.Comment.DB.DSN)
+	db, err := dbcontext.New(conf.Comment.DB.DSN)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	repo := comment.NewRepository(db)
 
-	userClient, userConn, err := user.NewClient(conf.User.Server.Host + conf.User.Server.Port)
+	userClient, userConn, err := user.NewClient(conf.User.Server.Addr)
 	defer userConn.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	postClient, postConn, err := post.NewClient(conf.Post.Server.Host + conf.Post.Server.Port)
+	postClient, postConn, err := post.NewClient(conf.Post.Server.Addr)
 	defer postConn.Close()
 	if err != nil {
 		log.Fatal(err)

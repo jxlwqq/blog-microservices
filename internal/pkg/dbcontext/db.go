@@ -9,7 +9,7 @@ type DB struct {
 	*gorm.DB
 }
 
-func NewDB(dsn string) (*DB, error) {
+func New(dsn string) (*DB, error) {
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
