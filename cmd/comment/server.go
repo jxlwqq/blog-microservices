@@ -6,11 +6,7 @@ import (
 	flag "github.com/spf13/pflag"
 	"github.com/stonecutter/blog-microservices/api/protobuf"
 	"github.com/stonecutter/blog-microservices/internal/auth"
-	"github.com/stonecutter/blog-microservices/internal/comment"
 	"github.com/stonecutter/blog-microservices/internal/pkg/config"
-	"github.com/stonecutter/blog-microservices/internal/pkg/dbcontext"
-	"github.com/stonecutter/blog-microservices/internal/post"
-	"github.com/stonecutter/blog-microservices/internal/user"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
@@ -31,29 +27,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	db, err := dbcontext.New(conf.Comment.DB.DSN)
+	commentServer, err := InitServer(conf)
 	if err != nil {
 		log.Fatal(err)
 	}
+	healthServer := health.NewServer()
 
-	repo := comment.NewRepository(db)
-
-	userClient, userConn, err := user.NewClient(conf.User.Server.Addr)
-	defer userConn.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	postClient, postConn, err := post.NewClient(conf.Post.Server.Addr)
-	defer postConn.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	commentServer := comment.NewServer(repo, userClient, postClient)
-
-	jwtManager := auth.NewJWTManager(conf.JWT.Secret, conf.JWT.Expires)
-
+	jwtManager := auth.NewJWTManager(conf)
 	prefix := "/api.protobuf.CommentService/"
 	methods := map[string]bool{
 		prefix + "CreateComment":          true,
@@ -61,13 +41,8 @@ func main() {
 		prefix + "DeleteComment":          true,
 		prefix + "GetCommentListByPostID": false,
 	}
-
 	authInterceptor := auth.NewInterceptor(jwtManager, methods)
-
-	healthServer := health.NewServer()
-
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(authInterceptor.Unary()))
-
 	protobuf.RegisterCommentServiceServer(grpcServer, commentServer)
 	grpc_health_v1.RegisterHealthServer(grpcServer, healthServer)
 

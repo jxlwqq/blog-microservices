@@ -2,13 +2,14 @@ package user
 
 import (
 	"github.com/stonecutter/blog-microservices/api/protobuf"
+	"github.com/stonecutter/blog-microservices/internal/pkg/config"
 	"google.golang.org/grpc"
 )
 
-func NewClient(userAddr string) (protobuf.UserServiceClient, *grpc.ClientConn, error) {
-	conn, err := grpc.Dial(userAddr, grpc.WithInsecure())
+func NewClient(conf *config.Config) (protobuf.UserServiceClient, error) {
+	conn, err := grpc.Dial(conf.User.Server.Addr, grpc.WithInsecure())
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
-	return protobuf.NewUserServiceClient(conn), conn, err
+	return protobuf.NewUserServiceClient(conn), err
 }

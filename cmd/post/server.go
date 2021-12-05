@@ -7,9 +7,6 @@ import (
 	"github.com/stonecutter/blog-microservices/api/protobuf"
 	"github.com/stonecutter/blog-microservices/internal/auth"
 	"github.com/stonecutter/blog-microservices/internal/pkg/config"
-	"github.com/stonecutter/blog-microservices/internal/pkg/dbcontext"
-	"github.com/stonecutter/blog-microservices/internal/post"
-	"github.com/stonecutter/blog-microservices/internal/user"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
@@ -30,22 +27,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	db, err := dbcontext.New(conf.Post.DB.DSN)
+	postServer, err := InitServer(conf)
 	if err != nil {
 		log.Fatal(err)
 	}
+	healthServer := health.NewServer()
 
-	postRepo := post.NewRepository(db)
-	userClient, userConn, err := user.NewClient(conf.User.Server.Addr)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer userConn.Close()
-
-	postServer := post.NewServer(postRepo, userClient)
-
-	jwtManager := auth.NewJWTManager(conf.JWT.Secret, conf.JWT.Expires)
-
+	jwtManager := auth.NewJWTManager(conf)
 	methods := make(map[string]bool)
 	prefix := "/api.protobuf.PostService/"
 	methods[prefix+"CreatePost"] = true // 需要jwt验证
@@ -53,14 +41,12 @@ func main() {
 	methods[prefix+"DeletePost"] = true
 	methods[prefix+"GetPost"] = false // 不需要jwt验证
 	methods[prefix+"ListPost"] = false
-
 	interceptor := auth.NewInterceptor(jwtManager, methods)
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(interceptor.Unary()),
 	)
-	protobuf.RegisterPostServiceServer(grpcServer, postServer)
 
-	healthServer := health.NewServer()
+	protobuf.RegisterPostServiceServer(grpcServer, postServer)
 	grpc_health_v1.RegisterHealthServer(grpcServer, healthServer)
 
 	log.Println("Starting server on port " + conf.Post.Server.Port)

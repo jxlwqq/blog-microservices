@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/envoyproxy/protoc-gen-validate v0.6.2
 	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/google/wire v0.5.0
 	github.com/jinzhu/copier v0.3.4
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.9.0
@@ -32,8 +33,8 @@ require (
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
-	golang.org/x/net v0.0.0-20211203184738-4852103109b8 // indirect
-	golang.org/x/sys v0.0.0-20211124211545-fe61309f8881 // indirect
+	golang.org/x/net v0.0.0-20211205041911-012df41ee64c // indirect
+	golang.org/x/sys v0.0.0-20211204120058-94396e421777 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/genproto v0.0.0-20211203200212-54befc351ae9 // indirect
 	gopkg.in/ini.v1 v1.66.2 // indirect

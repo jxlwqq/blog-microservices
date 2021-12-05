@@ -5,9 +5,7 @@ import (
 	"fmt"
 	flag "github.com/spf13/pflag"
 	"github.com/stonecutter/blog-microservices/api/protobuf"
-	"github.com/stonecutter/blog-microservices/internal/auth"
 	"github.com/stonecutter/blog-microservices/internal/pkg/config"
-	"github.com/stonecutter/blog-microservices/internal/user"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
@@ -27,18 +25,15 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	grpcServer := grpc.NewServer()
 
-	userClient, userConn, err := user.NewClient(conf.User.Server.Addr)
+	authServer, err := InitServer(conf)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer userConn.Close()
-
-	jwtManager := auth.NewJWTManager(conf.JWT.Secret, conf.JWT.Expires)
-	authServer := auth.NewServer(userClient, jwtManager)
-	protobuf.RegisterAuthServiceServer(grpcServer, authServer)
 	healthServer := health.NewServer()
+
+	grpcServer := grpc.NewServer()
+	protobuf.RegisterAuthServiceServer(grpcServer, authServer)
 	grpc_health_v1.RegisterHealthServer(grpcServer, healthServer)
 
 	lis, err := net.Listen("tcp", conf.Auth.Server.Port)

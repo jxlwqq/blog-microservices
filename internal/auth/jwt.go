@@ -3,13 +3,14 @@ package auth
 import (
 	"fmt"
 	"github.com/golang-jwt/jwt"
+	"github.com/stonecutter/blog-microservices/internal/pkg/config"
 	"time"
 )
 
-func NewJWTManager(secret string, expires time.Duration) *JWTManager {
+func NewJWTManager(conf *config.Config) *JWTManager {
 	return &JWTManager{
-		secret:  secret,
-		expires: expires,
+		secret:  conf.JWT.Secret,
+		expires: conf.JWT.Expires,
 	}
 }
 

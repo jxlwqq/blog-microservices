@@ -2,14 +2,15 @@ package post
 
 import (
 	"github.com/stonecutter/blog-microservices/api/protobuf"
+	"github.com/stonecutter/blog-microservices/internal/pkg/config"
 	"google.golang.org/grpc"
 )
 
-func NewClient(postAddr string) (protobuf.PostServiceClient, *grpc.ClientConn, error) {
-	conn, err := grpc.Dial(postAddr, grpc.WithInsecure())
+func NewClient(conf *config.Config) (protobuf.PostServiceClient, error) {
+	conn, err := grpc.Dial(conf.Post.Server.Addr, grpc.WithInsecure())
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	client := protobuf.NewPostServiceClient(conn)
-	return client, conn, nil
+	return client, nil
 }
