@@ -56,9 +56,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	grpcServer.GracefulStop()
-	select {
-	case <-ctx.Done():
-		close(ch)
-	}
+	<-ctx.Done()
+	close(ch)
 	fmt.Println("Graceful Shutdown end")
 }
