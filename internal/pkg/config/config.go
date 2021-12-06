@@ -3,6 +3,8 @@ package config
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	"path"
+	"runtime"
 	"time"
 )
 
@@ -69,6 +71,9 @@ type Config struct {
 }
 
 func Load(path string) (*Config, error) {
+	if path == "" {
+		path = GetPath()
+	}
 	viper.SetConfigFile(path)
 	err := viper.ReadInConfig()
 	if err != nil {
@@ -81,13 +86,24 @@ func Load(path string) (*Config, error) {
 	}
 
 	conf.User.DB.setDSN()
-	conf.User.Server.setAddr()
 	conf.Post.DB.setDSN()
-	conf.Post.Server.setAddr()
 	conf.Comment.DB.setDSN()
+	conf.User.Server.setAddr()
+	conf.Post.Server.setAddr()
 	conf.Comment.Server.setAddr()
+	conf.Auth.Server.setAddr()
 
 	conf.JWT.Expires = conf.JWT.Expires * time.Second
 
 	return conf, nil
+}
+
+func GetPath() string {
+	dir := getSourcePath()
+	return dir + "/../../../configs/config.yaml"
+}
+
+func getSourcePath() string {
+	_, filename, _, _ := runtime.Caller(1)
+	return path.Dir(filename)
 }
