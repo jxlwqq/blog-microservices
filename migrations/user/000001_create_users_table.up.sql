@@ -1,6 +1,4 @@
-create database if not exists users;
-use users;
-create table if not exists users
+create table users
 (
     id         bigint unsigned not null auto_increment primary key,
     username   varchar(255)    not null unique,
