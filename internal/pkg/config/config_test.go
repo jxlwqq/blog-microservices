@@ -1,21 +1,20 @@
-package config_test
+package config
 
 import (
-	"github.com/stonecutter/blog-microservices/internal/pkg/config"
 	"github.com/stretchr/testify/require"
 	"os"
 	"testing"
 )
 
 func TestGetPath(t *testing.T) {
-	path := config.GetPath()
+	path := GetPath()
 	_, err := os.Stat(path)
 	require.NoError(t, err)
 }
 
 func TestLoad(t *testing.T) {
-	path := config.GetPath()
-	conf, err := config.Load(path)
+	path := GetPath()
+	conf, err := Load(path)
 	require.NoError(t, err)
 	require.NotNil(t, conf)
 	require.NotEmpty(t, conf.User.DB.DSN)

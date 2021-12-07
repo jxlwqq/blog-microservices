@@ -1,11 +1,10 @@
-package user_test
+package user
 
 import (
 	"context"
 	"github.com/stonecutter/blog-microservices/api/protobuf"
 	"github.com/stonecutter/blog-microservices/internal/pkg/config"
 	"github.com/stonecutter/blog-microservices/internal/pkg/dbcontext"
-	"github.com/stonecutter/blog-microservices/internal/user"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -22,9 +21,9 @@ func newServer(t *testing.T) protobuf.UserServiceServer {
 	require.NoError(t, err)
 	db, err := dbcontext.NewUserDB(conf)
 	require.NoError(t, err)
-	repo := user.NewRepository(db)
+	repo := NewRepository(db)
 	require.NotNil(t, repo)
-	s := user.NewServer(repo)
+	s := NewServer(repo)
 	require.NotNil(t, s)
 	return s
 }
