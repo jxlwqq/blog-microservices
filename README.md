@@ -2,12 +2,12 @@
 
 [![test](https://github.com/stonecutter/blog-microservices/actions/workflows/test.yaml/badge.svg)](https://github.com/stonecutter/blog-microservices/actions/workflows/test.yaml)
 
-blog microservices deployed in an Istio-enabled kubernetes cluster
+blog microservices deployed in an Istio-enabled kubernetes cluster.
 
-### 架构
+### Architecture
 
 ![architecture](./assets/architecture.png)
 
-### 网络可视化
+### Kiali Console
 
 ![kiali-console](./assets/kiali-console.png)
