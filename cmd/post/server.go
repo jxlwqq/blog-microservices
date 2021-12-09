@@ -8,6 +8,7 @@ import (
 	"github.com/stonecutter/blog-microservices/internal/auth"
 	"github.com/stonecutter/blog-microservices/internal/pkg/config"
 	"github.com/stonecutter/blog-microservices/internal/pkg/log"
+	"github.com/stonecutter/blog-microservices/internal/post"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
@@ -35,14 +36,8 @@ func main() {
 	healthServer := health.NewServer()
 
 	jwtManager := auth.NewJWTManager(logger, conf)
-	methods := make(map[string]bool)
-	prefix := "/api.protobuf.PostService/"
-	methods[prefix+"CreatePost"] = true // 需要jwt验证
-	methods[prefix+"UpdatePost"] = true
-	methods[prefix+"DeletePost"] = true
-	methods[prefix+"GetPost"] = false // 不需要jwt验证
-	methods[prefix+"ListPost"] = false
-	interceptor := auth.NewInterceptor(logger, jwtManager, methods)
+
+	interceptor := auth.NewInterceptor(logger, jwtManager, post.AuthMethods)
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(interceptor.Unary()),
 	)

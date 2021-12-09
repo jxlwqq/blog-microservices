@@ -11,6 +11,16 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+var prefix = "/api.protobuf.PostService/"
+
+var AuthMethods = map[string]bool{
+	prefix + "CreatePost": true,
+	prefix + "UpdatePost": true,
+	prefix + "DeletePost": true,
+	prefix + "GetPost":    false,
+	prefix + "ListPost":   false,
+}
+
 func NewServer(logger *log.Logger, repo Repository, userClient protobuf.UserServiceClient) protobuf.PostServiceServer {
 	return &Server{repo: repo, userClient: userClient}
 }

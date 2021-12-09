@@ -6,6 +6,7 @@ import (
 	flag "github.com/spf13/pflag"
 	"github.com/stonecutter/blog-microservices/api/protobuf"
 	"github.com/stonecutter/blog-microservices/internal/auth"
+	"github.com/stonecutter/blog-microservices/internal/comment"
 	"github.com/stonecutter/blog-microservices/internal/pkg/config"
 	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 	"google.golang.org/grpc"
@@ -35,14 +36,8 @@ func main() {
 	healthServer := health.NewServer()
 
 	jwtManager := auth.NewJWTManager(logger, conf)
-	prefix := "/api.protobuf.CommentService/"
-	methods := map[string]bool{
-		prefix + "CreateComment":          true,
-		prefix + "UpdateComment":          true,
-		prefix + "DeleteComment":          true,
-		prefix + "GetCommentListByPostID": false,
-	}
-	authInterceptor := auth.NewInterceptor(logger, jwtManager, methods)
+
+	authInterceptor := auth.NewInterceptor(logger, jwtManager, comment.AuthMethods)
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(authInterceptor.Unary()))
 	protobuf.RegisterCommentServiceServer(grpcServer, commentServer)
 	grpc_health_v1.RegisterHealthServer(grpcServer, healthServer)

@@ -10,6 +10,15 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+var prefix = "/api.protobuf.CommentService/"
+
+var AuthMethods = map[string]bool{
+	prefix + "CreateComment":          true,
+	prefix + "UpdateComment":          true,
+	prefix + "DeleteComment":          true,
+	prefix + "GetCommentListByPostID": false,
+}
+
 func NewServer(logger *log.Logger, repo Repository, userClient protobuf.UserServiceClient, postClient protobuf.PostServiceClient) protobuf.CommentServiceServer {
 	return &Server{
 		logger:     logger,

@@ -9,18 +9,18 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func NewInterceptor(logger *log.Logger, jwtManager *JWTManager, methods map[string]bool) *Interceptor {
+func NewInterceptor(logger *log.Logger, jwtManager *JWTManager, authMethods map[string]bool) *Interceptor {
 	return &Interceptor{
-		logger:     logger,
-		jwtManager: jwtManager,
-		methods:    methods,
+		logger:      logger,
+		jwtManager:  jwtManager,
+		authMethods: authMethods,
 	}
 }
 
 type Interceptor struct {
-	logger     *log.Logger
-	jwtManager *JWTManager
-	methods    map[string]bool
+	logger      *log.Logger
+	jwtManager  *JWTManager
+	authMethods map[string]bool
 }
 
 func (i Interceptor) Unary() grpc.UnaryServerInterceptor {
@@ -38,7 +38,7 @@ func (i Interceptor) Unary() grpc.UnaryServerInterceptor {
 }
 
 func (i *Interceptor) authorize(ctx context.Context, method string) (*UserClaims, error) {
-	b, ok := i.methods[method]
+	b, ok := i.authMethods[method]
 	if !ok || !b {
 		return nil, nil
 	}
