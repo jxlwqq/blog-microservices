@@ -1,7 +1,8 @@
-package auth
+package interceptor
 
 import (
 	"context"
+	"github.com/stonecutter/blog-microservices/internal/pkg/jwt"
 	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -9,21 +10,21 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func NewInterceptor(logger *log.Logger, jwtManager *JWTManager, authMethods map[string]bool) *Interceptor {
-	return &Interceptor{
+func NewAuthInterceptor(logger *log.Logger, jwtManager *jwt.JWTManager, authMethods map[string]bool) *AuthInterceptor {
+	return &AuthInterceptor{
 		logger:      logger,
 		jwtManager:  jwtManager,
 		authMethods: authMethods,
 	}
 }
 
-type Interceptor struct {
+type AuthInterceptor struct {
 	logger      *log.Logger
-	jwtManager  *JWTManager
+	jwtManager  *jwt.JWTManager
 	authMethods map[string]bool
 }
 
-func (i Interceptor) Unary() grpc.UnaryServerInterceptor {
+func (i *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
 		i.logger.Info("--> unary interceptor: ", info.FullMethod)
 		claims, err := i.authorize(ctx, info.FullMethod)
@@ -37,7 +38,7 @@ func (i Interceptor) Unary() grpc.UnaryServerInterceptor {
 	}
 }
 
-func (i *Interceptor) authorize(ctx context.Context, method string) (*UserClaims, error) {
+func (i *AuthInterceptor) authorize(ctx context.Context, method string) (*jwt.UserClaims, error) {
 	b, ok := i.authMethods[method]
 	if !ok || !b {
 		return nil, nil

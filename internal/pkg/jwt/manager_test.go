@@ -1,4 +1,4 @@
-package auth
+package jwt
 
 import (
 	"github.com/stonecutter/blog-microservices/internal/pkg/config"

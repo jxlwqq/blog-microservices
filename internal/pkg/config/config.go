@@ -29,9 +29,14 @@ func (db *DB) setDSN() {
 }
 
 type Server struct {
+	Name string `json:"name" yaml:"name"`
 	Host string `json:"host" yaml:"host"`
 	Port string `json:"port" yaml:"port"`
 	Addr string `json:"addr" yaml:"addr"`
+}
+
+type HTTP struct {
+	Port string `json:"port" yaml:"port"`
 }
 
 func (s *Server) setAddr() {
@@ -41,20 +46,24 @@ func (s *Server) setAddr() {
 type User struct {
 	DB     DB
 	Server Server
+	HTTP   HTTP
 }
 
 type Post struct {
 	DB     DB
 	Server Server
+	HTTP   HTTP
 }
 
 type Comment struct {
 	DB     DB
 	Server Server
+	HTTP   HTTP
 }
 
 type Auth struct {
 	Server Server
+	HTTP   HTTP
 }
 
 type JWT struct {

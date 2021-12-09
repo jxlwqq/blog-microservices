@@ -6,8 +6,11 @@ user:
     password: ''
     name: 'users'
   server:
+    name: 'user'
     host: 'localhost'
     port: ':50051'
+  http:
+    port: ':8051'
 post:
   db:
     host: 'localhost'
@@ -16,8 +19,11 @@ post:
     password: ''
     name: 'posts'
   server:
+    name: 'post'
     host: 'localhost'
     port: ':50052'
+  http:
+    port: ':8052'
 comment:
   db:
     host: 'localhost'
@@ -26,12 +32,18 @@ comment:
     password: ''
     name: 'comments'
   server:
+    name: 'comment'
     host: 'localhost'
     port: ':50053'
+  http:
+    port: ':8053'
 auth:
   server:
+    name: 'auth'
     host: 'localhost'
     port: ':50054'
+  http:
+    port: ':8054'
 jwt:
   secret: 'secret'
   expires: 36000

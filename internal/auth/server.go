@@ -3,12 +3,13 @@ package auth
 import (
 	"context"
 	"github.com/stonecutter/blog-microservices/api/protobuf"
+	"github.com/stonecutter/blog-microservices/internal/pkg/jwt"
 	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func NewServer(logger *log.Logger, jwtManager *JWTManager, userClient protobuf.UserServiceClient) protobuf.AuthServiceServer {
+func NewServer(logger *log.Logger, jwtManager *jwt.JWTManager, userClient protobuf.UserServiceClient) protobuf.AuthServiceServer {
 	return &Server{
 		logger:     logger,
 		jwtManager: jwtManager,
@@ -19,7 +20,7 @@ func NewServer(logger *log.Logger, jwtManager *JWTManager, userClient protobuf.U
 type Server struct {
 	protobuf.UnimplementedAuthServiceServer
 	logger     *log.Logger
-	jwtManager *JWTManager
+	jwtManager *jwt.JWTManager
 	userClient protobuf.UserServiceClient
 }
 
