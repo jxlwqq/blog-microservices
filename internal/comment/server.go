@@ -4,13 +4,15 @@ import (
 	"context"
 	"fmt"
 	"github.com/stonecutter/blog-microservices/api/protobuf"
+	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func NewServer(repo Repository, userClient protobuf.UserServiceClient, postClient protobuf.PostServiceClient) protobuf.CommentServiceServer {
+func NewServer(logger *log.Logger, repo Repository, userClient protobuf.UserServiceClient, postClient protobuf.PostServiceClient) protobuf.CommentServiceServer {
 	return &Server{
+		logger:     logger,
 		repo:       repo,
 		userClient: userClient,
 		postClient: postClient,
@@ -19,6 +21,7 @@ func NewServer(repo Repository, userClient protobuf.UserServiceClient, postClien
 
 type Server struct {
 	protobuf.UnimplementedCommentServiceServer
+	logger     *log.Logger
 	repo       Repository
 	userClient protobuf.UserServiceClient
 	postClient protobuf.PostServiceClient

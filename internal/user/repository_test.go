@@ -3,17 +3,19 @@ package user
 import (
 	"github.com/stonecutter/blog-microservices/internal/pkg/config"
 	"github.com/stonecutter/blog-microservices/internal/pkg/dbcontext"
+	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
 
 func newRepository(t *testing.T) Repository {
+	logger := log.New()
 	path := config.GetPath()
 	conf, err := config.Load(path)
 	require.NoError(t, err)
 	db, err := dbcontext.NewUserDB(conf)
 	require.NoError(t, err)
-	repo := NewRepository(db)
+	repo := NewRepository(logger, db)
 	require.NotNil(t, repo)
 	return repo
 }

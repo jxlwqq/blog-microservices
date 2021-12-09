@@ -5,6 +5,7 @@ import (
 	"github.com/stonecutter/blog-microservices/api/protobuf"
 	"github.com/stonecutter/blog-microservices/internal/pkg/config"
 	"github.com/stonecutter/blog-microservices/internal/pkg/dbcontext"
+	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -16,14 +17,15 @@ var u = &protobuf.User{
 }
 
 func newServer(t *testing.T) protobuf.UserServiceServer {
+	logger := log.New()
 	path := config.GetPath()
 	conf, err := config.Load(path)
 	require.NoError(t, err)
 	db, err := dbcontext.NewUserDB(conf)
 	require.NoError(t, err)
-	repo := NewRepository(db)
+	repo := NewRepository(logger, db)
 	require.NotNil(t, repo)
-	s := NewServer(repo)
+	s := NewServer(logger, repo)
 	require.NotNil(t, s)
 	return s
 }

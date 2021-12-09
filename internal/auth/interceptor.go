@@ -2,28 +2,30 @@ package auth
 
 import (
 	"context"
+	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-	"log"
 )
 
-func NewInterceptor(jwtManager *JWTManager, methods map[string]bool) *Interceptor {
+func NewInterceptor(logger *log.Logger, jwtManager *JWTManager, methods map[string]bool) *Interceptor {
 	return &Interceptor{
+		logger:     logger,
 		jwtManager: jwtManager,
 		methods:    methods,
 	}
 }
 
 type Interceptor struct {
+	logger     *log.Logger
 	jwtManager *JWTManager
 	methods    map[string]bool
 }
 
 func (i Interceptor) Unary() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
-		log.Println("--> unary interceptor: ", info.FullMethod)
+		i.logger.Info("--> unary interceptor: ", info.FullMethod)
 		claims, err := i.authorize(ctx, info.FullMethod)
 		if err != nil {
 			return nil, err

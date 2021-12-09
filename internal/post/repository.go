@@ -2,10 +2,14 @@ package post
 
 import (
 	"github.com/stonecutter/blog-microservices/internal/pkg/dbcontext"
+	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 )
 
-func NewRepository(db *dbcontext.DB) Repository {
-	return &repository{db: db}
+func NewRepository(logger *log.Logger, db *dbcontext.DB) Repository {
+	return &repository{
+		logger: logger,
+		db:     db,
+	}
 }
 
 type Repository interface {
@@ -18,7 +22,8 @@ type Repository interface {
 }
 
 type repository struct {
-	db *dbcontext.DB
+	logger *log.Logger
+	db     *dbcontext.DB
 }
 
 func (r repository) Get(id uint64) (*Post, error) {

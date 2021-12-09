@@ -10,17 +10,18 @@ import (
 	"github.com/stonecutter/blog-microservices/api/protobuf"
 	"github.com/stonecutter/blog-microservices/internal/auth"
 	"github.com/stonecutter/blog-microservices/internal/pkg/config"
+	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 	"github.com/stonecutter/blog-microservices/internal/user"
 )
 
 // Injectors from wire.go:
 
-func InitServer(conf *config.Config) (protobuf.AuthServiceServer, error) {
-	userServiceClient, err := user.NewClient(conf)
+func InitServer(logger *log.Logger, conf *config.Config) (protobuf.AuthServiceServer, error) {
+	jwtManager := auth.NewJWTManager(logger, conf)
+	userServiceClient, err := user.NewClient(logger, conf)
 	if err != nil {
 		return nil, err
 	}
-	jwtManager := auth.NewJWTManager(conf)
-	authServiceServer := auth.NewServer(userServiceClient, jwtManager)
+	authServiceServer := auth.NewServer(logger, jwtManager, userServiceClient)
 	return authServiceServer, nil
 }

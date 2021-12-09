@@ -2,19 +2,21 @@ package auth
 
 import (
 	"github.com/stonecutter/blog-microservices/internal/pkg/config"
+	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
 
 func TestJWTManager_Generate(t *testing.T) {
 	t.Parallel()
+	logger := log.New()
 	conf := &config.Config{
 		JWT: config.JWT{
 			Secret:  "secret",
 			Expires: 3600,
 		},
 	}
-	jwtManager := NewJWTManager(conf)
+	jwtManager := NewJWTManager(logger, conf)
 	id := uint64(1)
 	username := "jack"
 	tokenStr, err := jwtManager.Generate(id, username)
@@ -24,13 +26,14 @@ func TestJWTManager_Generate(t *testing.T) {
 
 func TestJWTManager_Verify(t *testing.T) {
 	t.Parallel()
+	logger := log.New()
 	conf := &config.Config{
 		JWT: config.JWT{
 			Secret:  "secret",
 			Expires: 3600,
 		},
 	}
-	jwtManager := NewJWTManager(conf)
+	jwtManager := NewJWTManager(logger, conf)
 	id := uint64(2)
 	username := "rose"
 	tokenStr, err := jwtManager.Generate(id, username)

@@ -4,19 +4,22 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt"
 	"github.com/stonecutter/blog-microservices/internal/pkg/config"
+	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 	"time"
 )
 
-func NewJWTManager(conf *config.Config) *JWTManager {
+func NewJWTManager(logger *log.Logger, conf *config.Config) *JWTManager {
 	return &JWTManager{
 		secret:  conf.JWT.Secret,
 		expires: conf.JWT.Expires,
+		logger:  logger,
 	}
 }
 
 type JWTManager struct {
 	secret  string
 	expires time.Duration
+	logger  *log.Logger
 }
 
 type UserClaims struct {

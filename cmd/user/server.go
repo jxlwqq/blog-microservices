@@ -6,10 +6,10 @@ import (
 	flag "github.com/spf13/pflag"
 	"github.com/stonecutter/blog-microservices/api/protobuf"
 	"github.com/stonecutter/blog-microservices/internal/pkg/config"
+	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
-	"log"
 	"net"
 	"os"
 	"os/signal"
@@ -21,14 +21,15 @@ var flagConfig = flag.String("config", "./configs/config.yaml", "path to config 
 
 func main() {
 	flag.Parse()
+	logger := log.New()
 	conf, err := config.Load(*flagConfig)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 
-	userServer, err := InitServer(conf)
+	userServer, err := InitServer(logger, conf)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 
 	healthServer := health.NewServer()
@@ -39,9 +40,9 @@ func main() {
 
 	lis, err := net.Listen("tcp", conf.User.Server.Port)
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		logger.Fatalf("failed to listen: %v", err)
 	}
-	log.Printf("Listening on port %s", conf.User.Server.Port)
+	logger.Infof("Listening on port %s", conf.User.Server.Port)
 
 	// Start gRPC server
 	ch := make(chan os.Signal, 1)

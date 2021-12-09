@@ -7,10 +7,10 @@ import (
 	"github.com/stonecutter/blog-microservices/api/protobuf"
 	"github.com/stonecutter/blog-microservices/internal/auth"
 	"github.com/stonecutter/blog-microservices/internal/pkg/config"
+	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
-	"log"
 	"net"
 	"os"
 	"os/signal"
@@ -22,18 +22,19 @@ var flagConfig = flag.String("config", "./configs/config.yaml", "config file")
 
 func main() {
 	flag.Parse()
+	logger := log.New()
 	conf, err := config.Load(*flagConfig)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 
-	commentServer, err := InitServer(conf)
+	commentServer, err := InitServer(logger, conf)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 	healthServer := health.NewServer()
 
-	jwtManager := auth.NewJWTManager(conf)
+	jwtManager := auth.NewJWTManager(logger, conf)
 	prefix := "/api.protobuf.CommentService/"
 	methods := map[string]bool{
 		prefix + "CreateComment":          true,
@@ -41,16 +42,16 @@ func main() {
 		prefix + "DeleteComment":          true,
 		prefix + "GetCommentListByPostID": false,
 	}
-	authInterceptor := auth.NewInterceptor(jwtManager, methods)
+	authInterceptor := auth.NewInterceptor(logger, jwtManager, methods)
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(authInterceptor.Unary()))
 	protobuf.RegisterCommentServiceServer(grpcServer, commentServer)
 	grpc_health_v1.RegisterHealthServer(grpcServer, healthServer)
 
-	log.Println("Starting server on port " + conf.Comment.Server.Port)
+	logger.Info("Starting server on port " + conf.Comment.Server.Port)
 
 	lis, err := net.Listen("tcp", conf.Comment.Server.Port)
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		logger.Fatalf("failed to listen: %v", err)
 	}
 
 	// Start gRPC server

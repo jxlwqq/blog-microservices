@@ -3,21 +3,24 @@ package auth
 import (
 	"context"
 	"github.com/stonecutter/blog-microservices/api/protobuf"
+	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func NewServer(userClient protobuf.UserServiceClient, jwtManager *JWTManager) protobuf.AuthServiceServer {
+func NewServer(logger *log.Logger, jwtManager *JWTManager, userClient protobuf.UserServiceClient) protobuf.AuthServiceServer {
 	return &Server{
-		userClient: userClient,
+		logger:     logger,
 		jwtManager: jwtManager,
+		userClient: userClient,
 	}
 }
 
 type Server struct {
 	protobuf.UnimplementedAuthServiceServer
-	userClient protobuf.UserServiceClient
+	logger     *log.Logger
 	jwtManager *JWTManager
+	userClient protobuf.UserServiceClient
 }
 
 func (s Server) SignIn(ctx context.Context, req *protobuf.SignInRequest) (*protobuf.SignInResponse, error) {

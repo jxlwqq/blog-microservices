@@ -8,10 +8,11 @@ import (
 	"github.com/stonecutter/blog-microservices/api/protobuf"
 	"github.com/stonecutter/blog-microservices/internal/auth"
 	"github.com/stonecutter/blog-microservices/internal/pkg/config"
+	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 	"github.com/stonecutter/blog-microservices/internal/user"
 )
 
-func InitServer(conf *config.Config) (protobuf.AuthServiceServer, error) {
+func InitServer(logger *log.Logger, conf *config.Config) (protobuf.AuthServiceServer, error) {
 	wire.Build(
 		user.NewClient,
 		auth.NewJWTManager,

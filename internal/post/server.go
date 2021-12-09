@@ -3,6 +3,7 @@ package post
 import (
 	"context"
 	"github.com/jinzhu/copier"
+	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 
 	"github.com/stonecutter/blog-microservices/api/protobuf"
 	"google.golang.org/grpc/codes"
@@ -10,12 +11,13 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func NewServer(repo Repository, userClient protobuf.UserServiceClient) protobuf.PostServiceServer {
+func NewServer(logger *log.Logger, repo Repository, userClient protobuf.UserServiceClient) protobuf.PostServiceServer {
 	return &Server{repo: repo, userClient: userClient}
 }
 
 type Server struct {
 	protobuf.UnimplementedPostServiceServer
+	logger     *log.Logger
 	repo       Repository
 	userClient protobuf.UserServiceClient
 }

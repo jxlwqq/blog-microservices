@@ -9,11 +9,12 @@ import (
 	"github.com/stonecutter/blog-microservices/internal/comment"
 	"github.com/stonecutter/blog-microservices/internal/pkg/config"
 	"github.com/stonecutter/blog-microservices/internal/pkg/dbcontext"
+	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 	"github.com/stonecutter/blog-microservices/internal/post"
 	"github.com/stonecutter/blog-microservices/internal/user"
 )
 
-func InitServer(conf *config.Config) (protobuf.CommentServiceServer, error) {
+func InitServer(logger *log.Logger, conf *config.Config) (protobuf.CommentServiceServer, error) {
 	wire.Build(
 		dbcontext.NewCommentDB,
 		comment.NewRepository,

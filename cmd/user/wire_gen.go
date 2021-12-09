@@ -10,17 +10,18 @@ import (
 	"github.com/stonecutter/blog-microservices/api/protobuf"
 	"github.com/stonecutter/blog-microservices/internal/pkg/config"
 	"github.com/stonecutter/blog-microservices/internal/pkg/dbcontext"
+	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 	"github.com/stonecutter/blog-microservices/internal/user"
 )
 
 // Injectors from wire.go:
 
-func InitServer(conf *config.Config) (protobuf.UserServiceServer, error) {
+func InitServer(logger *log.Logger, conf *config.Config) (protobuf.UserServiceServer, error) {
 	db, err := dbcontext.NewUserDB(conf)
 	if err != nil {
 		return nil, err
 	}
-	repository := user.NewRepository(db)
-	userServiceServer := user.NewServer(repository)
+	repository := user.NewRepository(logger, db)
+	userServiceServer := user.NewServer(logger, repository)
 	return userServiceServer, nil
 }

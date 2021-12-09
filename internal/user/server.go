@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"fmt"
+	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 
 	"github.com/stonecutter/blog-microservices/api/protobuf"
 	"golang.org/x/crypto/bcrypt"
@@ -11,13 +12,17 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func NewServer(repo Repository) protobuf.UserServiceServer {
-	return &Server{repo: repo}
+func NewServer(logger *log.Logger, repo Repository) protobuf.UserServiceServer {
+	return &Server{
+		logger: logger,
+		repo:   repo,
+	}
 }
 
 type Server struct {
 	protobuf.UnimplementedUserServiceServer
-	repo Repository
+	logger *log.Logger
+	repo   Repository
 }
 
 func (s Server) GetUserListByIDs(ctx context.Context, req *protobuf.GetUserListByIDsRequest) (*protobuf.GetUserListByIDsResponse, error) {

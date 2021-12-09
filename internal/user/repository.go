@@ -2,11 +2,13 @@ package user
 
 import (
 	"github.com/stonecutter/blog-microservices/internal/pkg/dbcontext"
+	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 )
 
-func NewRepository(db *dbcontext.DB) Repository {
+func NewRepository(logger *log.Logger, db *dbcontext.DB) Repository {
 	return &repository{
-		db: db,
+		logger: logger,
+		db:     db,
 	}
 }
 
@@ -20,7 +22,8 @@ type Repository interface {
 }
 
 type repository struct {
-	db *dbcontext.DB
+	logger *log.Logger
+	db     *dbcontext.DB
 }
 
 func (r repository) GetListByIDs(ids []uint64) ([]*User, error) {

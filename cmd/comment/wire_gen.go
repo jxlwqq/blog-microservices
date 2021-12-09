@@ -11,26 +11,27 @@ import (
 	"github.com/stonecutter/blog-microservices/internal/comment"
 	"github.com/stonecutter/blog-microservices/internal/pkg/config"
 	"github.com/stonecutter/blog-microservices/internal/pkg/dbcontext"
+	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 	"github.com/stonecutter/blog-microservices/internal/post"
 	"github.com/stonecutter/blog-microservices/internal/user"
 )
 
 // Injectors from wire.go:
 
-func InitServer(conf *config.Config) (protobuf.CommentServiceServer, error) {
+func InitServer(logger *log.Logger, conf *config.Config) (protobuf.CommentServiceServer, error) {
 	db, err := dbcontext.NewCommentDB(conf)
 	if err != nil {
 		return nil, err
 	}
-	repository := comment.NewRepository(db)
-	userServiceClient, err := user.NewClient(conf)
+	repository := comment.NewRepository(logger, db)
+	userServiceClient, err := user.NewClient(logger, conf)
 	if err != nil {
 		return nil, err
 	}
-	postServiceClient, err := post.NewClient(conf)
+	postServiceClient, err := post.NewClient(logger, conf)
 	if err != nil {
 		return nil, err
 	}
-	commentServiceServer := comment.NewServer(repository, userServiceClient, postServiceClient)
+	commentServiceServer := comment.NewServer(logger, repository, userServiceClient, postServiceClient)
 	return commentServiceServer, nil
 }
