@@ -2,6 +2,7 @@ package post
 
 import (
 	"context"
+
 	"github.com/jinzhu/copier"
 	"github.com/stonecutter/blog-microservices/internal/pkg/log"
 
@@ -89,17 +90,17 @@ func (s Server) UpdatePost(ctx context.Context, req *protobuf.UpdatePostRequest)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	post := &Post{
-		ID:      req.GetId(),
-		Title:   req.GetPost().GetTitle(),
-		Content: req.GetPost().GetContent(),
-	}
 	userID, ok := ctx.Value("ID").(uint64)
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
 	}
+	postID := req.GetId()
+	post, err := s.repo.Get(postID)
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "post %d not found", postID)
+	}
 	if post.UserID != userID {
-		return nil, status.Errorf(codes.Unauthenticated, "user %d is not the owner of post %d", userID, post.ID)
+		return nil, status.Errorf(codes.Unauthenticated, "user %d is not the owner of post %d, post user id %d", userID, post.ID, post.UserID)
 	}
 	err = s.repo.Update(post)
 	if err != nil {
