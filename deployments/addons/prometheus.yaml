@@ -42,6 +42,22 @@ data:
     - /etc/config/rules
     - /etc/config/alerts
     scrape_configs:
+    - job_name: user-server
+      static_configs:
+      - targets:
+        - user-server.default.svc.cluster.local:8051
+    - job_name: post-server
+      static_configs:
+      - targets:
+        - post-server.default.svc.cluster.local:8052
+    - job_name: comment-server
+      static_configs:
+      - targets:
+        - comment-server.default.svc.cluster.local:8053
+    - job_name: auth-server
+      static_configs:
+      - targets:
+        - auth-server.default.svc.cluster.local:8054
     - job_name: prometheus
       static_configs:
       - targets:

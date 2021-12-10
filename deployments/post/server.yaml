@@ -20,6 +20,11 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 50052
+              protocol: TCP
+              name: grpc
+            - containerPort: 8052
+              protocol: TCP
+              name: http
           readinessProbe:
             exec:
               command: [ "/grpc-health-probe", "-addr=:50052" ]
@@ -58,3 +63,8 @@ spec:
     - port: 50052
       targetPort: 50052
       appProtocol: grpc
+      name: grpc
+    - port: 8052
+      targetPort: 8052
+      appProtocol: http
+      name: http
