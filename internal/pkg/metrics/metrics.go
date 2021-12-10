@@ -58,7 +58,7 @@ func New(name string) (Metrics, error) {
 		return nil, err
 	}
 
-	err = prometheus.Register(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
+	err = prometheus.Register(collectors.NewBuildInfoCollector())
 	if err != nil {
 		return nil, err
 	}
