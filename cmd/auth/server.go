@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	flag "github.com/spf13/pflag"
 	"github.com/stonecutter/blog-microservices/api/protobuf"
@@ -65,13 +66,25 @@ func main() {
 		}
 	}()
 
-	// todo Start HTTP server
+	// Start HTTP server
+	go func() {
+		mux := runtime.NewServeMux()
+		opts := []grpc.DialOption{grpc.WithInsecure()}
+		if err = protobuf.RegisterAuthServiceHandlerFromEndpoint(context.Background(), mux, conf.Auth.Server.GRPC.Port, opts); err != nil {
+			panic(err)
+		}
+		err = http.ListenAndServe(conf.Auth.Server.HTTP.Port, mux)
+		if err != nil {
+			panic(err)
+		}
+	}()
 
 	// Start Metrics server
 	logger.Infof("Metrics Listening on port %s", conf.Auth.Server.Metrics.Port)
 	go func() {
-		http.Handle("/metrics", promhttp.Handler())
-		err = http.ListenAndServe(conf.Auth.Server.Metrics.Port, nil)
+		mux := http.NewServeMux()
+		mux.Handle("/metrics", promhttp.Handler())
+		err = http.ListenAndServe(conf.Auth.Server.Metrics.Port, mux)
 		panic(err)
 	}()
 

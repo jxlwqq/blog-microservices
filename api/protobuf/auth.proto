@@ -5,10 +5,20 @@ package api.protobuf;
 option go_package = "github.com/stonecutter/blog-microservices/api/protobuf";
 
 import "validate/validate.proto";
-
+import "google/api/annotations.proto";
 service AuthService {
-  rpc SignIn(SignInRequest) returns (SignInResponse) {}
-  rpc SignUp(SignUpRequest) returns (SignUpResponse) {}
+  rpc SignIn(SignInRequest) returns (SignInResponse) {
+    option (google.api.http) = {
+      post: "/api/rest/auth/signin"
+      body: "*"
+    };
+  }
+  rpc SignUp(SignUpRequest) returns (SignUpResponse) {
+    option (google.api.http) = {
+      post: "/api/rest/auth/signup"
+      body: "*"
+    };
+  }
 }
 
 message SignInRequest {

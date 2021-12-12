@@ -22,6 +22,9 @@ spec:
             - containerPort: 50054
               protocol: TCP
               name: grpc
+            - containerPort: 8054
+              protocol: TCP
+              name: http
             - containerPort: 9054
               protocol: TCP
               name: metrics
@@ -64,6 +67,10 @@ spec:
       targetPort: 50054
       appProtocol: grpc
       name: grpc
+    - port: 8054
+      targetPort: 8054
+      appProtocol: http
+      name: http
     - port: 9054
       targetPort: 9054
       appProtocol: http
