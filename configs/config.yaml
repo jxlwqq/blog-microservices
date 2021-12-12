@@ -8,9 +8,12 @@ user:
   server:
     name: 'user'
     host: 'localhost'
-    port: ':50051'
-  http:
-    port: ':8051'
+    grpc:
+      port: ':50051'
+    http:
+      port: ':8051'
+    metrics:
+      port: ':9051'
 post:
   db:
     host: 'localhost'
@@ -21,9 +24,12 @@ post:
   server:
     name: 'post'
     host: 'localhost'
-    port: ':50052'
-  http:
-    port: ':8052'
+    grpc:
+      port: ':50052'
+    http:
+      port: ':8052'
+    metrics:
+      port: ':9052'
 comment:
   db:
     host: 'localhost'
@@ -34,16 +40,22 @@ comment:
   server:
     name: 'comment'
     host: 'localhost'
-    port: ':50053'
-  http:
-    port: ':8053'
+    grpc:
+      port: ':50053'
+    http:
+      port: ':8053'
+    metrics:
+      port: ':9053'
 auth:
   server:
     name: 'auth'
     host: 'localhost'
-    port: ':50054'
-  http:
-    port: ':8054'
+    grpc:
+      port: ':50054'
+    http:
+      port: ':8054'
+    metrics:
+      port: ':9054'
 jwt:
   secret: 'secret'
   expires: 36000

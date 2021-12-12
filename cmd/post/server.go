@@ -56,22 +56,25 @@ func main() {
 	protobuf.RegisterPostServiceServer(grpcServer, postServer)
 	grpc_health_v1.RegisterHealthServer(grpcServer, healthServer)
 
-	lis, err := net.Listen("tcp", conf.Post.Server.Port)
+	lis, err := net.Listen("tcp", conf.Post.Server.GRPC.Port)
 
 	// Start gRPC server
 	ch := make(chan os.Signal, 1)
-	logger.Infof("gPRC Listening on port %s", conf.Post.Server.Port)
+	logger.Infof("gPRC Listening on port %s", conf.Post.Server.GRPC.Port)
 	go func() {
 		if err = grpcServer.Serve(lis); err != nil {
 			panic(err)
 		}
 	}()
 
-	logger.Infof("HTTP Listening on port %s", conf.Post.HTTP.Port)
+	// todo Start HTTP server
+
+	// Start Metrics server
+	logger.Infof("Metrics Listening on port %s", conf.Post.Server.Metrics.Port)
 
 	go func() {
 		http.Handle("/metrics", promhttp.Handler())
-		if err = http.ListenAndServe(conf.Post.HTTP.Port, nil); err != nil {
+		if err = http.ListenAndServe(conf.Post.Server.Metrics.Port, nil); err != nil {
 			panic(err)
 		}
 	}()

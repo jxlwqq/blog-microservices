@@ -18,5 +18,5 @@ COPY configs/ configs/
 COPY --from=builder /workspace/app .
 COPY --from=builder /go/bin/grpc-health-probe .
 EXPOSE 50054
-EXPOSE 8054
+EXPOSE 9054
 ENTRYPOINT ["/app"]

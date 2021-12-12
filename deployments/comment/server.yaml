@@ -22,9 +22,9 @@ spec:
             - containerPort: 50053
               protocol: TCP
               name: grpc
-            - containerPort: 8053
+            - containerPort: 9053
               protocol: TCP
-              name: http
+              name: metrics
           readinessProbe:
             exec:
               command: [ "/grpc-health-probe", "-addr=:50053" ]
@@ -64,7 +64,7 @@ spec:
       targetPort: 50053
       appProtocol: grpc
       name: grpc
-    - port: 8053
-      targetPort: 8053
+    - port: 9053
+      targetPort: 9053
       appProtocol: http
-      name: http
+      name: metrics

@@ -50,7 +50,7 @@ func main() {
 	protobuf.RegisterUserServiceServer(grpcServer, userServer)
 	grpc_health_v1.RegisterHealthServer(grpcServer, healthServer)
 
-	lis, err := net.Listen("tcp", conf.User.Server.Port)
+	lis, err := net.Listen("tcp", conf.User.Server.GRPC.Port)
 	if err != nil {
 		logger.Fatalf("failed to listen: %v", err)
 	}
@@ -58,17 +58,20 @@ func main() {
 	// Start gRPC server
 	ch := make(chan os.Signal, 1)
 
-	logger.Infof("gPRC Listening on port %s", conf.User.Server.Port)
+	logger.Infof("gPRC Listening on port %s", conf.User.Server.GRPC.Port)
 	go func() {
 		if err = grpcServer.Serve(lis); err != nil {
 			panic(err)
 		}
 	}()
 
-	logger.Infof("HTTP Listening on port %s", conf.User.HTTP.Port)
+	// todo Start HTTP server
+
+	// Start Metrics server
+	logger.Infof("Metrics Listening on port %s", conf.User.Server.Metrics.Port)
 	go func() {
 		http.Handle("/metrics", promhttp.Handler())
-		if err = http.ListenAndServe(conf.User.HTTP.Port, nil); err != nil {
+		if err = http.ListenAndServe(conf.User.Server.Metrics.Port, nil); err != nil {
 			panic(err)
 		}
 	}()
