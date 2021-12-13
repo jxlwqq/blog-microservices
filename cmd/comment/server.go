@@ -62,7 +62,7 @@ func main() {
 
 	// Start gRPC server
 	ch := make(chan os.Signal, 1)
-	logger.Infof("gPRC Listening on port %s", &conf.Comment.Server.GRPC.Port)
+	logger.Infof("gPRC Listening on port %s", conf.Comment.Server.GRPC.Port)
 	go func() {
 		if err = grpcServer.Serve(lis); err != nil {
 			panic(err)
