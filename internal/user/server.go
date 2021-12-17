@@ -25,6 +25,17 @@ type Server struct {
 	repo   Repository
 }
 
+func (s Server) DeleteUser(ctx context.Context, req *protobuf.DeleteUserRequest) (*protobuf.DeleteUserResponse, error) {
+	id := req.GetId()
+	err := s.repo.Delete(id)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "could not delete user: %v", err)
+	}
+	return &protobuf.DeleteUserResponse{
+		Success: true,
+	}, nil
+}
+
 func (s Server) GetUserListByIDs(ctx context.Context, req *protobuf.GetUserListByIDsRequest) (*protobuf.GetUserListByIDsResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {

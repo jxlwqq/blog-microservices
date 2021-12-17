@@ -14,6 +14,7 @@ service UserService {
   rpc GetUserByUsername(GetUserByUsernameRequest) returns (GetUserResponse) {}
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
   rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {}
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {}
 }
 
 message User {
@@ -65,5 +66,13 @@ message UpdateUserRequest {
 }
 
 message UpdateUserResponse {
+  bool success = 1;
+}
+
+message DeleteUserRequest {
+  uint64 id = 1;
+}
+
+message DeleteUserResponse {
   bool success = 1;
 }

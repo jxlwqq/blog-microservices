@@ -19,6 +19,7 @@ type Repository interface {
 	GetByUsername(username string) (*User, error)
 	Create(user *User) error
 	Update(user *User) error
+	Delete(id uint64) error
 }
 
 type repository struct {
@@ -56,4 +57,8 @@ func (r repository) Create(user *User) error {
 
 func (r repository) Update(user *User) error {
 	return r.db.Save(user).Error
+}
+
+func (r repository) Delete(id uint64) error {
+	return r.db.Delete(&User{}, id).Error
 }
