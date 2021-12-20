@@ -13,6 +13,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	flag "github.com/spf13/pflag"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"net"
@@ -57,8 +58,9 @@ func main() {
 		logger.Fatalf("failed to listen: %v", err)
 	}
 
-	// Start gRPC server
 	ch := make(chan os.Signal, 1)
+
+	// Start gRPC server
 	logger.Infof("gPRC Listening on port %s", conf.Auth.Server.GRPC.Port)
 	go func() {
 		if err = grpcServer.Serve(lis); err != nil {
@@ -67,9 +69,10 @@ func main() {
 	}()
 
 	// Start HTTP server
+	logger.Infof("HTTP Listening on port %s", conf.Auth.Server.HTTP.Port)
 	go func() {
 		mux := runtime.NewServeMux()
-		opts := []grpc.DialOption{grpc.WithInsecure()}
+		opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 		if err = protobuf.RegisterAuthServiceHandlerFromEndpoint(context.Background(), mux, conf.Auth.Server.GRPC.Port, opts); err != nil {
 			panic(err)
 		}
