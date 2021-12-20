@@ -2,7 +2,7 @@ package dbcontext
 
 import (
 	"fmt"
-	"github.com/stonecutter/blog-microservices/internal/pkg/config"
+	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

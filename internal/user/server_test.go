@@ -2,10 +2,10 @@ package user
 
 import (
 	"context"
-	"github.com/stonecutter/blog-microservices/api/protobuf"
-	"github.com/stonecutter/blog-microservices/internal/pkg/config"
-	"github.com/stonecutter/blog-microservices/internal/pkg/dbcontext"
-	"github.com/stonecutter/blog-microservices/internal/pkg/log"
+	"github.com/jxlwqq/blog-microservices/api/protobuf"
+	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
+	"github.com/jxlwqq/blog-microservices/internal/pkg/dbcontext"
+	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"github.com/stretchr/testify/require"
 	"testing"
 )

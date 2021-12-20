@@ -2,8 +2,8 @@ package interceptor
 
 import (
 	"context"
-	"github.com/stonecutter/blog-microservices/internal/pkg/jwt"
-	"github.com/stonecutter/blog-microservices/internal/pkg/log"
+	"github.com/jxlwqq/blog-microservices/internal/pkg/jwt"
+	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"

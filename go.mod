@@ -1,4 +1,4 @@
-module github.com/stonecutter/blog-microservices
+module github.com/jxlwqq/blog-microservices
 
 go 1.17
 

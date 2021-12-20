@@ -1,8 +1,8 @@
 package jwt
 
 import (
-	"github.com/stonecutter/blog-microservices/internal/pkg/config"
-	"github.com/stonecutter/blog-microservices/internal/pkg/log"
+	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
+	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"github.com/stretchr/testify/require"
 	"testing"
 )

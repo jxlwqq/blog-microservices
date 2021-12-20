@@ -3,8 +3,8 @@ package jwt
 import (
 	"fmt"
 	"github.com/golang-jwt/jwt"
-	"github.com/stonecutter/blog-microservices/internal/pkg/config"
-	"github.com/stonecutter/blog-microservices/internal/pkg/log"
+	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
+	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"time"
 )
 

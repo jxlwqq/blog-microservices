@@ -3,9 +3,9 @@ package user
 import (
 	"context"
 	"fmt"
-	"github.com/stonecutter/blog-microservices/internal/pkg/log"
+	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 
-	"github.com/stonecutter/blog-microservices/api/protobuf"
+	"github.com/jxlwqq/blog-microservices/api/protobuf"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

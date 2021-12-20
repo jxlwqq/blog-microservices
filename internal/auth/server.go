@@ -2,9 +2,9 @@ package auth
 
 import (
 	"context"
-	"github.com/stonecutter/blog-microservices/api/protobuf"
-	"github.com/stonecutter/blog-microservices/internal/pkg/jwt"
-	"github.com/stonecutter/blog-microservices/internal/pkg/log"
+	"github.com/jxlwqq/blog-microservices/api/protobuf"
+	"github.com/jxlwqq/blog-microservices/internal/pkg/jwt"
+	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
