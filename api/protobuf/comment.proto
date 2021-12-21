@@ -16,13 +16,7 @@ service CommentService {
   rpc GetCommentListByPostID(GetCommentListByPostIDRequest) returns (GetCommentListByPostIDResponse) {}
 }
 
-message RequestComment {
-  uint64 id = 1;
-  string content = 2 [(validate.rules).string = {min_len: 1, max_len: 140}];
-  uint64  post_id = 3;
-}
-
-message ResponseComment {
+message Comment {
   uint64 id = 1;
   string content = 2 [(validate.rules).string = {min_len: 1, max_len: 140}];
   uint64 post_id = 3;
@@ -30,19 +24,19 @@ message ResponseComment {
   google.protobuf.Timestamp created_at = 5;
   google.protobuf.Timestamp updated_at = 6;
   User user = 7;
-  ResponsePost post = 8;
+  Post post = 8;
 }
 
 message CreateCommentRequest {
-  RequestComment comment = 1;
+  Comment comment = 1;
 }
 
 message CreateCommentResponse {
-  ResponseComment comment = 1;
+  Comment comment = 1;
 }
 
 message UpdateCommentRequest {
-  RequestComment comment = 1;
+  Comment comment = 1;
 }
 
 message UpdateCommentResponse {
@@ -64,6 +58,6 @@ message GetCommentListByPostIDRequest {
 }
 
 message GetCommentListByPostIDResponse {
-  repeated ResponseComment comments = 1;
+  repeated Comment comments = 1;
   uint64 total = 2;
 }

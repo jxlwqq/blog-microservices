@@ -55,3 +55,11 @@ func TestServer_GetUserByUsername(t *testing.T) {
 	require.EqualValues(t, resp.GetUser().GetUsername(), u.GetUsername())
 	require.NotNil(t, resp.GetUser().GetId())
 }
+
+func TestServer_DeleteUser(t *testing.T) {
+	s := newServer(t)
+	req := &protobuf.DeleteUserRequest{Id: u.Id}
+	resp, err := s.DeleteUser(context.Background(), req)
+	require.NoError(t, err)
+	require.True(t, resp.GetSuccess())
+}

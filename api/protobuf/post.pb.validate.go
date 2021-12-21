@@ -35,22 +35,21 @@ var (
 	_ = sort.Sort
 )
 
-// Validate checks the field values on ResponsePost with the rules defined in
-// the proto definition for this message. If any rules are violated, the first
-// error encountered is returned, or nil if there are no violations.
-func (m *ResponsePost) Validate() error {
+// Validate checks the field values on Post with the rules defined in the proto
+// definition for this message. If any rules are violated, the first error
+// encountered is returned, or nil if there are no violations.
+func (m *Post) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on ResponsePost with the rules defined
-// in the proto definition for this message. If any rules are violated, the
-// result is a list of violation errors wrapped in ResponsePostMultiError, or
-// nil if none found.
-func (m *ResponsePost) ValidateAll() error {
+// ValidateAll checks the field values on Post with the rules defined in the
+// proto definition for this message. If any rules are violated, the result is
+// a list of violation errors wrapped in PostMultiError, or nil if none found.
+func (m *Post) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *ResponsePost) validate(all bool) error {
+func (m *Post) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -59,17 +58,37 @@ func (m *ResponsePost) validate(all bool) error {
 
 	// no validation rules for Id
 
-	// no validation rules for Title
+	if l := utf8.RuneCountInString(m.GetTitle()); l < 1 || l > 140 {
+		err := PostValidationError{
+			field:  "Title",
+			reason: "value length must be between 1 and 140 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
-	// no validation rules for Content
+	if l := utf8.RuneCountInString(m.GetContent()); l < 1 || l > 3000 {
+		err := PostValidationError{
+			field:  "Content",
+			reason: "value length must be between 1 and 3000 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
 	// no validation rules for UserId
+
+	// no validation rules for CommentsCount
 
 	if all {
 		switch v := interface{}(m.GetCreatedAt()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, ResponsePostValidationError{
+				errors = append(errors, PostValidationError{
 					field:  "CreatedAt",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -77,7 +96,7 @@ func (m *ResponsePost) validate(all bool) error {
 			}
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
-				errors = append(errors, ResponsePostValidationError{
+				errors = append(errors, PostValidationError{
 					field:  "CreatedAt",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -86,7 +105,7 @@ func (m *ResponsePost) validate(all bool) error {
 		}
 	} else if v, ok := interface{}(m.GetCreatedAt()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
-			return ResponsePostValidationError{
+			return PostValidationError{
 				field:  "CreatedAt",
 				reason: "embedded message failed validation",
 				cause:  err,
@@ -98,7 +117,7 @@ func (m *ResponsePost) validate(all bool) error {
 		switch v := interface{}(m.GetUpdatedAt()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, ResponsePostValidationError{
+				errors = append(errors, PostValidationError{
 					field:  "UpdatedAt",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -106,7 +125,7 @@ func (m *ResponsePost) validate(all bool) error {
 			}
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
-				errors = append(errors, ResponsePostValidationError{
+				errors = append(errors, PostValidationError{
 					field:  "UpdatedAt",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -115,7 +134,7 @@ func (m *ResponsePost) validate(all bool) error {
 		}
 	} else if v, ok := interface{}(m.GetUpdatedAt()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
-			return ResponsePostValidationError{
+			return PostValidationError{
 				field:  "UpdatedAt",
 				reason: "embedded message failed validation",
 				cause:  err,
@@ -127,7 +146,7 @@ func (m *ResponsePost) validate(all bool) error {
 		switch v := interface{}(m.GetUser()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, ResponsePostValidationError{
+				errors = append(errors, PostValidationError{
 					field:  "User",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -135,7 +154,7 @@ func (m *ResponsePost) validate(all bool) error {
 			}
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
-				errors = append(errors, ResponsePostValidationError{
+				errors = append(errors, PostValidationError{
 					field:  "User",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -144,7 +163,7 @@ func (m *ResponsePost) validate(all bool) error {
 		}
 	} else if v, ok := interface{}(m.GetUser()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
-			return ResponsePostValidationError{
+			return PostValidationError{
 				field:  "User",
 				reason: "embedded message failed validation",
 				cause:  err,
@@ -153,17 +172,17 @@ func (m *ResponsePost) validate(all bool) error {
 	}
 
 	if len(errors) > 0 {
-		return ResponsePostMultiError(errors)
+		return PostMultiError(errors)
 	}
 	return nil
 }
 
-// ResponsePostMultiError is an error wrapping multiple validation errors
-// returned by ResponsePost.ValidateAll() if the designated constraints aren't met.
-type ResponsePostMultiError []error
+// PostMultiError is an error wrapping multiple validation errors returned by
+// Post.ValidateAll() if the designated constraints aren't met.
+type PostMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m ResponsePostMultiError) Error() string {
+func (m PostMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -172,11 +191,11 @@ func (m ResponsePostMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m ResponsePostMultiError) AllErrors() []error { return m }
+func (m PostMultiError) AllErrors() []error { return m }
 
-// ResponsePostValidationError is the validation error returned by
-// ResponsePost.Validate if the designated constraints aren't met.
-type ResponsePostValidationError struct {
+// PostValidationError is the validation error returned by Post.Validate if the
+// designated constraints aren't met.
+type PostValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -184,22 +203,22 @@ type ResponsePostValidationError struct {
 }
 
 // Field function returns field value.
-func (e ResponsePostValidationError) Field() string { return e.field }
+func (e PostValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e ResponsePostValidationError) Reason() string { return e.reason }
+func (e PostValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e ResponsePostValidationError) Cause() error { return e.cause }
+func (e PostValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e ResponsePostValidationError) Key() bool { return e.key }
+func (e PostValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e ResponsePostValidationError) ErrorName() string { return "ResponsePostValidationError" }
+func (e PostValidationError) ErrorName() string { return "PostValidationError" }
 
 // Error satisfies the builtin error interface
-func (e ResponsePostValidationError) Error() string {
+func (e PostValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -211,14 +230,14 @@ func (e ResponsePostValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sResponsePost.%s: %s%s",
+		"invalid %sPost.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = ResponsePostValidationError{}
+var _ error = PostValidationError{}
 
 var _ interface {
 	Field() string
@@ -226,127 +245,7 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = ResponsePostValidationError{}
-
-// Validate checks the field values on RequestPost with the rules defined in
-// the proto definition for this message. If any rules are violated, the first
-// error encountered is returned, or nil if there are no violations.
-func (m *RequestPost) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on RequestPost with the rules defined in
-// the proto definition for this message. If any rules are violated, the
-// result is a list of violation errors wrapped in RequestPostMultiError, or
-// nil if none found.
-func (m *RequestPost) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *RequestPost) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	if l := utf8.RuneCountInString(m.GetTitle()); l < 1 || l > 140 {
-		err := RequestPostValidationError{
-			field:  "Title",
-			reason: "value length must be between 1 and 140 runes, inclusive",
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
-
-	if l := utf8.RuneCountInString(m.GetContent()); l < 1 || l > 3000 {
-		err := RequestPostValidationError{
-			field:  "Content",
-			reason: "value length must be between 1 and 3000 runes, inclusive",
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
-
-	if len(errors) > 0 {
-		return RequestPostMultiError(errors)
-	}
-	return nil
-}
-
-// RequestPostMultiError is an error wrapping multiple validation errors
-// returned by RequestPost.ValidateAll() if the designated constraints aren't met.
-type RequestPostMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m RequestPostMultiError) Error() string {
-	var msgs []string
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m RequestPostMultiError) AllErrors() []error { return m }
-
-// RequestPostValidationError is the validation error returned by
-// RequestPost.Validate if the designated constraints aren't met.
-type RequestPostValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e RequestPostValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e RequestPostValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e RequestPostValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e RequestPostValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e RequestPostValidationError) ErrorName() string { return "RequestPostValidationError" }
-
-// Error satisfies the builtin error interface
-func (e RequestPostValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sRequestPost.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = RequestPostValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = RequestPostValidationError{}
+} = PostValidationError{}
 
 // Validate checks the field values on GetPostRequest with the rules defined in
 // the proto definition for this message. If any rules are violated, the first
@@ -858,8 +757,6 @@ func (m *UpdatePostRequest) validate(all bool) error {
 	}
 
 	var errors []error
-
-	// no validation rules for Id
 
 	if all {
 		switch v := interface{}(m.GetPost()).(type) {

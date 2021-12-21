@@ -17,11 +17,18 @@ type Repository interface {
 	Update(comment *Comment) error
 	Delete(id uint64) error
 	ListByPostID(postID uint64) ([]*Comment, error)
+	Get(id uint64) (*Comment, error)
 }
 
 type repository struct {
 	logger *log.Logger
 	db     *dbcontext.DB
+}
+
+func (r repository) Get(id uint64) (*Comment, error) {
+	comment := &Comment{}
+	err := r.db.First(comment, id).Error
+	return comment, err
 }
 
 func (r repository) Create(comment *Comment) error {

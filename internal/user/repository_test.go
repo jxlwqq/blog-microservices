@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func newRepository(t *testing.T) Repository {
+func TestRepository(t *testing.T) {
 	logger := log.New()
 	path := config.GetPath()
 	conf, err := config.Load(path)
@@ -17,18 +17,40 @@ func newRepository(t *testing.T) Repository {
 	require.NoError(t, err)
 	repo := NewRepository(logger, db)
 	require.NotNil(t, repo)
-	return repo
-}
 
-func TestRepository_Create(t *testing.T) {
-	repo := newRepository(t)
+	// Test Create
 	u := &User{
 		Username: "test",
 		Email:    "test@test.com",
 		Password: "test",
 		Avatar:   "https://test.com/avatar.png",
 	}
-	err := repo.Create(u)
+	err = repo.Create(u)
 	require.NoError(t, err)
 	require.NotEmpty(t, u.ID)
+
+	// Test Get
+	u2, err := repo.Get(u.ID)
+	require.NoError(t, err)
+	require.Equal(t, u.Username, u2.Username)
+	require.Equal(t, u.Email, u2.Email)
+
+	// Test Update
+	u.Avatar = "https://test.com/avatar2.png"
+	err = repo.Update(u)
+	require.NoError(t, err)
+
+	// Test GetByEmail
+	u3, err := repo.GetByEmail(u.Email)
+	require.NoError(t, err)
+	require.Equal(t, u.Email, u3.Email)
+
+	// Test GetByUsername
+	u4, err := repo.GetByUsername(u.Username)
+	require.NoError(t, err)
+	require.Equal(t, u.Username, u4.Username)
+
+	// Test Delete
+	err = repo.Delete(u.ID)
+	require.NoError(t, err)
 }

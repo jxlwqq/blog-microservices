@@ -94,7 +94,7 @@ func (s Server) UpdatePost(ctx context.Context, req *protobuf.UpdatePostRequest)
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
 	}
-	postID := req.GetId()
+	postID := req.GetPost().GetId()
 	post, err := s.repo.Get(postID)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "post %d not found", postID)
@@ -167,7 +167,7 @@ func (s Server) ListPosts(ctx context.Context, req *protobuf.ListPostsRequest) (
 		return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
 	}
 	users := userResp.GetUsers()
-	var posts []*protobuf.ResponsePost
+	var posts []*protobuf.Post
 	for _, post := range list {
 		user := &protobuf.User{}
 		for _, item := range users {
@@ -190,8 +190,8 @@ func (s Server) ListPosts(ctx context.Context, req *protobuf.ListPostsRequest) (
 	return resp, nil
 }
 
-func entityToProtobuf(post *Post, user *protobuf.User) *protobuf.ResponsePost {
-	return &protobuf.ResponsePost{
+func entityToProtobuf(post *Post, user *protobuf.User) *protobuf.Post {
+	return &protobuf.Post{
 		Id:        post.ID,
 		Title:     post.Title,
 		Content:   post.Content,

@@ -35,22 +35,21 @@ var (
 	_ = sort.Sort
 )
 
-// Validate checks the field values on RequestComment with the rules defined in
-// the proto definition for this message. If any rules are violated, the first
+// Validate checks the field values on Comment with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.
-func (m *RequestComment) Validate() error {
+func (m *Comment) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on RequestComment with the rules defined
-// in the proto definition for this message. If any rules are violated, the
-// result is a list of violation errors wrapped in RequestCommentMultiError,
-// or nil if none found.
-func (m *RequestComment) ValidateAll() error {
+// ValidateAll checks the field values on Comment with the rules defined in the
+// proto definition for this message. If any rules are violated, the result is
+// a list of violation errors wrapped in CommentMultiError, or nil if none found.
+func (m *Comment) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *RequestComment) validate(all bool) error {
+func (m *Comment) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -60,121 +59,7 @@ func (m *RequestComment) validate(all bool) error {
 	// no validation rules for Id
 
 	if l := utf8.RuneCountInString(m.GetContent()); l < 1 || l > 140 {
-		err := RequestCommentValidationError{
-			field:  "Content",
-			reason: "value length must be between 1 and 140 runes, inclusive",
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
-
-	// no validation rules for PostId
-
-	if len(errors) > 0 {
-		return RequestCommentMultiError(errors)
-	}
-	return nil
-}
-
-// RequestCommentMultiError is an error wrapping multiple validation errors
-// returned by RequestComment.ValidateAll() if the designated constraints
-// aren't met.
-type RequestCommentMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m RequestCommentMultiError) Error() string {
-	var msgs []string
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m RequestCommentMultiError) AllErrors() []error { return m }
-
-// RequestCommentValidationError is the validation error returned by
-// RequestComment.Validate if the designated constraints aren't met.
-type RequestCommentValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e RequestCommentValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e RequestCommentValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e RequestCommentValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e RequestCommentValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e RequestCommentValidationError) ErrorName() string { return "RequestCommentValidationError" }
-
-// Error satisfies the builtin error interface
-func (e RequestCommentValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sRequestComment.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = RequestCommentValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = RequestCommentValidationError{}
-
-// Validate checks the field values on ResponseComment with the rules defined
-// in the proto definition for this message. If any rules are violated, the
-// first error encountered is returned, or nil if there are no violations.
-func (m *ResponseComment) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on ResponseComment with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// ResponseCommentMultiError, or nil if none found.
-func (m *ResponseComment) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *ResponseComment) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	// no validation rules for Id
-
-	if l := utf8.RuneCountInString(m.GetContent()); l < 1 || l > 140 {
-		err := ResponseCommentValidationError{
+		err := CommentValidationError{
 			field:  "Content",
 			reason: "value length must be between 1 and 140 runes, inclusive",
 		}
@@ -192,7 +77,7 @@ func (m *ResponseComment) validate(all bool) error {
 		switch v := interface{}(m.GetCreatedAt()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, ResponseCommentValidationError{
+				errors = append(errors, CommentValidationError{
 					field:  "CreatedAt",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -200,7 +85,7 @@ func (m *ResponseComment) validate(all bool) error {
 			}
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
-				errors = append(errors, ResponseCommentValidationError{
+				errors = append(errors, CommentValidationError{
 					field:  "CreatedAt",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -209,7 +94,7 @@ func (m *ResponseComment) validate(all bool) error {
 		}
 	} else if v, ok := interface{}(m.GetCreatedAt()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
-			return ResponseCommentValidationError{
+			return CommentValidationError{
 				field:  "CreatedAt",
 				reason: "embedded message failed validation",
 				cause:  err,
@@ -221,7 +106,7 @@ func (m *ResponseComment) validate(all bool) error {
 		switch v := interface{}(m.GetUpdatedAt()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, ResponseCommentValidationError{
+				errors = append(errors, CommentValidationError{
 					field:  "UpdatedAt",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -229,7 +114,7 @@ func (m *ResponseComment) validate(all bool) error {
 			}
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
-				errors = append(errors, ResponseCommentValidationError{
+				errors = append(errors, CommentValidationError{
 					field:  "UpdatedAt",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -238,7 +123,7 @@ func (m *ResponseComment) validate(all bool) error {
 		}
 	} else if v, ok := interface{}(m.GetUpdatedAt()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
-			return ResponseCommentValidationError{
+			return CommentValidationError{
 				field:  "UpdatedAt",
 				reason: "embedded message failed validation",
 				cause:  err,
@@ -250,7 +135,7 @@ func (m *ResponseComment) validate(all bool) error {
 		switch v := interface{}(m.GetUser()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, ResponseCommentValidationError{
+				errors = append(errors, CommentValidationError{
 					field:  "User",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -258,7 +143,7 @@ func (m *ResponseComment) validate(all bool) error {
 			}
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
-				errors = append(errors, ResponseCommentValidationError{
+				errors = append(errors, CommentValidationError{
 					field:  "User",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -267,7 +152,7 @@ func (m *ResponseComment) validate(all bool) error {
 		}
 	} else if v, ok := interface{}(m.GetUser()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
-			return ResponseCommentValidationError{
+			return CommentValidationError{
 				field:  "User",
 				reason: "embedded message failed validation",
 				cause:  err,
@@ -279,7 +164,7 @@ func (m *ResponseComment) validate(all bool) error {
 		switch v := interface{}(m.GetPost()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, ResponseCommentValidationError{
+				errors = append(errors, CommentValidationError{
 					field:  "Post",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -287,7 +172,7 @@ func (m *ResponseComment) validate(all bool) error {
 			}
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
-				errors = append(errors, ResponseCommentValidationError{
+				errors = append(errors, CommentValidationError{
 					field:  "Post",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -296,7 +181,7 @@ func (m *ResponseComment) validate(all bool) error {
 		}
 	} else if v, ok := interface{}(m.GetPost()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
-			return ResponseCommentValidationError{
+			return CommentValidationError{
 				field:  "Post",
 				reason: "embedded message failed validation",
 				cause:  err,
@@ -305,18 +190,17 @@ func (m *ResponseComment) validate(all bool) error {
 	}
 
 	if len(errors) > 0 {
-		return ResponseCommentMultiError(errors)
+		return CommentMultiError(errors)
 	}
 	return nil
 }
 
-// ResponseCommentMultiError is an error wrapping multiple validation errors
-// returned by ResponseComment.ValidateAll() if the designated constraints
-// aren't met.
-type ResponseCommentMultiError []error
+// CommentMultiError is an error wrapping multiple validation errors returned
+// by Comment.ValidateAll() if the designated constraints aren't met.
+type CommentMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m ResponseCommentMultiError) Error() string {
+func (m CommentMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -325,11 +209,11 @@ func (m ResponseCommentMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m ResponseCommentMultiError) AllErrors() []error { return m }
+func (m CommentMultiError) AllErrors() []error { return m }
 
-// ResponseCommentValidationError is the validation error returned by
-// ResponseComment.Validate if the designated constraints aren't met.
-type ResponseCommentValidationError struct {
+// CommentValidationError is the validation error returned by Comment.Validate
+// if the designated constraints aren't met.
+type CommentValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -337,22 +221,22 @@ type ResponseCommentValidationError struct {
 }
 
 // Field function returns field value.
-func (e ResponseCommentValidationError) Field() string { return e.field }
+func (e CommentValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e ResponseCommentValidationError) Reason() string { return e.reason }
+func (e CommentValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e ResponseCommentValidationError) Cause() error { return e.cause }
+func (e CommentValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e ResponseCommentValidationError) Key() bool { return e.key }
+func (e CommentValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e ResponseCommentValidationError) ErrorName() string { return "ResponseCommentValidationError" }
+func (e CommentValidationError) ErrorName() string { return "CommentValidationError" }
 
 // Error satisfies the builtin error interface
-func (e ResponseCommentValidationError) Error() string {
+func (e CommentValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -364,14 +248,14 @@ func (e ResponseCommentValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sResponseComment.%s: %s%s",
+		"invalid %sComment.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = ResponseCommentValidationError{}
+var _ error = CommentValidationError{}
 
 var _ interface {
 	Field() string
@@ -379,7 +263,7 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = ResponseCommentValidationError{}
+} = CommentValidationError{}
 
 // Validate checks the field values on CreateCommentRequest with the rules
 // defined in the proto definition for this message. If any rules are

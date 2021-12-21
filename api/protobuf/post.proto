@@ -16,19 +16,15 @@ service PostService {
   rpc ListPosts(ListPostsRequest) returns (ListPostsResponse) {}
 }
 
-message ResponsePost {
+message Post {
   uint64 id = 1;
-  string title = 2;
-  string content = 3;
+  string title = 2 [(validate.rules).string = {min_len: 1, max_len: 140}];
+  string content = 3 [(validate.rules).string = {min_len: 1, max_len: 3000}];
   uint64 user_id = 4;
-  google.protobuf.Timestamp created_at = 5;
-  google.protobuf.Timestamp updated_at = 6;
-  User user = 7;
-}
-
-message RequestPost {
-  string title = 1 [(validate.rules).string = {min_len: 1, max_len: 140}];
-  string content = 2 [(validate.rules).string = {min_len: 1, max_len: 3000}];
+  uint32 comments_count = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+  User user = 8;
 }
 
 message GetPostRequest {
@@ -36,20 +32,19 @@ message GetPostRequest {
 }
 
 message GetPostResponse {
-  ResponsePost post = 1;
+  Post post = 1;
 }
 
 message CreatePostRequest {
-  RequestPost post = 1;
+  Post post = 1;
 }
 
 message CreatePostResponse {
-  ResponsePost post = 1;
+  Post post = 1;
 }
 
 message UpdatePostRequest {
-  uint64 id = 1;
-  RequestPost post = 2;
+  Post post = 1;
 }
 
 message UpdatePostResponse {
@@ -70,6 +65,6 @@ message ListPostsRequest {
 }
 
 message ListPostsResponse {
-  repeated ResponsePost posts = 1;
+  repeated Post posts = 1;
   uint64 count = 2;
 }
