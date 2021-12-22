@@ -23,6 +23,8 @@ type PostServiceClient interface {
 	UpdatePost(ctx context.Context, in *UpdatePostRequest, opts ...grpc.CallOption) (*UpdatePostResponse, error)
 	DeletePost(ctx context.Context, in *DeletePostRequest, opts ...grpc.CallOption) (*DeletePostResponse, error)
 	ListPosts(ctx context.Context, in *ListPostsRequest, opts ...grpc.CallOption) (*ListPostsResponse, error)
+	IncrementCommentCount(ctx context.Context, in *IncrementCommentCountRequest, opts ...grpc.CallOption) (*IncrementCommentCountResponse, error)
+	DecrementCommentCount(ctx context.Context, in *DecrementCommentCountRequest, opts ...grpc.CallOption) (*DecrementCommentCountResponse, error)
 }
 
 type postServiceClient struct {
@@ -78,6 +80,24 @@ func (c *postServiceClient) ListPosts(ctx context.Context, in *ListPostsRequest,
 	return out, nil
 }
 
+func (c *postServiceClient) IncrementCommentCount(ctx context.Context, in *IncrementCommentCountRequest, opts ...grpc.CallOption) (*IncrementCommentCountResponse, error) {
+	out := new(IncrementCommentCountResponse)
+	err := c.cc.Invoke(ctx, "/api.protobuf.PostService/IncrementCommentCount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *postServiceClient) DecrementCommentCount(ctx context.Context, in *DecrementCommentCountRequest, opts ...grpc.CallOption) (*DecrementCommentCountResponse, error) {
+	out := new(DecrementCommentCountResponse)
+	err := c.cc.Invoke(ctx, "/api.protobuf.PostService/DecrementCommentCount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PostServiceServer is the server API for PostService service.
 // All implementations must embed UnimplementedPostServiceServer
 // for forward compatibility
@@ -87,6 +107,8 @@ type PostServiceServer interface {
 	UpdatePost(context.Context, *UpdatePostRequest) (*UpdatePostResponse, error)
 	DeletePost(context.Context, *DeletePostRequest) (*DeletePostResponse, error)
 	ListPosts(context.Context, *ListPostsRequest) (*ListPostsResponse, error)
+	IncrementCommentCount(context.Context, *IncrementCommentCountRequest) (*IncrementCommentCountResponse, error)
+	DecrementCommentCount(context.Context, *DecrementCommentCountRequest) (*DecrementCommentCountResponse, error)
 	mustEmbedUnimplementedPostServiceServer()
 }
 
@@ -108,6 +130,12 @@ func (UnimplementedPostServiceServer) DeletePost(context.Context, *DeletePostReq
 }
 func (UnimplementedPostServiceServer) ListPosts(context.Context, *ListPostsRequest) (*ListPostsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListPosts not implemented")
+}
+func (UnimplementedPostServiceServer) IncrementCommentCount(context.Context, *IncrementCommentCountRequest) (*IncrementCommentCountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IncrementCommentCount not implemented")
+}
+func (UnimplementedPostServiceServer) DecrementCommentCount(context.Context, *DecrementCommentCountRequest) (*DecrementCommentCountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DecrementCommentCount not implemented")
 }
 func (UnimplementedPostServiceServer) mustEmbedUnimplementedPostServiceServer() {}
 
@@ -212,6 +240,42 @@ func _PostService_ListPosts_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PostService_IncrementCommentCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IncrementCommentCountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).IncrementCommentCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.protobuf.PostService/IncrementCommentCount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).IncrementCommentCount(ctx, req.(*IncrementCommentCountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PostService_DecrementCommentCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DecrementCommentCountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).DecrementCommentCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.protobuf.PostService/DecrementCommentCount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).DecrementCommentCount(ctx, req.(*DecrementCommentCountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PostService_ServiceDesc is the grpc.ServiceDesc for PostService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -238,6 +302,14 @@ var PostService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListPosts",
 			Handler:    _PostService_ListPosts_Handler,
+		},
+		{
+			MethodName: "IncrementCommentCount",
+			Handler:    _PostService_IncrementCommentCount_Handler,
+		},
+		{
+			MethodName: "DecrementCommentCount",
+			Handler:    _PostService_DecrementCommentCount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

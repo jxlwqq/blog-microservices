@@ -57,10 +57,18 @@ func (s Server) CreateComment(ctx context.Context, req *protobuf.CreateCommentRe
 		PostID:  postID,
 		UserID:  userID,
 	}
+
+	// TODO: 分布式事务
 	err = s.repo.Create(&comment)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "could not create comment: %v", err)
 	}
+
+	_, err = s.postClient.IncrementCommentCount(ctx, &protobuf.IncrementCommentCountRequest{Id: postID})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "could not increment comment count: %v", err)
+	}
+
 	resp := &protobuf.CreateCommentResponse{
 		Comment: &protobuf.Comment{
 			Id:        comment.ID,
@@ -132,9 +140,17 @@ func (s Server) DeleteComment(ctx context.Context, req *protobuf.DeleteCommentRe
 	if comment.UserID != user.GetId() && post.UserId != user.GetId() {
 		return nil, status.Errorf(codes.PermissionDenied, "user %d does not own comment %d", userID, commentID)
 	}
+
+	// TODO: 分布式事务
 	err = s.repo.Delete(commentID)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "could not delete comment: %v", err)
+	}
+
+	_, err = s.postClient.DecrementCommentCount(ctx, &protobuf.DecrementCommentCountRequest{Id: comment.PostID})
+
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "could not decrement post comments count: %v", err)
 	}
 
 	return &protobuf.DeleteCommentResponse{

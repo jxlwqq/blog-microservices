@@ -14,6 +14,8 @@ service PostService {
   rpc UpdatePost(UpdatePostRequest) returns (UpdatePostResponse) {}
   rpc DeletePost(DeletePostRequest) returns (DeletePostResponse) {}
   rpc ListPosts(ListPostsRequest) returns (ListPostsResponse) {}
+  rpc IncrementCommentCount(IncrementCommentCountRequest) returns (IncrementCommentCountResponse) {}
+  rpc DecrementCommentCount(DecrementCommentCountRequest) returns (DecrementCommentCountResponse) {}
 }
 
 message Post {
@@ -67,4 +69,20 @@ message ListPostsRequest {
 message ListPostsResponse {
   repeated Post posts = 1;
   uint64 count = 2;
+}
+
+message IncrementCommentCountRequest {
+  uint64 id = 1;
+}
+
+message IncrementCommentCountResponse {
+  bool success = 1;
+}
+
+message DecrementCommentCountRequest {
+  uint64 id = 1;
+}
+
+message DecrementCommentCountResponse {
+  bool success = 1;
 }

@@ -1414,3 +1414,419 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = ListPostsResponseValidationError{}
+
+// Validate checks the field values on IncrementCommentCountRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *IncrementCommentCountRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on IncrementCommentCountRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// IncrementCommentCountRequestMultiError, or nil if none found.
+func (m *IncrementCommentCountRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *IncrementCommentCountRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	if len(errors) > 0 {
+		return IncrementCommentCountRequestMultiError(errors)
+	}
+	return nil
+}
+
+// IncrementCommentCountRequestMultiError is an error wrapping multiple
+// validation errors returned by IncrementCommentCountRequest.ValidateAll() if
+// the designated constraints aren't met.
+type IncrementCommentCountRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m IncrementCommentCountRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m IncrementCommentCountRequestMultiError) AllErrors() []error { return m }
+
+// IncrementCommentCountRequestValidationError is the validation error returned
+// by IncrementCommentCountRequest.Validate if the designated constraints
+// aren't met.
+type IncrementCommentCountRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e IncrementCommentCountRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e IncrementCommentCountRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e IncrementCommentCountRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e IncrementCommentCountRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e IncrementCommentCountRequestValidationError) ErrorName() string {
+	return "IncrementCommentCountRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e IncrementCommentCountRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sIncrementCommentCountRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = IncrementCommentCountRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = IncrementCommentCountRequestValidationError{}
+
+// Validate checks the field values on IncrementCommentCountResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *IncrementCommentCountResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on IncrementCommentCountResponse with
+// the rules defined in the proto definition for this message. If any rules
+// are violated, the result is a list of violation errors wrapped in
+// IncrementCommentCountResponseMultiError, or nil if none found.
+func (m *IncrementCommentCountResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *IncrementCommentCountResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Success
+
+	if len(errors) > 0 {
+		return IncrementCommentCountResponseMultiError(errors)
+	}
+	return nil
+}
+
+// IncrementCommentCountResponseMultiError is an error wrapping multiple
+// validation errors returned by IncrementCommentCountResponse.ValidateAll()
+// if the designated constraints aren't met.
+type IncrementCommentCountResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m IncrementCommentCountResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m IncrementCommentCountResponseMultiError) AllErrors() []error { return m }
+
+// IncrementCommentCountResponseValidationError is the validation error
+// returned by IncrementCommentCountResponse.Validate if the designated
+// constraints aren't met.
+type IncrementCommentCountResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e IncrementCommentCountResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e IncrementCommentCountResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e IncrementCommentCountResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e IncrementCommentCountResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e IncrementCommentCountResponseValidationError) ErrorName() string {
+	return "IncrementCommentCountResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e IncrementCommentCountResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sIncrementCommentCountResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = IncrementCommentCountResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = IncrementCommentCountResponseValidationError{}
+
+// Validate checks the field values on DecrementCommentCountRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *DecrementCommentCountRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DecrementCommentCountRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// DecrementCommentCountRequestMultiError, or nil if none found.
+func (m *DecrementCommentCountRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DecrementCommentCountRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	if len(errors) > 0 {
+		return DecrementCommentCountRequestMultiError(errors)
+	}
+	return nil
+}
+
+// DecrementCommentCountRequestMultiError is an error wrapping multiple
+// validation errors returned by DecrementCommentCountRequest.ValidateAll() if
+// the designated constraints aren't met.
+type DecrementCommentCountRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DecrementCommentCountRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DecrementCommentCountRequestMultiError) AllErrors() []error { return m }
+
+// DecrementCommentCountRequestValidationError is the validation error returned
+// by DecrementCommentCountRequest.Validate if the designated constraints
+// aren't met.
+type DecrementCommentCountRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DecrementCommentCountRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DecrementCommentCountRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DecrementCommentCountRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DecrementCommentCountRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DecrementCommentCountRequestValidationError) ErrorName() string {
+	return "DecrementCommentCountRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DecrementCommentCountRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDecrementCommentCountRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DecrementCommentCountRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DecrementCommentCountRequestValidationError{}
+
+// Validate checks the field values on DecrementCommentCountResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *DecrementCommentCountResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DecrementCommentCountResponse with
+// the rules defined in the proto definition for this message. If any rules
+// are violated, the result is a list of violation errors wrapped in
+// DecrementCommentCountResponseMultiError, or nil if none found.
+func (m *DecrementCommentCountResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DecrementCommentCountResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Success
+
+	if len(errors) > 0 {
+		return DecrementCommentCountResponseMultiError(errors)
+	}
+	return nil
+}
+
+// DecrementCommentCountResponseMultiError is an error wrapping multiple
+// validation errors returned by DecrementCommentCountResponse.ValidateAll()
+// if the designated constraints aren't met.
+type DecrementCommentCountResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DecrementCommentCountResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DecrementCommentCountResponseMultiError) AllErrors() []error { return m }
+
+// DecrementCommentCountResponseValidationError is the validation error
+// returned by DecrementCommentCountResponse.Validate if the designated
+// constraints aren't met.
+type DecrementCommentCountResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DecrementCommentCountResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DecrementCommentCountResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DecrementCommentCountResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DecrementCommentCountResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DecrementCommentCountResponseValidationError) ErrorName() string {
+	return "DecrementCommentCountResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DecrementCommentCountResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDecrementCommentCountResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DecrementCommentCountResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DecrementCommentCountResponseValidationError{}

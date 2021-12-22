@@ -2,7 +2,6 @@ package post
 
 import (
 	"context"
-
 	"github.com/jinzhu/copier"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 
@@ -23,7 +22,7 @@ var AuthMethods = map[string]bool{
 }
 
 func NewServer(logger *log.Logger, repo Repository, userClient protobuf.UserServiceClient) protobuf.PostServiceServer {
-	return &Server{repo: repo, userClient: userClient}
+	return &Server{logger: logger, repo: repo, userClient: userClient}
 }
 
 type Server struct {
@@ -31,6 +30,36 @@ type Server struct {
 	logger     *log.Logger
 	repo       Repository
 	userClient protobuf.UserServiceClient
+}
+
+func (s Server) IncrementCommentCount(_ context.Context, req *protobuf.IncrementCommentCountRequest) (*protobuf.IncrementCommentCountResponse, error) {
+	postID := req.GetId()
+	p, err := s.repo.Get(postID)
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "post %d not found", postID)
+	}
+	p.CommentsCount++
+
+	err = s.repo.Update(p)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update post %d", postID)
+	}
+
+	return &protobuf.IncrementCommentCountResponse{Success: true}, nil
+}
+
+func (s Server) DecrementCommentCount(_ context.Context, request *protobuf.DecrementCommentCountRequest) (*protobuf.DecrementCommentCountResponse, error) {
+	postID := request.GetId()
+	p, err := s.repo.Get(postID)
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "post %d not found", postID)
+	}
+	p.CommentsCount--
+	err = s.repo.Update(p)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update post %d", postID)
+	}
+	return &protobuf.DecrementCommentCountResponse{Success: true}, nil
 }
 
 func (s Server) GetPost(ctx context.Context, req *protobuf.GetPostRequest) (*protobuf.GetPostResponse, error) {
@@ -192,12 +221,13 @@ func (s Server) ListPosts(ctx context.Context, req *protobuf.ListPostsRequest) (
 
 func entityToProtobuf(post *Post, user *protobuf.User) *protobuf.Post {
 	return &protobuf.Post{
-		Id:        post.ID,
-		Title:     post.Title,
-		Content:   post.Content,
-		UserId:    post.UserID,
-		CreatedAt: timestamppb.New(post.CreatedAt),
-		UpdatedAt: timestamppb.New(post.UpdatedAt),
-		User:      user,
+		Id:            post.ID,
+		Title:         post.Title,
+		Content:       post.Content,
+		CommentsCount: post.CommentsCount,
+		UserId:        post.UserID,
+		CreatedAt:     timestamppb.New(post.CreatedAt),
+		UpdatedAt:     timestamppb.New(post.UpdatedAt),
+		User:          user,
 	}
 }
