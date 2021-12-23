@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/jxlwqq/blog-microservices/api/protobuf/auth/v1"
@@ -64,7 +63,7 @@ func main() {
 	logger.Infof("gPRC Listening on port %s", conf.Auth.Server.GRPC.Port)
 	go func() {
 		if err = grpcServer.Serve(lis); err != nil {
-			panic(err)
+			logger.Fatal(err)
 		}
 	}()
 
@@ -76,7 +75,7 @@ func main() {
 		mux := http.NewServeMux()
 		mux.Handle("/metrics", promhttp.Handler())
 		err = http.ListenAndServe(conf.Auth.Server.Metrics.Port, mux)
-		panic(err)
+		logger.Fatal(err)
 	}()
 
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
@@ -86,5 +85,5 @@ func main() {
 	grpcServer.GracefulStop()
 	<-ctx.Done()
 	close(ch)
-	fmt.Println("Graceful Shutdown end")
+	logger.Info("Graceful Shutdown end")
 }

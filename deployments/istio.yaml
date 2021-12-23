@@ -31,3 +31,11 @@ spec:
             host: blog-server.default.svc.cluster.local
             port:
               number: 50050
+    - match:
+        - uri:
+            prefix: "/api.rest.blog.v1"
+      route:
+        - destination:
+            host: blog-server.default.svc.cluster.local
+            port:
+              number: 8050

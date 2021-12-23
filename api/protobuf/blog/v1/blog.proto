@@ -6,22 +6,39 @@ option go_package = "github.com/jxlwqq/blog-microservices/api/protobuf/blog/v1";
 
 import "validate/validate.proto";
 import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
 
 service BlogService {
-  rpc SignUp (SignUpRequest) returns (SignUpResponse) {}
-  rpc SignIn (SignInRequest) returns (SignInResponse) {}
-  rpc CreatePost (CreatePostRequest) returns (CreatePostResponse) {}
-  rpc CreateComment (CreateCommentRequest) returns (CreateCommentResponse) {}
+  rpc SignUp (SignUpRequest) returns (SignUpResponse) {
+    option (google.api.http) = {
+      post: "/api.rest.blog.v1/sign-up"
+      body: "*"
+    };
+  }
+  rpc SignIn (SignInRequest) returns (SignInResponse) {
+    option (google.api.http) = {
+      post: "/api.rest.blog.v1/sign-in"
+      body: "*"
+    };
+  }
+  rpc CreatePost (CreatePostRequest) returns (CreatePostResponse) {
+    option (google.api.http) = {
+      post: "/api.rest.blog.v1/posts"
+      body: "*"
+    };
+  }
+  rpc CreateComment (CreateCommentRequest) returns (CreateCommentResponse) {
+    option (google.api.http) = {
+      post: "/api.rest.blog.v1/comments"
+      body: "*"
+    };
+  }
 }
 
 message User {
   uint64 id = 1;
   string username = 2;
-  string email = 3;
-  string avatar = 5;
-  string password = 4;
-  google.protobuf.Timestamp created_at = 6;
-  google.protobuf.Timestamp updated_at = 7;
+  string avatar = 3;
 }
 
 message Post {
