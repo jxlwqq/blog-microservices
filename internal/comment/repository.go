@@ -16,13 +16,20 @@ type Repository interface {
 	Create(comment *Comment) error
 	Update(comment *Comment) error
 	Delete(id uint64) error
-	ListByPostID(postID uint64) ([]*Comment, error)
+	ListByPostID(postID uint64, offset, limit int) ([]*Comment, error)
 	Get(id uint64) (*Comment, error)
+	CountByPostID(postID uint64) (uint64, error)
 }
 
 type repository struct {
 	logger *log.Logger
 	db     *dbcontext.DB
+}
+
+func (r repository) CountByPostID(postID uint64) (uint64, error) {
+	var count int64
+	err := r.db.Model(&Comment{}).Where("post_id = ?", postID).Count(&count).Error
+	return uint64(count), err
 }
 
 func (r repository) Get(id uint64) (*Comment, error) {
@@ -43,8 +50,8 @@ func (r repository) Delete(id uint64) error {
 	return r.db.Delete(&Comment{ID: id}).Error
 }
 
-func (r repository) ListByPostID(postID uint64) ([]*Comment, error) {
+func (r repository) ListByPostID(postID uint64, offset, limit int) ([]*Comment, error) {
 	var comments []*Comment
-	err := r.db.Where("post_id = ?", postID).Find(&comments).Error
+	err := r.db.Where("post_id = ?", postID).Offset(offset).Limit(limit).Find(&comments).Error
 	return comments, err
 }

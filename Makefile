@@ -30,6 +30,10 @@ protoc:
 		$$file; \
 	done
 
+.PHONY: blog-server
+blog-server:
+	go run ./cmd/blog/
+
 .PHONY: user-server
 user-server:
 	go run ./cmd/user/
@@ -48,6 +52,7 @@ auth-server:
 
 .PHONY: docker-build
 docker-build:
+	docker build -t blog/blog-server:latest -f ./build/docker/blog/Dockerfile .
 	docker build -t blog/user-server:latest -f ./build/docker/user/Dockerfile .
 	docker build -t blog/auth-server:latest -f ./build/docker/auth/Dockerfile .
 	docker build -t blog/post-server:latest -f ./build/docker/post/Dockerfile .
@@ -56,6 +61,7 @@ docker-build:
 .PHONY: kube-deploy
 kube-deploy:
 	kubectl apply -f ./deployments/
+	kubectl apply -f ./deployments/blog/
 	kubectl apply -f ./deployments/user/
 	kubectl apply -f ./deployments/post/
 	kubectl apply -f ./deployments/auth/
@@ -64,6 +70,7 @@ kube-deploy:
 .PHONY: kube-delete
 kube-delete:
 	kubectl delete -f ./deployments/
+	kubectl delete -f ./deployments/blog/
 	kubectl delete -f ./deployments/user/
 	kubectl delete -f ./deployments/post/
 	kubectl delete -f ./deployments/auth/

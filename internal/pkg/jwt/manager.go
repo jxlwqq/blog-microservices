@@ -8,30 +8,28 @@ import (
 	"time"
 )
 
-func NewJWTManager(logger *log.Logger, conf *config.Config) *JWTManager {
-	return &JWTManager{
+func NewManager(logger *log.Logger, conf *config.Config) *Manager {
+	return &Manager{
 		secret:  conf.JWT.Secret,
 		expires: conf.JWT.Expires,
 		logger:  logger,
 	}
 }
 
-type JWTManager struct {
+type Manager struct {
 	secret  string
 	expires time.Duration
 	logger  *log.Logger
 }
 
 type UserClaims struct {
-	ID       uint64 `json:"id"`
-	Username string `json:"username"`
+	ID uint64 `json:"id"`
 	jwt.StandardClaims
 }
 
-func (manager *JWTManager) Generate(id uint64, username string) (string, error) {
+func (manager *Manager) Generate(id uint64) (string, error) {
 	claims := UserClaims{
-		ID:       id,
-		Username: username,
+		ID: id,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(manager.expires).Unix(),
 		},
@@ -41,7 +39,7 @@ func (manager *JWTManager) Generate(id uint64, username string) (string, error) 
 	return token.SignedString([]byte(manager.secret))
 }
 
-func (manager *JWTManager) Verify(tokenStr string) (*UserClaims, error) {
+func (manager *Manager) Validate(tokenStr string) (*UserClaims, error) {
 	token, err := jwt.ParseWithClaims(
 		tokenStr,
 		&UserClaims{},

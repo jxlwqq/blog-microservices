@@ -2,37 +2,25 @@ package post
 
 import (
 	"context"
-	"github.com/jinzhu/copier"
+	"github.com/jxlwqq/blog-microservices/api/protobuf/post/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 
-	"github.com/jxlwqq/blog-microservices/api/protobuf"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-var prefix = "/api.protobuf.PostService/"
-
-var AuthMethods = map[string]bool{
-	prefix + "CreatePost": true,
-	prefix + "UpdatePost": true,
-	prefix + "DeletePost": true,
-	prefix + "GetPost":    false,
-	prefix + "ListPost":   false,
-}
-
-func NewServer(logger *log.Logger, repo Repository, userClient protobuf.UserServiceClient) protobuf.PostServiceServer {
-	return &Server{logger: logger, repo: repo, userClient: userClient}
+func NewServer(logger *log.Logger, repo Repository) v1.PostServiceServer {
+	return &Server{logger: logger, repo: repo}
 }
 
 type Server struct {
-	protobuf.UnimplementedPostServiceServer
-	logger     *log.Logger
-	repo       Repository
-	userClient protobuf.UserServiceClient
+	v1.UnimplementedPostServiceServer
+	logger *log.Logger
+	repo   Repository
 }
 
-func (s Server) IncrementCommentCount(_ context.Context, req *protobuf.IncrementCommentCountRequest) (*protobuf.IncrementCommentCountResponse, error) {
+func (s Server) IncrementCommentCount(_ context.Context, req *v1.IncrementCommentCountRequest) (*v1.IncrementCommentCountResponse, error) {
 	postID := req.GetId()
 	p, err := s.repo.Get(postID)
 	if err != nil {
@@ -45,10 +33,10 @@ func (s Server) IncrementCommentCount(_ context.Context, req *protobuf.Increment
 		return nil, status.Errorf(codes.Internal, "failed to update post %d", postID)
 	}
 
-	return &protobuf.IncrementCommentCountResponse{Success: true}, nil
+	return &v1.IncrementCommentCountResponse{Success: true}, nil
 }
 
-func (s Server) DecrementCommentCount(_ context.Context, request *protobuf.DecrementCommentCountRequest) (*protobuf.DecrementCommentCountResponse, error) {
+func (s Server) DecrementCommentCount(_ context.Context, request *v1.DecrementCommentCountRequest) (*v1.DecrementCommentCountResponse, error) {
 	postID := request.GetId()
 	p, err := s.repo.Get(postID)
 	if err != nil {
@@ -59,10 +47,10 @@ func (s Server) DecrementCommentCount(_ context.Context, request *protobuf.Decre
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update post %d", postID)
 	}
-	return &protobuf.DecrementCommentCountResponse{Success: true}, nil
+	return &v1.DecrementCommentCountResponse{Success: true}, nil
 }
 
-func (s Server) GetPost(ctx context.Context, req *protobuf.GetPostRequest) (*protobuf.GetPostResponse, error) {
+func (s Server) GetPost(ctx context.Context, req *v1.GetPostRequest) (*v1.GetPostResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
@@ -71,79 +59,62 @@ func (s Server) GetPost(ctx context.Context, req *protobuf.GetPostRequest) (*pro
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "post not found: %v", err)
 	}
-	user, err := s.userClient.GetUser(ctx, &protobuf.GetUserRequest{Id: post.UserID})
-	if err != nil {
-		return nil, status.Error(codes.NotFound, "user not found")
-	}
-	protobufPost := entityToProtobuf(post, user.User)
-	resp := &protobuf.GetPostResponse{
+	protobufPost := entityToProtobuf(post)
+	resp := &v1.GetPostResponse{
 		Post: protobufPost,
 	}
 
 	return resp, nil
 }
 
-func (s Server) CreatePost(ctx context.Context, req *protobuf.CreatePostRequest) (*protobuf.CreatePostResponse, error) {
+func (s Server) CreatePost(ctx context.Context, req *v1.CreatePostRequest) (*v1.CreatePostResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	userID, ok := ctx.Value("ID").(uint64)
-	if !ok {
-		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
-	}
+
 	post := &Post{
 		Title:   req.GetPost().GetTitle(),
 		Content: req.GetPost().GetContent(),
-		UserID:  userID,
+		UserID:  req.GetPost().GetUserId(),
 	}
 	err = s.repo.Create(post)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create post: %v", err)
 	}
 
-	user, err := s.userClient.GetUser(ctx, &protobuf.GetUserRequest{Id: post.UserID})
-	if err != nil {
-		return nil, status.Error(codes.NotFound, "user not found")
-	}
-
-	resp := &protobuf.CreatePostResponse{
-		Post: entityToProtobuf(post, user.User),
+	resp := &v1.CreatePostResponse{
+		Post: entityToProtobuf(post),
 	}
 
 	return resp, nil
 }
 
-func (s Server) UpdatePost(ctx context.Context, req *protobuf.UpdatePostRequest) (*protobuf.UpdatePostResponse, error) {
+func (s Server) UpdatePost(ctx context.Context, req *v1.UpdatePostRequest) (*v1.UpdatePostResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	userID, ok := ctx.Value("ID").(uint64)
-	if !ok {
-		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
-	}
+
 	postID := req.GetPost().GetId()
 	post, err := s.repo.Get(postID)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "post %d not found", postID)
 	}
-	if post.UserID != userID {
-		return nil, status.Errorf(codes.Unauthenticated, "user %d is not the owner of post %d, post user id %d", userID, post.ID, post.UserID)
-	}
+
 	err = s.repo.Update(post)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update post: %v", err)
 	}
 
-	resp := &protobuf.UpdatePostResponse{
+	resp := &v1.UpdatePostResponse{
 		Success: true,
 	}
 
 	return resp, nil
 }
 
-func (s Server) DeletePost(ctx context.Context, req *protobuf.DeletePostRequest) (*protobuf.DeletePostResponse, error) {
+func (s Server) DeletePost(ctx context.Context, req *v1.DeletePostRequest) (*v1.DeletePostResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
@@ -152,27 +123,20 @@ func (s Server) DeletePost(ctx context.Context, req *protobuf.DeletePostRequest)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "post %d not found", req.GetId())
 	}
-	userID, ok := ctx.Value("ID").(uint64)
-	if !ok {
-		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
-	}
-	if post.UserID != userID {
-		return nil, status.Errorf(codes.Unauthenticated, "user %d is not the owner of post %d", userID, post.ID)
-	}
 
 	err = s.repo.Delete(post.ID)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to delete post: %v", err)
 	}
 
-	resp := &protobuf.DeletePostResponse{
+	resp := &v1.DeletePostResponse{
 		Success: true,
 	}
 
 	return resp, nil
 }
 
-func (s Server) ListPosts(ctx context.Context, req *protobuf.ListPostsRequest) (*protobuf.ListPostsResponse, error) {
+func (s Server) ListPosts(ctx context.Context, req *v1.ListPostsRequest) (*v1.ListPostsResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
@@ -187,24 +151,10 @@ func (s Server) ListPosts(ctx context.Context, req *protobuf.ListPostsRequest) (
 	for _, post := range list {
 		userIDs = append(userIDs, post.UserID)
 	}
-	userReq := &protobuf.GetUserListByIDsRequest{
-		Ids: userIDs,
-	}
 
-	userResp, err := s.userClient.GetUserListByIDs(ctx, userReq)
-	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
-	}
-	users := userResp.GetUsers()
-	var posts []*protobuf.Post
+	var posts []*v1.Post
 	for _, post := range list {
-		user := &protobuf.User{}
-		for _, item := range users {
-			if post.UserID == item.Id {
-				_ = copier.Copy(user, item)
-			}
-		}
-		posts = append(posts, entityToProtobuf(post, user))
+		posts = append(posts, entityToProtobuf(post))
 	}
 
 	count, err := s.repo.Count()
@@ -212,15 +162,15 @@ func (s Server) ListPosts(ctx context.Context, req *protobuf.ListPostsRequest) (
 		return nil, status.Errorf(codes.Internal, "failed to count posts: %v", err)
 	}
 
-	resp := &protobuf.ListPostsResponse{
+	resp := &v1.ListPostsResponse{
 		Posts: posts,
 		Count: count,
 	}
 	return resp, nil
 }
 
-func entityToProtobuf(post *Post, user *protobuf.User) *protobuf.Post {
-	return &protobuf.Post{
+func entityToProtobuf(post *Post) *v1.Post {
+	return &v1.Post{
 		Id:            post.ID,
 		Title:         post.Title,
 		Content:       post.Content,
@@ -228,6 +178,5 @@ func entityToProtobuf(post *Post, user *protobuf.User) *protobuf.Post {
 		UserId:        post.UserID,
 		CreatedAt:     timestamppb.New(post.CreatedAt),
 		UpdatedAt:     timestamppb.New(post.UpdatedAt),
-		User:          user,
 	}
 }

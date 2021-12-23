@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package api.protobuf.blog.v1;
+
+option go_package = "github.com/jxlwqq/blog-microservices/api/protobuf/blog/v1";
+
+import "validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+
+service BlogService {
+  rpc SignUp (SignUpRequest) returns (SignUpResponse) {}
+  rpc SignIn (SignInRequest) returns (SignInResponse) {}
+  rpc CreatePost (CreatePostRequest) returns (CreatePostResponse) {}
+  rpc CreateComment (CreateCommentRequest) returns (CreateCommentResponse) {}
+}
+
+message User {
+  uint64 id = 1;
+  string username = 2;
+  string email = 3;
+  string avatar = 5;
+  string password = 4;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message Post {
+  uint64 id = 1;
+  string title = 2 [(validate.rules).string = {min_len: 1, max_len: 140}];
+  string content = 3 [(validate.rules).string = {min_len: 1, max_len: 3000}];
+  uint64 user_id = 4;
+  uint32 comments_count = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+  User user = 8;
+}
+
+message Comment {
+  uint64 id = 1;
+  string content = 2 [(validate.rules).string = {min_len: 1, max_len: 140}];
+  uint64 post_id = 3;
+  uint64 user_id = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+  Post post = 7;
+  User user = 8;
+}
+
+message SignUpRequest {
+  string username = 1 [(validate.rules).string = {min_len: 1, max_len: 30}];
+  string email = 2 [(validate.rules).string.email = true];
+  string password = 3;
+}
+
+message SignUpResponse {
+  string token = 1;
+}
+
+message SignInRequest {
+  oneof request {
+    string username = 1;
+    string email = 2;
+  }
+  string password = 3;
+}
+
+message SignInResponse {
+  string token = 1;
+}
+
+message CreatePostRequest {
+  Post post = 1;
+}
+
+message CreatePostResponse {
+  Post post = 1;
+}
+
+message CreateCommentRequest {
+  Comment comment = 1;
+}
+
+message CreateCommentResponse {
+  Comment comment = 1;
+}

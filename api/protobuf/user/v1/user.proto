@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package api.protobuf;
 
-option go_package = "github.com/stonecutter/blog-microservices/api/protobuf";
+option go_package = "github.com/stonecutter/blog-microservices/api/protobuf/user/v1";
 
 import "google/protobuf/timestamp.proto";
 import "validate/validate.proto";

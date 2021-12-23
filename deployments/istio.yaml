@@ -25,33 +25,9 @@ spec:
   http:
     - match:
         - uri:
-            prefix: "/api.protobuf.PostService"
+            prefix: "/api.protobuf.blog.v1.BlogService"
       route:
         - destination:
-            host: post-server.default.svc.cluster.local
+            host: blog-server.default.svc.cluster.local
             port:
-              number: 50052
-    - match:
-        - uri:
-            prefix: "/api.protobuf.AuthService"
-      route:
-        - destination:
-            host: auth-server.default.svc.cluster.local
-            port:
-              number: 50054
-    - match:
-        - uri:
-            prefix: "/api/rest/auth"
-      route:
-        - destination:
-            host: auth-server.default.svc.cluster.local
-            port:
-              number: 8054
-    - match:
-        - uri:
-            prefix: "/api.protobuf.CommentService"
-      route:
-        - destination:
-            host: comment-server.default.svc.cluster.local
-            port:
-              number: 50053
+              number: 50050

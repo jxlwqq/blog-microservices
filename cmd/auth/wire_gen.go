@@ -7,22 +7,17 @@
 package main
 
 import (
-	"github.com/jxlwqq/blog-microservices/api/protobuf"
+	"github.com/jxlwqq/blog-microservices/api/protobuf/auth/v1"
 	"github.com/jxlwqq/blog-microservices/internal/auth"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/jwt"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
-	"github.com/jxlwqq/blog-microservices/internal/user"
 )
 
 // Injectors from wire.go:
 
-func InitServer(logger *log.Logger, conf *config.Config) (protobuf.AuthServiceServer, error) {
-	jwtManager := jwt.NewJWTManager(logger, conf)
-	userServiceClient, err := user.NewClient(logger, conf)
-	if err != nil {
-		return nil, err
-	}
-	authServiceServer := auth.NewServer(logger, jwtManager, userServiceClient)
+func InitServer(logger *log.Logger, conf *config.Config) (v1.AuthServiceServer, error) {
+	manager := jwt.NewManager(logger, conf)
+	authServiceServer := auth.NewServer(logger, manager)
 	return authServiceServer, nil
 }

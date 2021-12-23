@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package api.protobuf.blog.v1;
+
+option go_package = "github.com/stonecutter/blog-microservices/api/protobuf/auth/v1";
+
+service AuthService {
+  rpc GenerateToken(GenerateTokenRequest) returns (GenerateTokenResponse) {}
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse) {}
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {}
+}
+
+message GenerateTokenRequest {
+  uint64 user_id = 1;
+}
+
+message GenerateTokenResponse {
+  string token = 1;
+}
+
+message ValidateTokenRequest {
+  string token = 1;
+}
+
+message ValidateTokenResponse {
+  bool valid = 1;
+}
+
+message RefreshTokenRequest {
+  string token = 1;
+}
+
+message RefreshTokenResponse {
+  string token = 1;
+}

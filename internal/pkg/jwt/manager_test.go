@@ -16,10 +16,9 @@ func TestJWTManager_Generate(t *testing.T) {
 			Expires: 3600,
 		},
 	}
-	jwtManager := NewJWTManager(logger, conf)
+	jwtManager := NewManager(logger, conf)
 	id := uint64(1)
-	username := "jack"
-	tokenStr, err := jwtManager.Generate(id, username)
+	tokenStr, err := jwtManager.Generate(id)
 	require.NoError(t, err)
 	require.NotEmpty(t, tokenStr)
 }
@@ -33,14 +32,12 @@ func TestJWTManager_Verify(t *testing.T) {
 			Expires: 3600,
 		},
 	}
-	jwtManager := NewJWTManager(logger, conf)
+	jwtManager := NewManager(logger, conf)
 	id := uint64(2)
-	username := "rose"
-	tokenStr, err := jwtManager.Generate(id, username)
+	tokenStr, err := jwtManager.Generate(id)
 	require.NoError(t, err)
 	require.NotEmpty(t, tokenStr)
-	claims, err := jwtManager.Verify(tokenStr)
+	claims, err := jwtManager.Validate(tokenStr)
 	require.NoError(t, err)
 	require.Equal(t, id, claims.ID)
-	require.Equal(t, username, claims.Username)
 }

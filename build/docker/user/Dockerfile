@@ -3,6 +3,7 @@ FROM --platform=$TARGETPLATFORM golang:1.17-alpine as builder
 ARG TARGETARCH
 ARG TARGETOS
 WORKDIR /workspace
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go install github.com/grpc-ecosystem/grpc-health-probe@latest
 COPY go.mod go.mod
 COPY go.sum go.sum
 RUN go mod download
@@ -10,7 +11,6 @@ COPY api/ api/
 COPY cmd/ cmd/
 COPY internal/ internal/
 RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -a -o app ./cmd/user/
-RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go install github.com/grpc-ecosystem/grpc-health-probe@latest
 
 FROM --platform=$TARGETPLATFORM alpine
 WORKDIR /

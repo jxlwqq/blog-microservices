@@ -1,11 +1,9 @@
 syntax = "proto3";
 
-package api.protobuf;
+package api.protobuf.comment.v1;
 
-option go_package = "github.com/stonecutter/blog-microservices/api/protobuf";
+option go_package = "github.com/stonecutter/blog-microservices/api/protobuf/comment/v1";
 
-import 'user.proto';
-import 'post.proto';
 import 'google/protobuf/timestamp.proto';
 import "validate/validate.proto";
 
@@ -23,8 +21,6 @@ message Comment {
   uint64 user_id = 4;
   google.protobuf.Timestamp created_at = 5;
   google.protobuf.Timestamp updated_at = 6;
-  User user = 7;
-  Post post = 8;
 }
 
 message CreateCommentRequest {

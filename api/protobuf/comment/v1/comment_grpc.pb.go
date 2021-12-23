@@ -4,7 +4,7 @@
 // - protoc             v3.19.1
 // source: comment.proto
 
-package protobuf
+package v1
 
 import (
 	context "context"
@@ -38,7 +38,7 @@ func NewCommentServiceClient(cc grpc.ClientConnInterface) CommentServiceClient {
 
 func (c *commentServiceClient) CreateComment(ctx context.Context, in *CreateCommentRequest, opts ...grpc.CallOption) (*CreateCommentResponse, error) {
 	out := new(CreateCommentResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.CommentService/CreateComment", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.comment.v1.CommentService/CreateComment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (c *commentServiceClient) CreateComment(ctx context.Context, in *CreateComm
 
 func (c *commentServiceClient) UpdateComment(ctx context.Context, in *UpdateCommentRequest, opts ...grpc.CallOption) (*UpdateCommentResponse, error) {
 	out := new(UpdateCommentResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.CommentService/UpdateComment", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.comment.v1.CommentService/UpdateComment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func (c *commentServiceClient) UpdateComment(ctx context.Context, in *UpdateComm
 
 func (c *commentServiceClient) DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*DeleteCommentResponse, error) {
 	out := new(DeleteCommentResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.CommentService/DeleteComment", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.comment.v1.CommentService/DeleteComment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +65,7 @@ func (c *commentServiceClient) DeleteComment(ctx context.Context, in *DeleteComm
 
 func (c *commentServiceClient) GetCommentListByPostID(ctx context.Context, in *GetCommentListByPostIDRequest, opts ...grpc.CallOption) (*GetCommentListByPostIDResponse, error) {
 	out := new(GetCommentListByPostIDResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.CommentService/GetCommentListByPostID", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.comment.v1.CommentService/GetCommentListByPostID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -122,7 +122,7 @@ func _CommentService_CreateComment_Handler(srv interface{}, ctx context.Context,
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.CommentService/CreateComment",
+		FullMethod: "/api.protobuf.comment.v1.CommentService/CreateComment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommentServiceServer).CreateComment(ctx, req.(*CreateCommentRequest))
@@ -140,7 +140,7 @@ func _CommentService_UpdateComment_Handler(srv interface{}, ctx context.Context,
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.CommentService/UpdateComment",
+		FullMethod: "/api.protobuf.comment.v1.CommentService/UpdateComment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommentServiceServer).UpdateComment(ctx, req.(*UpdateCommentRequest))
@@ -158,7 +158,7 @@ func _CommentService_DeleteComment_Handler(srv interface{}, ctx context.Context,
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.CommentService/DeleteComment",
+		FullMethod: "/api.protobuf.comment.v1.CommentService/DeleteComment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommentServiceServer).DeleteComment(ctx, req.(*DeleteCommentRequest))
@@ -176,7 +176,7 @@ func _CommentService_GetCommentListByPostID_Handler(srv interface{}, ctx context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.CommentService/GetCommentListByPostID",
+		FullMethod: "/api.protobuf.comment.v1.CommentService/GetCommentListByPostID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommentServiceServer).GetCommentListByPostID(ctx, req.(*GetCommentListByPostIDRequest))
@@ -188,7 +188,7 @@ func _CommentService_GetCommentListByPostID_Handler(srv interface{}, ctx context
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var CommentService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "api.protobuf.CommentService",
+	ServiceName: "api.protobuf.comment.v1.CommentService",
 	HandlerType: (*CommentServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

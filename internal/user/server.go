@@ -2,17 +2,16 @@ package user
 
 import (
 	"context"
-	"fmt"
+	"github.com/jxlwqq/blog-microservices/api/protobuf/user/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 
-	"github.com/jxlwqq/blog-microservices/api/protobuf"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func NewServer(logger *log.Logger, repo Repository) protobuf.UserServiceServer {
+func NewServer(logger *log.Logger, repo Repository) v1.UserServiceServer {
 	return &Server{
 		logger: logger,
 		repo:   repo,
@@ -20,23 +19,23 @@ func NewServer(logger *log.Logger, repo Repository) protobuf.UserServiceServer {
 }
 
 type Server struct {
-	protobuf.UnimplementedUserServiceServer
+	v1.UnimplementedUserServiceServer
 	logger *log.Logger
 	repo   Repository
 }
 
-func (s Server) DeleteUser(ctx context.Context, req *protobuf.DeleteUserRequest) (*protobuf.DeleteUserResponse, error) {
+func (s Server) DeleteUser(ctx context.Context, req *v1.DeleteUserRequest) (*v1.DeleteUserResponse, error) {
 	id := req.GetId()
 	err := s.repo.Delete(id)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "could not delete user: %v", err)
 	}
-	return &protobuf.DeleteUserResponse{
+	return &v1.DeleteUserResponse{
 		Success: true,
 	}, nil
 }
 
-func (s Server) GetUserListByIDs(ctx context.Context, req *protobuf.GetUserListByIDsRequest) (*protobuf.GetUserListByIDsResponse, error) {
+func (s Server) GetUserListByIDs(ctx context.Context, req *v1.GetUserListByIDsRequest) (*v1.GetUserListByIDsResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
@@ -46,17 +45,17 @@ func (s Server) GetUserListByIDs(ctx context.Context, req *protobuf.GetUserListB
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get user list by ids: %v", err)
 	}
-	protoUsers := make([]*protobuf.User, len(users))
+	protoUsers := make([]*v1.User, len(users))
 	for i, user := range users {
 		protoUsers[i] = entityToProtobuf(user)
 	}
-	resp := &protobuf.GetUserListByIDsResponse{
+	resp := &v1.GetUserListByIDsResponse{
 		Users: protoUsers,
 	}
 	return resp, nil
 }
 
-func (s Server) GetUser(ctx context.Context, req *protobuf.GetUserRequest) (*protobuf.GetUserResponse, error) {
+func (s Server) GetUser(ctx context.Context, req *v1.GetUserRequest) (*v1.GetUserResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
@@ -66,14 +65,14 @@ func (s Server) GetUser(ctx context.Context, req *protobuf.GetUserRequest) (*pro
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get user: %v", err)
 	}
-	resp := &protobuf.GetUserResponse{
+	resp := &v1.GetUserResponse{
 		User: entityToProtobuf(user),
 	}
 
 	return resp, nil
 }
 
-func (s Server) GetUserByEmail(ctx context.Context, req *protobuf.GetUserByEmailRequest) (*protobuf.GetUserResponse, error) {
+func (s Server) GetUserByEmail(ctx context.Context, req *v1.GetUserByEmailRequest) (*v1.GetUserResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
@@ -87,14 +86,14 @@ func (s Server) GetUserByEmail(ctx context.Context, req *protobuf.GetUserByEmail
 	if !ok {
 		return nil, status.Errorf(codes.Internal, "incorrect password")
 	}
-	resp := &protobuf.GetUserResponse{
+	resp := &v1.GetUserResponse{
 		User: entityToProtobuf(user),
 	}
 
 	return resp, nil
 }
 
-func (s Server) GetUserByUsername(ctx context.Context, req *protobuf.GetUserByUsernameRequest) (*protobuf.GetUserResponse, error) {
+func (s Server) GetUserByUsername(ctx context.Context, req *v1.GetUserByUsernameRequest) (*v1.GetUserResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
@@ -108,21 +107,19 @@ func (s Server) GetUserByUsername(ctx context.Context, req *protobuf.GetUserByUs
 	if !ok {
 		return nil, status.Errorf(codes.Internal, "incorrect password")
 	}
-	resp := &protobuf.GetUserResponse{
+	resp := &v1.GetUserResponse{
 		User: entityToProtobuf(user),
 	}
 
 	return resp, nil
 }
 
-func (s Server) CreateUser(ctx context.Context, req *protobuf.CreateUserRequest) (*protobuf.CreateUserResponse, error) {
+func (s Server) CreateUser(ctx context.Context, req *v1.CreateUserRequest) (*v1.CreateUserResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	fmt.Println(req.GetUser().GetPassword())
 	password, err := generateFromPassword(req.GetUser().GetPassword())
-	fmt.Println(password)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to bcrypt generate password: %v", err)
 	}
@@ -136,14 +133,14 @@ func (s Server) CreateUser(ctx context.Context, req *protobuf.CreateUserRequest)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create user: %v", err)
 	}
-	resp := &protobuf.CreateUserResponse{
+	resp := &v1.CreateUserResponse{
 		User: entityToProtobuf(user),
 	}
 
 	return resp, nil
 }
 
-func (s Server) UpdateUser(ctx context.Context, req *protobuf.UpdateUserRequest) (*protobuf.UpdateUserResponse, error) {
+func (s Server) UpdateUser(ctx context.Context, req *v1.UpdateUserRequest) (*v1.UpdateUserResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
@@ -169,7 +166,7 @@ func (s Server) UpdateUser(ctx context.Context, req *protobuf.UpdateUserRequest)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update user: %v", err)
 	}
-	resp := &protobuf.UpdateUserResponse{
+	resp := &v1.UpdateUserResponse{
 		Success: true,
 	}
 
@@ -189,8 +186,8 @@ func isCorrectPassword(hash, password string) bool {
 	return err == nil
 }
 
-func entityToProtobuf(user *User) *protobuf.User {
-	return &protobuf.User{
+func entityToProtobuf(user *User) *v1.User {
+	return &v1.User{
 		Id:        user.ID,
 		Username:  user.Username,
 		Email:     user.Email,

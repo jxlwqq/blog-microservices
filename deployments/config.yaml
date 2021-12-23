@@ -4,6 +4,16 @@ metadata:
   name: blog-config
 data:
   config.yaml: |-
+    blog:
+      server:
+        name: "blog"
+        host: 'blog-server'
+        grpc:
+          port: ':50050'
+        http:
+          port: ':8050'
+        metrics:
+          port: ':9050'
     user:
       db:
         host: 'user-db'

@@ -5,8 +5,7 @@ import (
 	"fmt"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/jxlwqq/blog-microservices/api/protobuf"
+	"github.com/jxlwqq/blog-microservices/api/protobuf/auth/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/interceptor"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
@@ -14,7 +13,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	flag "github.com/spf13/pflag"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"net"
@@ -52,7 +50,7 @@ func main() {
 		metricsInterceptor.Unary(),
 		grpc_recovery.UnaryServerInterceptor(),
 	)))
-	protobuf.RegisterAuthServiceServer(grpcServer, authServer)
+	v1.RegisterAuthServiceServer(grpcServer, authServer)
 	grpc_health_v1.RegisterHealthServer(grpcServer, healthServer)
 
 	lis, err := net.Listen("tcp", conf.Auth.Server.GRPC.Port)
@@ -70,19 +68,7 @@ func main() {
 		}
 	}()
 
-	// Start HTTP server
-	logger.Infof("HTTP Listening on port %s", conf.Auth.Server.HTTP.Port)
-	go func() {
-		mux := runtime.NewServeMux()
-		opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-		if err = protobuf.RegisterAuthServiceHandlerFromEndpoint(context.Background(), mux, conf.Auth.Server.GRPC.Port, opts); err != nil {
-			panic(err)
-		}
-		err = http.ListenAndServe(conf.Auth.Server.HTTP.Port, mux)
-		if err != nil {
-			panic(err)
-		}
-	}()
+	// todo: Start HTTP server
 
 	// Start Metrics server
 	logger.Infof("Metrics Listening on port %s", conf.Auth.Server.Metrics.Port)

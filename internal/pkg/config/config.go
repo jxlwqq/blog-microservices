@@ -35,6 +35,10 @@ type Server struct {
 	Metrics Metrics
 }
 
+type Blog struct {
+	Server Server
+}
+
 type User struct {
 	DB     DB
 	Server Server
@@ -60,6 +64,7 @@ type JWT struct {
 }
 
 type Config struct {
+	Blog    Blog
 	User    User
 	Post    Post
 	Comment Comment

@@ -1,3 +1,13 @@
+blog:
+  server:
+    name: "blog"
+    host: "localhost"
+    grpc:
+      port: ":50050"
+    http:
+      port: ":8050"
+    metrics:
+      port: ":9050"
 user:
   db:
     host: 'localhost'

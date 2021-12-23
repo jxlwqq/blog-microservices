@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func NewAuthInterceptor(logger *log.Logger, jwtManager *jwt.JWTManager, authMethods map[string]bool) *AuthInterceptor {
+func NewAuthInterceptor(logger *log.Logger, jwtManager *jwt.Manager, authMethods map[string]bool) *AuthInterceptor {
 	return &AuthInterceptor{
 		logger:      logger,
 		jwtManager:  jwtManager,
@@ -20,7 +20,7 @@ func NewAuthInterceptor(logger *log.Logger, jwtManager *jwt.JWTManager, authMeth
 
 type AuthInterceptor struct {
 	logger      *log.Logger
-	jwtManager  *jwt.JWTManager
+	jwtManager  *jwt.Manager
 	authMethods map[string]bool
 }
 
@@ -52,7 +52,7 @@ func (i *AuthInterceptor) authorize(ctx context.Context, method string) (*jwt.Us
 		return nil, status.Errorf(codes.Unauthenticated, "authorization token is not provided")
 	}
 	token := values[0]
-	claims, err := i.jwtManager.Verify(token)
+	claims, err := i.jwtManager.Validate(token)
 	if err != nil {
 		return nil, status.Errorf(codes.Unauthenticated, "authorization token is invalid")
 	}

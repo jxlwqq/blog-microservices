@@ -2,7 +2,7 @@ package user
 
 import (
 	"context"
-	"github.com/jxlwqq/blog-microservices/api/protobuf"
+	"github.com/jxlwqq/blog-microservices/api/protobuf/user/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/dbcontext"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
@@ -10,13 +10,13 @@ import (
 	"testing"
 )
 
-var u = &protobuf.User{
+var u = &v1.User{
 	Username: "test1",
 	Email:    "test1@test.com",
 	Password: "test1",
 }
 
-func newServer(t *testing.T) protobuf.UserServiceServer {
+func newServer(t *testing.T) v1.UserServiceServer {
 	logger := log.New()
 	path := config.GetPath()
 	conf, err := config.Load(path)
@@ -32,14 +32,14 @@ func newServer(t *testing.T) protobuf.UserServiceServer {
 
 func TestServer_CreateUser(t *testing.T) {
 	s := newServer(t)
-	req := &protobuf.CreateUserRequest{User: u}
+	req := &v1.CreateUserRequest{User: u}
 	resp, err := s.CreateUser(context.Background(), req)
 	require.NoError(t, err)
 	require.NotNil(t, resp.GetUser().GetId())
 }
 
 func TestServer_GetUserByEmail(t *testing.T) {
-	req := &protobuf.GetUserByEmailRequest{Email: u.GetEmail(), Password: u.GetPassword()}
+	req := &v1.GetUserByEmailRequest{Email: u.GetEmail(), Password: u.GetPassword()}
 	s := newServer(t)
 	resp, err := s.GetUserByEmail(context.Background(), req)
 	require.NoError(t, err)
@@ -48,7 +48,7 @@ func TestServer_GetUserByEmail(t *testing.T) {
 }
 
 func TestServer_GetUserByUsername(t *testing.T) {
-	req := &protobuf.GetUserByUsernameRequest{Username: u.GetUsername(), Password: u.GetPassword()}
+	req := &v1.GetUserByUsernameRequest{Username: u.GetUsername(), Password: u.GetPassword()}
 	s := newServer(t)
 	resp, err := s.GetUserByUsername(context.Background(), req)
 	require.NoError(t, err)
@@ -58,7 +58,7 @@ func TestServer_GetUserByUsername(t *testing.T) {
 
 func TestServer_DeleteUser(t *testing.T) {
 	s := newServer(t)
-	req := &protobuf.DeleteUserRequest{Id: u.Id}
+	req := &v1.DeleteUserRequest{Id: u.Id}
 	resp, err := s.DeleteUser(context.Background(), req)
 	require.NoError(t, err)
 	require.True(t, resp.GetSuccess())

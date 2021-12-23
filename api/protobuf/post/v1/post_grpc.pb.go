@@ -4,7 +4,7 @@
 // - protoc             v3.19.1
 // source: post.proto
 
-package protobuf
+package v1
 
 import (
 	context "context"
@@ -41,7 +41,7 @@ func NewPostServiceClient(cc grpc.ClientConnInterface) PostServiceClient {
 
 func (c *postServiceClient) GetPost(ctx context.Context, in *GetPostRequest, opts ...grpc.CallOption) (*GetPostResponse, error) {
 	out := new(GetPostResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.PostService/GetPost", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.post.v1.PostService/GetPost", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (c *postServiceClient) GetPost(ctx context.Context, in *GetPostRequest, opt
 
 func (c *postServiceClient) CreatePost(ctx context.Context, in *CreatePostRequest, opts ...grpc.CallOption) (*CreatePostResponse, error) {
 	out := new(CreatePostResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.PostService/CreatePost", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.post.v1.PostService/CreatePost", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (c *postServiceClient) CreatePost(ctx context.Context, in *CreatePostReques
 
 func (c *postServiceClient) UpdatePost(ctx context.Context, in *UpdatePostRequest, opts ...grpc.CallOption) (*UpdatePostResponse, error) {
 	out := new(UpdatePostResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.PostService/UpdatePost", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.post.v1.PostService/UpdatePost", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (c *postServiceClient) UpdatePost(ctx context.Context, in *UpdatePostReques
 
 func (c *postServiceClient) DeletePost(ctx context.Context, in *DeletePostRequest, opts ...grpc.CallOption) (*DeletePostResponse, error) {
 	out := new(DeletePostResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.PostService/DeletePost", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.post.v1.PostService/DeletePost", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +77,7 @@ func (c *postServiceClient) DeletePost(ctx context.Context, in *DeletePostReques
 
 func (c *postServiceClient) ListPosts(ctx context.Context, in *ListPostsRequest, opts ...grpc.CallOption) (*ListPostsResponse, error) {
 	out := new(ListPostsResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.PostService/ListPosts", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.post.v1.PostService/ListPosts", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +86,7 @@ func (c *postServiceClient) ListPosts(ctx context.Context, in *ListPostsRequest,
 
 func (c *postServiceClient) IncrementCommentCount(ctx context.Context, in *IncrementCommentCountRequest, opts ...grpc.CallOption) (*IncrementCommentCountResponse, error) {
 	out := new(IncrementCommentCountResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.PostService/IncrementCommentCount", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.post.v1.PostService/IncrementCommentCount", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +95,7 @@ func (c *postServiceClient) IncrementCommentCount(ctx context.Context, in *Incre
 
 func (c *postServiceClient) DecrementCommentCount(ctx context.Context, in *DecrementCommentCountRequest, opts ...grpc.CallOption) (*DecrementCommentCountResponse, error) {
 	out := new(DecrementCommentCountResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.PostService/DecrementCommentCount", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.post.v1.PostService/DecrementCommentCount", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -164,7 +164,7 @@ func _PostService_GetPost_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.PostService/GetPost",
+		FullMethod: "/api.protobuf.post.v1.PostService/GetPost",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PostServiceServer).GetPost(ctx, req.(*GetPostRequest))
@@ -182,7 +182,7 @@ func _PostService_CreatePost_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.PostService/CreatePost",
+		FullMethod: "/api.protobuf.post.v1.PostService/CreatePost",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PostServiceServer).CreatePost(ctx, req.(*CreatePostRequest))
@@ -200,7 +200,7 @@ func _PostService_UpdatePost_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.PostService/UpdatePost",
+		FullMethod: "/api.protobuf.post.v1.PostService/UpdatePost",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PostServiceServer).UpdatePost(ctx, req.(*UpdatePostRequest))
@@ -218,7 +218,7 @@ func _PostService_DeletePost_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.PostService/DeletePost",
+		FullMethod: "/api.protobuf.post.v1.PostService/DeletePost",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PostServiceServer).DeletePost(ctx, req.(*DeletePostRequest))
@@ -236,7 +236,7 @@ func _PostService_ListPosts_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.PostService/ListPosts",
+		FullMethod: "/api.protobuf.post.v1.PostService/ListPosts",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PostServiceServer).ListPosts(ctx, req.(*ListPostsRequest))
@@ -254,7 +254,7 @@ func _PostService_IncrementCommentCount_Handler(srv interface{}, ctx context.Con
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.PostService/IncrementCommentCount",
+		FullMethod: "/api.protobuf.post.v1.PostService/IncrementCommentCount",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PostServiceServer).IncrementCommentCount(ctx, req.(*IncrementCommentCountRequest))
@@ -272,7 +272,7 @@ func _PostService_DecrementCommentCount_Handler(srv interface{}, ctx context.Con
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.PostService/DecrementCommentCount",
+		FullMethod: "/api.protobuf.post.v1.PostService/DecrementCommentCount",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PostServiceServer).DecrementCommentCount(ctx, req.(*DecrementCommentCountRequest))
@@ -284,7 +284,7 @@ func _PostService_DecrementCommentCount_Handler(srv interface{}, ctx context.Con
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var PostService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "api.protobuf.PostService",
+	ServiceName: "api.protobuf.post.v1.PostService",
 	HandlerType: (*PostServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

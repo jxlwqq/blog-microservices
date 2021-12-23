@@ -2,107 +2,51 @@ package comment
 
 import (
 	"context"
-	"github.com/jxlwqq/blog-microservices/api/protobuf"
+	"github.com/jxlwqq/blog-microservices/api/protobuf/comment/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-var prefix = "/api.protobuf.CommentService/"
-
-var AuthMethods = map[string]bool{
-	prefix + "CreateComment":          true,
-	prefix + "UpdateComment":          true,
-	prefix + "DeleteComment":          true,
-	prefix + "GetCommentListByPostID": false,
-}
-
-func NewServer(logger *log.Logger, repo Repository, userClient protobuf.UserServiceClient, postClient protobuf.PostServiceClient) protobuf.CommentServiceServer {
+func NewServer(logger *log.Logger, repo Repository) v1.CommentServiceServer {
 	return &Server{
-		logger:     logger,
-		repo:       repo,
-		userClient: userClient,
-		postClient: postClient,
+		logger: logger,
+		repo:   repo,
 	}
 }
 
 type Server struct {
-	protobuf.UnimplementedCommentServiceServer
-	logger     *log.Logger
-	repo       Repository
-	userClient protobuf.UserServiceClient
-	postClient protobuf.PostServiceClient
+	v1.UnimplementedCommentServiceServer
+	logger *log.Logger
+	repo   Repository
 }
 
-func (s Server) CreateComment(ctx context.Context, req *protobuf.CreateCommentRequest) (*protobuf.CreateCommentResponse, error) {
-	userID, ok := ctx.Value("ID").(uint64)
-	if !ok {
-		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
-	}
-	s.logger.Info("CreateComment", "userID", userID)
-	userResp, err := s.userClient.GetUser(ctx, &protobuf.GetUserRequest{Id: userID})
-	user := userResp.GetUser()
-	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "user %d not found: %v", userID, err)
-	}
-	postID := req.GetComment().GetPostId()
-	postResp, err := s.postClient.GetPost(ctx, &protobuf.GetPostRequest{Id: postID})
-	post := postResp.GetPost()
-	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "post %d not found: %v", postID, err)
-	}
-	comment := Comment{
+func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest) (*v1.CreateCommentResponse, error) {
+	comment := &Comment{
 		Content: req.GetComment().GetContent(),
-		PostID:  postID,
-		UserID:  userID,
+		PostID:  req.GetComment().GetPostId(),
+		UserID:  req.GetComment().GetUserId(),
 	}
 
-	// TODO: 分布式事务
-	err = s.repo.Create(&comment)
+	err := s.repo.Create(comment)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "could not create comment: %v", err)
 	}
 
-	_, err = s.postClient.IncrementCommentCount(ctx, &protobuf.IncrementCommentCountRequest{Id: postID})
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "could not increment comment count: %v", err)
-	}
-
-	resp := &protobuf.CreateCommentResponse{
-		Comment: &protobuf.Comment{
-			Id:        comment.ID,
-			Content:   comment.Content,
-			PostId:    comment.PostID,
-			UserId:    comment.UserID,
-			CreatedAt: timestamppb.New(comment.CreatedAt),
-			UpdatedAt: timestamppb.New(comment.UpdatedAt),
-			User:      user,
-			Post:      post,
-		},
+	resp := &v1.CreateCommentResponse{
+		Comment: entityToProtobuf(comment),
 	}
 
 	return resp, nil
 }
 
-func (s Server) UpdateComment(ctx context.Context, req *protobuf.UpdateCommentRequest) (*protobuf.UpdateCommentResponse, error) {
-	userID, ok := ctx.Value("ID").(uint64)
-	if !ok {
-		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
-	}
-	s.logger.Info("UpdateComment", "userID", userID)
-	userResp, err := s.userClient.GetUser(ctx, &protobuf.GetUserRequest{Id: userID})
-	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "user %d not found: %v", userID, err)
-	}
-	user := userResp.GetUser()
+func (s Server) UpdateComment(ctx context.Context, req *v1.UpdateCommentRequest) (*v1.UpdateCommentResponse, error) {
+
 	commentID := req.GetComment().GetId()
-	c, err := s.repo.Get(commentID)
+	_, err := s.repo.Get(commentID)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "comment %d not found: %v", commentID, err)
-	}
-	if c.UserID != user.GetId() {
-		return nil, status.Errorf(codes.PermissionDenied, "user %d does not own comment %d", userID, commentID)
 	}
 
 	comment := &Comment{
@@ -115,89 +59,58 @@ func (s Server) UpdateComment(ctx context.Context, req *protobuf.UpdateCommentRe
 		return nil, status.Errorf(codes.Internal, "could not update comment: %v", err)
 	}
 
-	return &protobuf.UpdateCommentResponse{Success: true}, nil
+	return &v1.UpdateCommentResponse{Success: true}, nil
 
 }
 
-func (s Server) DeleteComment(ctx context.Context, req *protobuf.DeleteCommentRequest) (*protobuf.DeleteCommentResponse, error) {
-	userID, ok := ctx.Value("ID").(uint64)
-	if !ok {
-		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
-	}
-	userResp, err := s.userClient.GetUser(ctx, &protobuf.GetUserRequest{Id: userID})
-	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "user %d not found: %v", userID, err)
-	}
-	user := userResp.GetUser()
+func (s Server) DeleteComment(ctx context.Context, req *v1.DeleteCommentRequest) (*v1.DeleteCommentResponse, error) {
 	commentID := req.GetId()
-	comment, err := s.repo.Get(commentID)
-	postResp, err := s.postClient.GetPost(ctx, &protobuf.GetPostRequest{Id: comment.PostID})
+	_, err := s.repo.Get(commentID)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "post %d not found: %v", comment.PostID, err)
+		return nil, status.Errorf(codes.NotFound, "comment %d not found: %v", commentID, err)
 	}
-	post := postResp.GetPost()
-
-	if comment.UserID != user.GetId() && post.UserId != user.GetId() {
-		return nil, status.Errorf(codes.PermissionDenied, "user %d does not own comment %d", userID, commentID)
-	}
-
-	// TODO: 分布式事务
 	err = s.repo.Delete(commentID)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "could not delete comment: %v", err)
 	}
-
-	_, err = s.postClient.DecrementCommentCount(ctx, &protobuf.DecrementCommentCountRequest{Id: comment.PostID})
-
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "could not decrement post comments count: %v", err)
-	}
-
-	return &protobuf.DeleteCommentResponse{
+	return &v1.DeleteCommentResponse{
 		Success: true,
 	}, nil
 }
 
-func (s Server) GetCommentsByPostID(ctx context.Context, req *protobuf.GetCommentListByPostIDRequest) (*protobuf.GetCommentListByPostIDResponse, error) {
+func (s Server) GetCommentListByPostID(ctx context.Context, req *v1.GetCommentListByPostIDRequest) (*v1.GetCommentListByPostIDResponse, error) {
 	postID := req.GetPostId()
-	comments, err := s.repo.ListByPostID(postID)
+	offset := req.GetOffset()
+	limit := req.GetLimit()
+	list, err := s.repo.ListByPostID(postID, int(offset), int(limit))
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "could not get comments: %v", err)
 	}
 
-	var userIDs []uint64
+	var comments []*v1.Comment
 
-	for _, comment := range comments {
-		userIDs = append(userIDs, comment.UserID)
+	for _, comment := range list {
+		comments = append(comments, entityToProtobuf(comment))
 	}
 
-	usersResp, err := s.userClient.GetUserListByIDs(ctx, &protobuf.GetUserListByIDsRequest{Ids: userIDs})
+	total, err := s.repo.CountByPostID(postID)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "could not get users: %v", err)
+		return nil, status.Errorf(codes.Internal, "could not get comments: %v", err)
 	}
 
-	users := usersResp.GetUsers()
-
-	var commentsWithUsers []*protobuf.Comment
-
-	for _, comment := range comments {
-		for _, user := range users {
-			if user.GetId() == comment.UserID {
-				commentsWithUsers = append(commentsWithUsers, &protobuf.Comment{
-					Id:        comment.ID,
-					Content:   comment.Content,
-					PostId:    comment.PostID,
-					UserId:    comment.UserID,
-					CreatedAt: timestamppb.New(comment.CreatedAt),
-					UpdatedAt: timestamppb.New(comment.UpdatedAt),
-					User:      user,
-				})
-			}
-		}
-	}
-
-	return &protobuf.GetCommentListByPostIDResponse{
-		Comments: commentsWithUsers,
+	return &v1.GetCommentListByPostIDResponse{
+		Comments: comments,
+		Total:    total,
 	}, nil
+}
 
+func entityToProtobuf(comment *Comment) *v1.Comment {
+	return &v1.Comment{
+		Id:        comment.ID,
+		Content:   comment.Content,
+		PostId:    comment.PostID,
+		UserId:    comment.UserID,
+		CreatedAt: timestamppb.New(comment.CreatedAt),
+		UpdatedAt: timestamppb.New(comment.UpdatedAt),
+	}
 }

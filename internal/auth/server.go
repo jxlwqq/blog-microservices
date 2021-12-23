@@ -2,101 +2,57 @@ package auth
 
 import (
 	"context"
-	"github.com/jxlwqq/blog-microservices/api/protobuf"
+	"github.com/jxlwqq/blog-microservices/api/protobuf/auth/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/jwt"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func NewServer(logger *log.Logger, jwtManager *jwt.JWTManager, userClient protobuf.UserServiceClient) protobuf.AuthServiceServer {
+func NewServer(logger *log.Logger, jwtManager *jwt.Manager) v1.AuthServiceServer {
 	return &Server{
 		logger:     logger,
 		jwtManager: jwtManager,
-		userClient: userClient,
 	}
 }
 
 type Server struct {
-	protobuf.UnimplementedAuthServiceServer
+	v1.UnimplementedAuthServiceServer
 	logger     *log.Logger
-	jwtManager *jwt.JWTManager
-	userClient protobuf.UserServiceClient
+	jwtManager *jwt.Manager
 }
 
-func (s Server) SignIn(ctx context.Context, req *protobuf.SignInRequest) (*protobuf.SignInResponse, error) {
-	err := req.ValidateAll()
+func (s Server) GenerateToken(ctx context.Context, req *v1.GenerateTokenRequest) (*v1.GenerateTokenResponse, error) {
+	token, err := s.jwtManager.Generate(req.GetUserId())
 	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
+		return nil, status.Error(codes.Internal, "failed to generate token")
 	}
-	email := req.GetEmail()
-	username := req.GetUsername()
-	password := req.GetPassword()
-	if email == "" && username == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "email and username cannot be empty")
-	}
-	var userID uint64
-	var userName string
-	if email != "" {
-		resp, err := s.userClient.GetUserByEmail(ctx, &protobuf.GetUserByEmailRequest{
-			Email:    email,
-			Password: password,
-		})
-		if err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to get user by email: %v", err)
-		}
-		user := resp.GetUser()
-		userID = user.GetId()
-		userName = user.GetUsername()
-	} else {
-		req, err := s.userClient.GetUserByUsername(ctx, &protobuf.GetUserByUsernameRequest{
-			Username: username,
-			Password: password,
-		})
-		if err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to get user by username: %v", err)
-		}
-		user := req.GetUser()
-		userID = user.GetId()
-		userName = user.GetUsername()
-	}
-
-	token, err := s.jwtManager.Generate(userID, userName)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to generate token: %v", err)
-	}
-
-	return &protobuf.SignInResponse{Token: token}, nil
+	return &v1.GenerateTokenResponse{
+		Token: token,
+	}, nil
 }
 
-func (s Server) SignUp(ctx context.Context, req *protobuf.SignUpRequest) (*protobuf.SignUpResponse, error) {
-	err := req.ValidateAll()
+func (s Server) ValidateToken(ctx context.Context, req *v1.ValidateTokenRequest) (*v1.ValidateTokenResponse, error) {
+	claims, err := s.jwtManager.Validate(req.GetToken())
+	if claims.ID == 0 || err != nil {
+		return nil, status.Error(codes.Unauthenticated, "invalid token")
+
+	}
+	return &v1.ValidateTokenResponse{
+		Valid: true,
+	}, nil
+}
+
+func (s Server) RefreshToken(ctx context.Context, req *v1.RefreshTokenRequest) (*v1.RefreshTokenResponse, error) {
+	claims, err := s.jwtManager.Validate(req.GetToken())
 	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
+		return nil, status.Error(codes.Unauthenticated, "invalid token")
 	}
-	username := req.GetUsername()
-	email := req.GetEmail()
-	password := req.GetPassword()
-
-	u := &protobuf.User{
-		Username: username,
-		Email:    email,
-		Password: password,
-	}
-
-	resp, err := s.userClient.CreateUser(ctx, &protobuf.CreateUserRequest{
-		User: u,
-	})
+	token, err := s.jwtManager.Generate(claims.ID)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create user: %v", err)
+		return nil, status.Error(codes.Internal, "failed to generate token")
 	}
-
-	userID := resp.GetUser().GetId()
-	username = resp.GetUser().GetUsername()
-	token, err := s.jwtManager.Generate(userID, username)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to generate token: %v", err)
-	}
-	return &protobuf.SignUpResponse{Token: token}, nil
-
+	return &v1.RefreshTokenResponse{
+		Token: token,
+	}, nil
 }

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	"github.com/jxlwqq/blog-microservices/api/protobuf"
+	"github.com/jxlwqq/blog-microservices/api/protobuf/user/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/interceptor"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
@@ -49,7 +49,7 @@ func main() {
 		metricsInterceptor.Unary(),
 		grpc_recovery.UnaryServerInterceptor(),
 	)))
-	protobuf.RegisterUserServiceServer(grpcServer, userServer)
+	v1.RegisterUserServiceServer(grpcServer, userServer)
 	grpc_health_v1.RegisterHealthServer(grpcServer, healthServer)
 
 	lis, err := net.Listen("tcp", conf.User.Server.GRPC.Port)

@@ -1,11 +1,10 @@
 syntax = "proto3";
 
-package api.protobuf;
+package api.protobuf.post.v1;
 
-option go_package = "github.com/stonecutter/blog-microservices/api/protobuf";
+option go_package = "github.com/stonecutter/blog-microservices/api/protobuf/post/v1";
 
 import "google/protobuf/timestamp.proto";
-import "user.proto";
 import "validate/validate.proto";
 
 service PostService {
@@ -26,7 +25,6 @@ message Post {
   uint32 comments_count = 5;
   google.protobuf.Timestamp created_at = 6;
   google.protobuf.Timestamp updated_at = 7;
-  User user = 8;
 }
 
 message GetPostRequest {
