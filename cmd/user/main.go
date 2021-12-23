@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/jxlwqq/blog-microservices/api/protobuf"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/interceptor"
@@ -46,6 +47,7 @@ func main() {
 	metricsInterceptor := interceptor.NewMetricsInterceptor(logger, m)
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
 		metricsInterceptor.Unary(),
+		grpc_recovery.UnaryServerInterceptor(),
 	)))
 	protobuf.RegisterUserServiceServer(grpcServer, userServer)
 	grpc_health_v1.RegisterHealthServer(grpcServer, healthServer)
