@@ -61,6 +61,7 @@ docker-build:
 .PHONY: kube-deploy
 kube-deploy:
 	kubectl apply -f ./deployments/
+	kubectl apply -f ./deployments/dtm/
 	kubectl apply -f ./deployments/blog/
 	kubectl apply -f ./deployments/user/
 	kubectl apply -f ./deployments/post/
@@ -70,6 +71,7 @@ kube-deploy:
 .PHONY: kube-delete
 kube-delete:
 	kubectl delete -f ./deployments/
+	kubectl delete -f ./deployments/dtm/
 	kubectl delete -f ./deployments/blog/
 	kubectl delete -f ./deployments/user/
 	kubectl delete -f ./deployments/post/

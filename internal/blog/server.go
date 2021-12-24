@@ -127,7 +127,7 @@ func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest)
 	//}
 
 	// 分布式事务(Saga 模式)
-	DtmGrpcServer := "localhost:36790"
+	DtmGrpcServer := s.conf.DTM.Server.Host + s.conf.DTM.Server.GRPC.Port
 	gid := dtmgrpc.MustGenGid(DtmGrpcServer)
 	s.logger.Info("gid:", gid)
 	saga := dtmgrpc.NewSagaGrpc(DtmGrpcServer, gid).Add(
@@ -150,6 +150,7 @@ func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest)
 	)
 	err = saga.Submit()
 	if err != nil {
+		s.logger.Error("saga submit error:", err)
 		return nil, status.Error(codes.Internal, "saga submit failed")
 	}
 

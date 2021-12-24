@@ -58,6 +58,10 @@ type Auth struct {
 	Server Server
 }
 
+type DTM struct {
+	Server Server
+}
+
 type JWT struct {
 	Secret  string        `json:"secret" yaml:"secret"`
 	Expires time.Duration `json:"expires" yaml:"expires"`
@@ -69,6 +73,7 @@ type Config struct {
 	Post    Post
 	Comment Comment
 	Auth    Auth
+	DTM     DTM
 	JWT     JWT
 }
 

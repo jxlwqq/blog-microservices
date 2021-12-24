@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: dtm-server
+  name: dtm-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dtm-server
+  template:
+    metadata:
+      labels:
+        app: dtm-server
+    spec:
+      containers:
+        - name: dtm-server
+          image: yedf/dtm:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 36789
+              protocol: TCP
+              name: http
+            - containerPort: 36790
+              protocol: TCP
+              name: grpc
+            - containerPort: 8889
+              protocol: TCP
+              name: metrics
+          env:
+            - name: DB_HOST
+              value: dtm-db
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USER
+              value: root
+            - name: DB_PASSWORD
+              value: ''
+            - name: TRANS_CRON_INTERVAL
+              value: "10"
+            - name: IS_DOCKER
+              value: '1'
+          livenessProbe:
+            httpGet:
+              path: /api/ping
+              port: 36789
+              scheme: HTTP
+          readinessProbe:
+            httpGet:
+              path: /api/ping
+              port: 36789
+              scheme: HTTP
+          resources:
+            requests:
+              cpu: 200m
+              memory: 200Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dtm-server
+spec:
+  ports:
+    - port: 36790
+      targetPort: 36790
+      name: grpc
+      appProtocol: grpc
+    - port: 36789
+      targetPort: 36789
+      name: http
+      appProtocol: http
+    - port: 8889
+      targetPort: 8889
+      name: metrics
+      appProtocol: http
+  selector:
+    app: dtm-server
