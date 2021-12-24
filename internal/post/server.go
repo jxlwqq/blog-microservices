@@ -36,6 +36,20 @@ func (s Server) IncrementCommentCount(_ context.Context, req *v1.IncrementCommen
 	return &v1.IncrementCommentCountResponse{Success: true}, nil
 }
 
+func (s Server) IncrementCommentCountCompensate(ctx context.Context, req *v1.IncrementCommentCountRequest) (*v1.IncrementCommentCountResponse, error) {
+	postID := req.GetId()
+	p, err := s.repo.Get(postID)
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "post %d not found", postID)
+	}
+	p.CommentsCount--
+	err = s.repo.Update(p)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update post %d", postID)
+	}
+	return &v1.IncrementCommentCountResponse{Success: true}, nil
+}
+
 func (s Server) DecrementCommentCount(_ context.Context, request *v1.DecrementCommentCountRequest) (*v1.DecrementCommentCountResponse, error) {
 	postID := request.GetId()
 	p, err := s.repo.Get(postID)
@@ -74,6 +88,7 @@ func (s Server) CreatePost(ctx context.Context, req *v1.CreatePostRequest) (*v1.
 	}
 
 	post := &Post{
+		UUID:    req.GetPost().GetUuid(),
 		Title:   req.GetPost().GetTitle(),
 		Content: req.GetPost().GetContent(),
 		UserID:  req.GetPost().GetUserId(),

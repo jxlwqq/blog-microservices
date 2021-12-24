@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/jxlwqq/blog-microservices/api/protobuf/user/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 
@@ -124,6 +125,7 @@ func (s Server) CreateUser(ctx context.Context, req *v1.CreateUserRequest) (*v1.
 		return nil, status.Errorf(codes.Internal, "failed to bcrypt generate password: %v", err)
 	}
 	user := &User{
+		UUID:     uuid.New().String(),
 		Username: req.GetUser().GetUsername(),
 		Email:    req.GetUser().GetEmail(),
 		Avatar:   req.GetUser().GetAvatar(),

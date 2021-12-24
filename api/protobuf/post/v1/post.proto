@@ -14,17 +14,19 @@ service PostService {
   rpc DeletePost(DeletePostRequest) returns (DeletePostResponse) {}
   rpc ListPosts(ListPostsRequest) returns (ListPostsResponse) {}
   rpc IncrementCommentCount(IncrementCommentCountRequest) returns (IncrementCommentCountResponse) {}
+  rpc IncrementCommentCountCompensate(IncrementCommentCountRequest) returns (IncrementCommentCountResponse) {}
   rpc DecrementCommentCount(DecrementCommentCountRequest) returns (DecrementCommentCountResponse) {}
 }
 
 message Post {
   uint64 id = 1;
-  string title = 2 [(validate.rules).string = {min_len: 1, max_len: 140}];
-  string content = 3 [(validate.rules).string = {min_len: 1, max_len: 3000}];
-  uint64 user_id = 4;
-  uint32 comments_count = 5;
-  google.protobuf.Timestamp created_at = 6;
-  google.protobuf.Timestamp updated_at = 7;
+  string uuid = 2;
+  string title = 3 [(validate.rules).string = {min_len: 1, max_len: 140}];
+  string content = 4 [(validate.rules).string = {min_len: 1, max_len: 3000}];
+  uint64 user_id = 5;
+  uint32 comments_count = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
 }
 
 message GetPostRequest {

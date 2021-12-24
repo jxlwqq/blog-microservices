@@ -2,11 +2,13 @@ package blog
 
 import (
 	"context"
+	"github.com/google/uuid"
 	authv1 "github.com/jxlwqq/blog-microservices/api/protobuf/auth/v1"
 	v1 "github.com/jxlwqq/blog-microservices/api/protobuf/blog/v1"
 	commentv1 "github.com/jxlwqq/blog-microservices/api/protobuf/comment/v1"
 	postv1 "github.com/jxlwqq/blog-microservices/api/protobuf/post/v1"
 	userv1 "github.com/jxlwqq/blog-microservices/api/protobuf/user/v1"
+	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -22,6 +24,7 @@ var AuthMethods = map[string]bool{
 }
 
 func NewServer(logger *log.Logger,
+	conf *config.Config,
 	userClient userv1.UserServiceClient,
 	postClient postv1.PostServiceClient,
 	commentClient commentv1.CommentServiceClient,
@@ -29,6 +32,7 @@ func NewServer(logger *log.Logger,
 ) v1.BlogServiceServer {
 	return &Server{
 		logger:        logger,
+		conf:          conf,
 		userClient:    userClient,
 		postClient:    postClient,
 		commentClient: commentClient,
@@ -39,6 +43,7 @@ func NewServer(logger *log.Logger,
 type Server struct {
 	v1.UnimplementedBlogServiceServer
 	logger        *log.Logger
+	conf          *config.Config
 	userClient    userv1.UserServiceClient
 	postClient    postv1.PostServiceClient
 	commentClient commentv1.CommentServiceClient
@@ -66,6 +71,7 @@ func (s Server) CreatePost(ctx context.Context, req *v1.CreatePostRequest) (*v1.
 
 	postResp, err := s.postClient.CreatePost(ctx, &postv1.CreatePostRequest{
 		Post: &postv1.Post{
+			Uuid:    uuid.New().String(),
 			Title:   title,
 			Content: content,
 			UserId:  userResp.GetUser().GetId(),
@@ -114,8 +120,40 @@ func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest)
 	postUserResp, err := s.userClient.GetUser(ctx, &userv1.GetUserRequest{
 		Id: postResp.GetPost().GetUserId(),
 	})
+
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	// 分布式事务(Saga 模式)
+	//DtmGrpcServer := "localhost:36790"
+	//gid := dtmgrpc.MustGenGid(DtmGrpcServer)
+	//s.logger.Info("gid:", gid)
+	//saga := dtmgrpc.NewSagaGrpc(DtmGrpcServer, gid).Add(
+	//	s.conf.Comment.Server.Host+s.conf.Comment.Server.GRPC.Port+"/"+commentv1.CommentService_ServiceDesc.ServiceName+"/CreateComment",
+	//	s.conf.Comment.Server.Host+s.conf.Comment.Server.GRPC.Port+"/"+commentv1.CommentService_ServiceDesc.ServiceName+"/CreateCommentCompensate",
+	//	&commentv1.Comment{
+	//		Uuid:    uuid.New().String(),
+	//		PostId:  postResp.GetPost().GetId(),
+	//		UserId:  userResp.GetUser().GetId(),
+	//		Content: req.GetComment().GetContent(),
+	//	},
+	//).Add(
+	//	s.conf.Post.Server.Host+s.conf.Post.Server.GRPC.Port+"/"+postv1.PostService_ServiceDesc.ServiceName+"/IncrementCommentCount",
+	//	s.conf.Post.Server.Host+s.conf.Post.Server.GRPC.Port+"/"+postv1.PostService_ServiceDesc.ServiceName+"/IncrementCommentCountCompensate",
+	//	&postv1.IncrementCommentCountRequest{
+	//		Id: postID,
+	//	},
+	//)
+	//err = saga.Submit()
+	//if err != nil {
+	//	return nil, status.Error(codes.Internal, "saga submit failed")
+	//}
+	//
+
 	commentResp, err := s.commentClient.CreateComment(ctx, &commentv1.CreateCommentRequest{
 		Comment: &commentv1.Comment{
+			Uuid:    uuid.New().String(),
 			PostId:  postResp.GetPost().GetId(),
 			UserId:  userResp.GetUser().GetId(),
 			Content: req.GetComment().GetContent(),

@@ -16,6 +16,7 @@ type Repository interface {
 	Create(comment *Comment) error
 	Update(comment *Comment) error
 	Delete(id uint64) error
+	DeleteByUUID(uuid string) error
 	ListByPostID(postID uint64, offset, limit int) ([]*Comment, error)
 	Get(id uint64) (*Comment, error)
 	CountByPostID(postID uint64) (uint64, error)
@@ -48,6 +49,10 @@ func (r repository) Update(comment *Comment) error {
 
 func (r repository) Delete(id uint64) error {
 	return r.db.Delete(&Comment{ID: id}).Error
+}
+
+func (r repository) DeleteByUUID(uuid string) error {
+	return r.db.Delete(&Comment{UUID: uuid}).Error
 }
 
 func (r repository) ListByPostID(postID uint64, offset, limit int) ([]*Comment, error) {

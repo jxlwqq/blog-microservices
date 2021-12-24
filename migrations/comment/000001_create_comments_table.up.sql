@@ -1,6 +1,7 @@
 create table comments
 (
     id         bigint unsigned not null auto_increment primary key,
+    uuid       varchar(36)     not null unique,
     user_id    bigint unsigned not null,
     post_id    bigint unsigned not null,
     content    text            not null,

@@ -1,6 +1,7 @@
 create table users
 (
     id         bigint unsigned not null auto_increment primary key,
+    uuid       varchar(36)     not null unique,
     username   varchar(255)    not null unique,
     email      varchar(255)    not null unique,
     avatar     varchar(255) default null,

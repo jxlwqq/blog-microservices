@@ -9,6 +9,7 @@ import "validate/validate.proto";
 
 service CommentService {
   rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse) {}
+  rpc CreateCommentCompensate(CreateCommentRequest) returns (CreateCommentResponse) {}
   rpc UpdateComment(UpdateCommentRequest) returns (UpdateCommentResponse) {}
   rpc DeleteComment(DeleteCommentRequest) returns (DeleteCommentResponse) {}
   rpc GetCommentListByPostID(GetCommentListByPostIDRequest) returns (GetCommentListByPostIDResponse) {}
@@ -16,11 +17,12 @@ service CommentService {
 
 message Comment {
   uint64 id = 1;
-  string content = 2 [(validate.rules).string = {min_len: 1, max_len: 140}];
-  uint64 post_id = 3;
-  uint64 user_id = 4;
-  google.protobuf.Timestamp created_at = 5;
-  google.protobuf.Timestamp updated_at = 6;
+  string uuid = 2;
+  string content = 3 [(validate.rules).string = {min_len: 1, max_len: 140}];
+  uint64 post_id = 4;
+  uint64 user_id = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
 }
 
 message CreateCommentRequest {

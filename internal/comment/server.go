@@ -24,6 +24,7 @@ type Server struct {
 
 func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest) (*v1.CreateCommentResponse, error) {
 	comment := &Comment{
+		UUID:    req.GetComment().GetUuid(),
 		Content: req.GetComment().GetContent(),
 		PostID:  req.GetComment().GetPostId(),
 		UserID:  req.GetComment().GetUserId(),
@@ -39,6 +40,15 @@ func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest)
 	}
 
 	return resp, nil
+}
+
+func (s Server) CreateCommentCompensate(ctx context.Context, req *v1.CreateCommentRequest) (*v1.CreateCommentResponse, error) {
+	err := s.repo.DeleteByUUID(req.GetComment().GetUuid())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "could not create comment: %v", err)
+	}
+
+	return &v1.CreateCommentResponse{}, nil
 }
 
 func (s Server) UpdateComment(ctx context.Context, req *v1.UpdateCommentRequest) (*v1.UpdateCommentResponse, error) {

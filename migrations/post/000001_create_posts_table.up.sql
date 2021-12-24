@@ -1,6 +1,7 @@
 create table posts
 (
     id             bigint unsigned not null auto_increment primary key,
+    uuid           varchar(36)     not null unique,
     user_id        bigint unsigned not null,
     title          varchar(255)    not null,
     content        text            not null,

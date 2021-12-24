@@ -19,12 +19,13 @@ service UserService {
 
 message User {
   uint64 id = 1;
-  string username = 2;
-  string email = 3;
+  string uuid = 2;
+  string username = 3;
+  string email = 4;
   string avatar = 5;
-  string password = 4;
-  google.protobuf.Timestamp created_at = 6;
-  google.protobuf.Timestamp updated_at = 7;
+  string password = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
 }
 
 message GetUserListByIDsRequest {

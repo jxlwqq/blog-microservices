@@ -58,6 +58,8 @@ func (m *Comment) validate(all bool) error {
 
 	// no validation rules for Id
 
+	// no validation rules for Uuid
+
 	if l := utf8.RuneCountInString(m.GetContent()); l < 1 || l > 140 {
 		err := CommentValidationError{
 			field:  "Content",

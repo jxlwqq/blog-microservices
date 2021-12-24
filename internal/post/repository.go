@@ -17,6 +17,7 @@ type Repository interface {
 	Create(post *Post) error
 	Update(post *Post) error
 	Delete(id uint64) error
+	DeleteByUUID(uuid string) error
 	List(offset, limit int) ([]*Post, error)
 	Count() (uint64, error)
 }
@@ -42,6 +43,10 @@ func (r repository) Update(post *Post) error {
 
 func (r repository) Delete(id uint64) error {
 	return r.db.Delete(&Post{}, id).Error
+}
+
+func (r repository) DeleteByUUID(uuid string) error {
+	return r.db.Delete(&Post{}, "uuid = ?", uuid).Error
 }
 
 func (r repository) List(offset, limit int) ([]*Post, error) {

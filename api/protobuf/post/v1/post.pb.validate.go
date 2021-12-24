@@ -58,6 +58,8 @@ func (m *Post) validate(all bool) error {
 
 	// no validation rules for Id
 
+	// no validation rules for Uuid
+
 	if l := utf8.RuneCountInString(m.GetTitle()); l < 1 || l > 140 {
 		err := PostValidationError{
 			field:  "Title",

@@ -36,6 +36,6 @@ func InitServer(logger *log.Logger, conf *config.Config) (v1.BlogServiceServer, 
 	if err != nil {
 		return nil, err
 	}
-	blogServiceServer := blog.NewServer(logger, userServiceClient, postServiceClient, commentServiceClient, authServiceClient)
+	blogServiceServer := blog.NewServer(logger, conf, userServiceClient, postServiceClient, commentServiceClient, authServiceClient)
 	return blogServiceServer, nil
 }

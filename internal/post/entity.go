@@ -4,6 +4,7 @@ import "time"
 
 type Post struct {
 	ID            uint64    `json:"id"`
+	UUID          string    `json:"uuid"`
 	Title         string    `json:"title"`
 	Content       string    `json:"content"`
 	CommentsCount uint32    `json:"comments_count"`
