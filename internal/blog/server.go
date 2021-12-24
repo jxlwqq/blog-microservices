@@ -10,6 +10,7 @@ import (
 	userv1 "github.com/jxlwqq/blog-microservices/api/protobuf/user/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
+	"github.com/yedf/dtm/dtmgrpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -117,89 +118,91 @@ func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest)
 		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
-	postUserResp, err := s.userClient.GetUser(ctx, &userv1.GetUserRequest{
-		Id: postResp.GetPost().GetUserId(),
-	})
-
-	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
-	}
+	//postUserResp, err := s.userClient.GetUser(ctx, &userv1.GetUserRequest{
+	//	Id: postResp.GetPost().GetUserId(),
+	//})
+	//
+	//if err != nil {
+	//	return nil, status.Error(codes.Internal, err.Error())
+	//}
 
 	// 分布式事务(Saga 模式)
-	//DtmGrpcServer := "localhost:36790"
-	//gid := dtmgrpc.MustGenGid(DtmGrpcServer)
-	//s.logger.Info("gid:", gid)
-	//saga := dtmgrpc.NewSagaGrpc(DtmGrpcServer, gid).Add(
-	//	s.conf.Comment.Server.Host+s.conf.Comment.Server.GRPC.Port+"/"+commentv1.CommentService_ServiceDesc.ServiceName+"/CreateComment",
-	//	s.conf.Comment.Server.Host+s.conf.Comment.Server.GRPC.Port+"/"+commentv1.CommentService_ServiceDesc.ServiceName+"/CreateCommentCompensate",
-	//	&commentv1.Comment{
+	DtmGrpcServer := "localhost:36790"
+	gid := dtmgrpc.MustGenGid(DtmGrpcServer)
+	s.logger.Info("gid:", gid)
+	saga := dtmgrpc.NewSagaGrpc(DtmGrpcServer, gid).Add(
+		s.conf.Comment.Server.Host+s.conf.Comment.Server.GRPC.Port+"/"+commentv1.CommentService_ServiceDesc.ServiceName+"/CreateComment",
+		s.conf.Comment.Server.Host+s.conf.Comment.Server.GRPC.Port+"/"+commentv1.CommentService_ServiceDesc.ServiceName+"/CreateCommentCompensate",
+		&commentv1.CreateCommentRequest{
+			Comment: &commentv1.Comment{
+				Uuid:    uuid.New().String(),
+				PostId:  postResp.GetPost().GetId(),
+				UserId:  userResp.GetUser().GetId(),
+				Content: req.GetComment().GetContent(),
+			},
+		},
+	).Add(
+		s.conf.Post.Server.Host+s.conf.Post.Server.GRPC.Port+"/"+postv1.PostService_ServiceDesc.ServiceName+"/IncrementCommentCount",
+		s.conf.Post.Server.Host+s.conf.Post.Server.GRPC.Port+"/"+postv1.PostService_ServiceDesc.ServiceName+"/IncrementCommentCountCompensate",
+		&postv1.IncrementCommentCountRequest{
+			Id: postID,
+		},
+	)
+	err = saga.Submit()
+	if err != nil {
+		return nil, status.Error(codes.Internal, "saga submit failed")
+	}
+
+	return &v1.CreateCommentResponse{}, nil
+
+	//commentResp, err := s.commentClient.CreateComment(ctx, &commentv1.CreateCommentRequest{
+	//	Comment: &commentv1.Comment{
 	//		Uuid:    uuid.New().String(),
 	//		PostId:  postResp.GetPost().GetId(),
 	//		UserId:  userResp.GetUser().GetId(),
 	//		Content: req.GetComment().GetContent(),
 	//	},
-	//).Add(
-	//	s.conf.Post.Server.Host+s.conf.Post.Server.GRPC.Port+"/"+postv1.PostService_ServiceDesc.ServiceName+"/IncrementCommentCount",
-	//	s.conf.Post.Server.Host+s.conf.Post.Server.GRPC.Port+"/"+postv1.PostService_ServiceDesc.ServiceName+"/IncrementCommentCountCompensate",
-	//	&postv1.IncrementCommentCountRequest{
-	//		Id: postID,
-	//	},
-	//)
-	//err = saga.Submit()
+	//})
 	//if err != nil {
-	//	return nil, status.Error(codes.Internal, "saga submit failed")
+	//	return nil, status.Error(codes.Internal, err.Error())
 	//}
 	//
-
-	commentResp, err := s.commentClient.CreateComment(ctx, &commentv1.CreateCommentRequest{
-		Comment: &commentv1.Comment{
-			Uuid:    uuid.New().String(),
-			PostId:  postResp.GetPost().GetId(),
-			UserId:  userResp.GetUser().GetId(),
-			Content: req.GetComment().GetContent(),
-		},
-	})
-	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-
-	_, err = s.postClient.IncrementCommentCount(ctx, &postv1.IncrementCommentCountRequest{
-		Id: postID,
-	})
-	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-
-	return &v1.CreateCommentResponse{
-		Comment: &v1.Comment{
-			Id:        commentResp.GetComment().GetId(),
-			Content:   commentResp.GetComment().GetContent(),
-			PostId:    commentResp.GetComment().GetPostId(),
-			UserId:    commentResp.GetComment().GetUserId(),
-			CreatedAt: commentResp.GetComment().GetCreatedAt(),
-			UpdatedAt: commentResp.GetComment().GetUpdatedAt(),
-			Post: &v1.Post{
-				Id:            postResp.GetPost().GetId(),
-				Title:         postResp.GetPost().GetTitle(),
-				Content:       postResp.GetPost().GetContent(),
-				UserId:        postResp.GetPost().GetUserId(),
-				CommentsCount: postResp.GetPost().GetCommentsCount(),
-				CreatedAt:     postResp.GetPost().GetCreatedAt(),
-				UpdatedAt:     postResp.GetPost().GetUpdatedAt(),
-				User: &v1.User{
-					Id:       postUserResp.GetUser().GetId(),
-					Username: postUserResp.GetUser().GetUsername(),
-					Avatar:   postUserResp.GetUser().GetAvatar(),
-				},
-			},
-			User: &v1.User{
-				Id:       userResp.GetUser().GetId(),
-				Username: userResp.GetUser().GetUsername(),
-				Avatar:   userResp.GetUser().GetAvatar(),
-			},
-		},
-	}, nil
-
+	//_, err = s.postClient.IncrementCommentCount(ctx, &postv1.IncrementCommentCountRequest{
+	//	Id: postID,
+	//})
+	//if err != nil {
+	//	return nil, status.Error(codes.Internal, err.Error())
+	//}
+	//
+	//return &v1.CreateCommentResponse{
+	//	Comment: &v1.Comment{
+	//		Id:        commentResp.GetComment().GetId(),
+	//		Content:   commentResp.GetComment().GetContent(),
+	//		PostId:    commentResp.GetComment().GetPostId(),
+	//		UserId:    commentResp.GetComment().GetUserId(),
+	//		CreatedAt: commentResp.GetComment().GetCreatedAt(),
+	//		UpdatedAt: commentResp.GetComment().GetUpdatedAt(),
+	//		Post: &v1.Post{
+	//			Id:            postResp.GetPost().GetId(),
+	//			Title:         postResp.GetPost().GetTitle(),
+	//			Content:       postResp.GetPost().GetContent(),
+	//			UserId:        postResp.GetPost().GetUserId(),
+	//			CommentsCount: postResp.GetPost().GetCommentsCount(),
+	//			CreatedAt:     postResp.GetPost().GetCreatedAt(),
+	//			UpdatedAt:     postResp.GetPost().GetUpdatedAt(),
+	//			User: &v1.User{
+	//				Id:       postUserResp.GetUser().GetId(),
+	//				Username: postUserResp.GetUser().GetUsername(),
+	//				Avatar:   postUserResp.GetUser().GetAvatar(),
+	//			},
+	//		},
+	//		User: &v1.User{
+	//			Id:       userResp.GetUser().GetId(),
+	//			Username: userResp.GetUser().GetUsername(),
+	//			Avatar:   userResp.GetUser().GetAvatar(),
+	//		},
+	//	},
+	//}, nil
 }
 
 func (s Server) SignUp(ctx context.Context, req *v1.SignUpRequest) (*v1.SignUpResponse, error) {
