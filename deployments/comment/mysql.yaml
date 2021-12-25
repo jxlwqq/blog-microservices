@@ -30,11 +30,11 @@ spec:
               name: comment-initdb
           resources:
             requests:
-              cpu: 1000m
-              memory: 1000Mi
+              cpu: 200m
+              memory: 200Mi
             limits:
-              cpu: 1000m
-              memory: 1000Mi
+              cpu: 200m
+              memory: 200Mi
       volumes:
         - name: comment-db
           persistentVolumeClaim:
