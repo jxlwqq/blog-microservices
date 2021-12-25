@@ -3,6 +3,7 @@ module github.com/jxlwqq/blog-microservices
 go 1.17
 
 require (
+	github.com/dtm-labs/dtm v1.7.3
 	github.com/envoyproxy/protoc-gen-validate v0.6.2
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.3.0
@@ -13,7 +14,6 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.0
-	github.com/yedf/dtm v1.7.2
 	go.uber.org/zap v1.19.1
 	golang.org/x/crypto v0.0.0-20211215153901-e495a2d5b3d3
 	google.golang.org/genproto v0.0.0-20211223182754-3ac035c7e7cb
@@ -33,6 +33,7 @@ require (
 	github.com/cncf/udpa/go v0.0.0-20210930031921-04548b0d99d4 // indirect
 	github.com/cncf/xds/go v0.0.0-20211216145620-d92e9ce0af51 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/dtm-labs/dtmdriver v0.0.1 // indirect
 	github.com/envoyproxy/go-control-plane v0.10.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/go-resty/resty/v2 v2.7.0 // indirect
@@ -58,7 +59,6 @@ require (
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
-	github.com/yedf/dtmdriver v0.0.0-20211203060147-29426c663b6e // indirect
 	go.opencensus.io v0.23.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
