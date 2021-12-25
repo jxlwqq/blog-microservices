@@ -23,23 +23,28 @@ type Server struct {
 }
 
 func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest) (*v1.CreateCommentResponse, error) {
+
+	find, err := s.repo.GetByUUID(req.GetComment().GetUuid())
+	if err == nil {
+		return &v1.CreateCommentResponse{
+			Comment: entityToProtobuf(find),
+		}, nil
+	}
+
 	comment := &Comment{
 		UUID:    req.GetComment().GetUuid(),
 		Content: req.GetComment().GetContent(),
 		PostID:  req.GetComment().GetPostId(),
 		UserID:  req.GetComment().GetUserId(),
 	}
-
-	err := s.repo.Create(comment)
+	err = s.repo.Create(comment)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "could not create comment: %v", err)
 	}
 
-	resp := &v1.CreateCommentResponse{
+	return &v1.CreateCommentResponse{
 		Comment: entityToProtobuf(comment),
-	}
-
-	return resp, nil
+	}, nil
 }
 
 func (s Server) CreateCommentCompensate(ctx context.Context, req *v1.CreateCommentRequest) (*v1.CreateCommentResponse, error) {

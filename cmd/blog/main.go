@@ -4,6 +4,7 @@ import (
 	"context"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	v1 "github.com/jxlwqq/blog-microservices/api/protobuf/blog/v1"
 	"github.com/jxlwqq/blog-microservices/internal/blog"
@@ -11,7 +12,6 @@ import (
 	"github.com/jxlwqq/blog-microservices/internal/pkg/interceptor"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/jwt"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
-	"github.com/jxlwqq/blog-microservices/internal/pkg/metrics"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	flag "github.com/spf13/pflag"
 	"google.golang.org/grpc"
@@ -44,14 +44,10 @@ func main() {
 
 	jwtManager := jwt.NewManager(logger, conf)
 	authInterceptor := interceptor.NewAuthInterceptor(logger, jwtManager, blog.AuthMethods)
-	m, err := metrics.New(conf.Blog.Server.Name)
-	if err != nil {
-		logger.Fatal("init metrics failed", err)
-	}
-	metricsInterceptor := interceptor.NewMetricsInterceptor(logger, m)
+
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
 		authInterceptor.Unary(),
-		metricsInterceptor.Unary(),
+		grpc_prometheus.UnaryServerInterceptor,
 		grpc_recovery.UnaryServerInterceptor(),
 	)))
 

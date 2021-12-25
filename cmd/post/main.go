@@ -5,11 +5,10 @@ import (
 	"fmt"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/jxlwqq/blog-microservices/api/protobuf/post/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
-	"github.com/jxlwqq/blog-microservices/internal/pkg/interceptor"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
-	"github.com/jxlwqq/blog-microservices/internal/pkg/metrics"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	flag "github.com/spf13/pflag"
 	"google.golang.org/grpc"
@@ -39,13 +38,8 @@ func main() {
 	}
 	healthServer := health.NewServer()
 
-	m, err := metrics.New(conf.Post.Server.Name)
-	if err != nil {
-		logger.Fatal(err)
-	}
-	metricsInterceptor := interceptor.NewMetricsInterceptor(logger, m)
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-		metricsInterceptor.Unary(),
+		grpc_prometheus.UnaryServerInterceptor,
 		grpc_recovery.UnaryServerInterceptor(),
 	)))
 
