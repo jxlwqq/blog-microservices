@@ -6,6 +6,7 @@ init:
 	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
 	go install github.com/google/wire/cmd/wire@latest
 	go install -tags 'mysql' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+	@echo "Installing PGV can currently only be done from source. See: https://github.com/envoyproxy/protoc-gen-validate#installation"
 
 
 .PHONY: wire
