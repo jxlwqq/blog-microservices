@@ -64,9 +64,11 @@ comment-server:
 auth-server:
 	go run ./cmd/auth/
 
-.PHONY: dmt-server
-dmt-server:
+.PHONY: dtm-server
+dtm-server:
 	@echo "Quick start DTM server. See: https://github.com/dtm-labs/dtm"
+	@echo "git clone git@github.com:dtm-labs/dtm.git"
+	@echo "cd dtm && go run app/main.go qs"
 
 .PHONY: docker-build
 docker-build:
