@@ -46,6 +46,12 @@ service BlogService {
       body: "*"
     };
   }
+
+  rpc ListCommentsByPostID (ListCommentsByPostIDRequest) returns (ListCommentsByPostIDResponse) {
+    option (google.api.http) = {
+      get: "/api.rest.blog.v1/comments"
+    };
+  }
 }
 
 message User {
@@ -129,5 +135,16 @@ message ListPostsRequest {
 
 message ListPostsResponse {
   repeated Post posts = 1;
-  uint32 total = 2;
+  uint64 total = 2;
+}
+
+message ListCommentsByPostIDRequest {
+  uint64 post_id = 1;
+  uint32 offset = 2;
+  uint32 limit = 3;
+}
+
+message ListCommentsByPostIDResponse {
+  repeated Comment comments = 1;
+  uint64 total = 2;
 }

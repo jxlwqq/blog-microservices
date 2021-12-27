@@ -277,6 +277,37 @@ func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest)
 	}, nil
 }
 
+func (s Server) ListCommentsByPostID(ctx context.Context, req *v1.ListCommentsByPostIDRequest) (*v1.ListCommentsByPostIDResponse, error) {
+	postID := req.GetPostId()
+	offset := req.GetOffset()
+	limit := req.GetLimit()
+	commentResp, err := s.commentClient.ListCommentsByPostID(ctx, &commentv1.ListCommentsByPostIDRequest{
+		PostId: postID,
+		Offset: int32(offset),
+		Limit:  int32(limit),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var comments []*v1.Comment
+	for _, comment := range commentResp.GetComments() {
+		comments = append(comments, &v1.Comment{
+			Id:        comment.GetId(),
+			Content:   comment.GetContent(),
+			PostId:    comment.GetPostId(),
+			UserId:    comment.GetUserId(),
+			CreatedAt: comment.GetCreatedAt(),
+			UpdatedAt: comment.GetUpdatedAt(),
+		})
+	}
+
+	return &v1.ListCommentsByPostIDResponse{
+		Comments: comments,
+		Total:    0,
+	}, nil
+}
+
 func (s Server) SignUp(ctx context.Context, req *v1.SignUpRequest) (*v1.SignUpResponse, error) {
 	username := req.GetUsername()
 	email := req.GetEmail()
