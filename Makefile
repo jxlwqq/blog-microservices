@@ -1,3 +1,5 @@
+redeployed-at:=$(shell date +%s)
+
 .PHONY: init
 init:
 	go install google.golang.org/protobuf/cmd/protoc-gen-go
@@ -51,6 +53,10 @@ comment-server:
 auth-server:
 	go run ./cmd/auth/
 
+.PHONY: dmt-server
+dmt-server:
+	@echo "Quick start DTM server. See: https://github.com/dtm-labs/dtm"
+
 .PHONY: docker-build
 docker-build:
 	docker build -t blog/blog-server:latest -f ./build/docker/blog/Dockerfile .
@@ -82,7 +88,12 @@ kube-delete:
 
 .PHONY: kube-redeploy
 kube-redeploy:
-	./scripts/kube-redeploy.sh
+	@echo "redeployed at ${redeployed-at}"
+	kubectl patch deployment blog-server -p '{"spec": {"template": {"metadata": {"annotations": {"redeployed-at": "'${redeployed-at}'" }}}}}'
+	kubectl patch deployment user-server -p '{"spec": {"template": {"metadata": {"annotations": {"redeployed-at": "'${redeployed-at}'" }}}}}'
+	kubectl patch deployment auth-server -p '{"spec": {"template": {"metadata": {"annotations": {"redeployed-at": "'${redeployed-at}'" }}}}}'
+	kubectl patch deployment post-server -p '{"spec": {"template": {"metadata": {"annotations": {"redeployed-at": "'${redeployed-at}'" }}}}}'
+	kubectl patch deployment comment-server -p '{"spec": {"template": {"metadata": {"annotations": {"redeployed-at": "'${redeployed-at}'" }}}}}'
 
 .PHONY: test
 test:
@@ -90,8 +101,12 @@ test:
 
 .PHONY: migrate-up
 migrate-up:
-	./scripts/migrate-up.sh
+	migrate -path ./migrations/user -database "mysql://root:@tcp(localhost:3306)/users" -verbose up
+	migrate -path ./migrations/post -database "mysql://root:@tcp(localhost:3306)/posts" -verbose up
+	migrate -path ./migrations/comment -database "mysql://root:@tcp(localhost:3306)/comments" -verbose up
 
 .PHONY: migrate-down
 migrate-down:
-	./scripts/migrate-down.sh
+	migrate -path ./migrations/user -database "mysql://root:@tcp(localhost:3306)/users" -verbose down
+	migrate -path ./migrations/post -database "mysql://root:@tcp(localhost:3306)/posts" -verbose down
+	migrate -path ./migrations/comment -database "mysql://root:@tcp(localhost:3306)/comments" -verbose down
