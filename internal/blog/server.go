@@ -156,7 +156,7 @@ func (s Server) ListPosts(ctx context.Context, req *v1.ListPostsRequest) (*v1.Li
 		postUserIDs = append(postUserIDs, post.GetUserId())
 	}
 
-	postUserResp, err := s.userClient.GetUserListByIDs(ctx, &userv1.GetUserListByIDsRequest{
+	postUserResp, err := s.userClient.ListUsersByIDs(ctx, &userv1.ListUsersByIDsRequest{
 		Ids: postUserIDs,
 	})
 

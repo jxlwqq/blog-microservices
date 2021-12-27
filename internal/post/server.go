@@ -161,12 +161,6 @@ func (s Server) ListPosts(ctx context.Context, req *v1.ListPostsRequest) (*v1.Li
 		return nil, status.Errorf(codes.Internal, "failed to list posts: %v", err)
 	}
 
-	var userIDs []uint64
-
-	for _, post := range list {
-		userIDs = append(userIDs, post.UserID)
-	}
-
 	var posts []*v1.Post
 	for _, post := range list {
 		posts = append(posts, entityToProtobuf(post))

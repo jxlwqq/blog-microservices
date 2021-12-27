@@ -36,13 +36,13 @@ func (s Server) DeleteUser(ctx context.Context, req *v1.DeleteUserRequest) (*v1.
 	}, nil
 }
 
-func (s Server) GetUserListByIDs(ctx context.Context, req *v1.GetUserListByIDsRequest) (*v1.GetUserListByIDsResponse, error) {
+func (s Server) ListUsersByIDs(ctx context.Context, req *v1.ListUsersByIDsRequest) (*v1.ListUsersByIDsResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 	ids := req.GetIds()
-	users, err := s.repo.GetListByIDs(ids)
+	users, err := s.repo.ListUsersByIDs(ids)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get user list by ids: %v", err)
 	}
@@ -50,7 +50,7 @@ func (s Server) GetUserListByIDs(ctx context.Context, req *v1.GetUserListByIDsRe
 	for i, user := range users {
 		protoUsers[i] = entityToProtobuf(user)
 	}
-	resp := &v1.GetUserListByIDsResponse{
+	resp := &v1.ListUsersByIDsResponse{
 		Users: protoUsers,
 	}
 	return resp, nil

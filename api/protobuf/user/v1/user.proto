@@ -8,7 +8,7 @@ import "google/protobuf/timestamp.proto";
 import "validate/validate.proto";
 
 service UserService {
-  rpc GetUserListByIDs(GetUserListByIDsRequest) returns (GetUserListByIDsResponse) {}
+  rpc ListUsersByIDs(ListUsersByIDsRequest) returns (ListUsersByIDsResponse) {}
   rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
   rpc GetUserByEmail(GetUserByEmailRequest) returns (GetUserResponse) {}
   rpc GetUserByUsername(GetUserByUsernameRequest) returns (GetUserResponse) {}
@@ -28,11 +28,11 @@ message User {
   google.protobuf.Timestamp updated_at = 8;
 }
 
-message GetUserListByIDsRequest {
+message ListUsersByIDsRequest {
   repeated uint64 ids = 1;
 }
 
-message GetUserListByIDsResponse {
+message ListUsersByIDsResponse {
   repeated User users = 1;
 }
 

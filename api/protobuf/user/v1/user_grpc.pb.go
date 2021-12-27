@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
-	GetUserListByIDs(ctx context.Context, in *GetUserListByIDsRequest, opts ...grpc.CallOption) (*GetUserListByIDsResponse, error)
+	ListUsersByIDs(ctx context.Context, in *ListUsersByIDsRequest, opts ...grpc.CallOption) (*ListUsersByIDsResponse, error)
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 	GetUserByEmail(ctx context.Context, in *GetUserByEmailRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 	GetUserByUsername(ctx context.Context, in *GetUserByUsernameRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
@@ -35,9 +35,9 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 	return &userServiceClient{cc}
 }
 
-func (c *userServiceClient) GetUserListByIDs(ctx context.Context, in *GetUserListByIDsRequest, opts ...grpc.CallOption) (*GetUserListByIDsResponse, error) {
-	out := new(GetUserListByIDsResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.UserService/GetUserListByIDs", in, out, opts...)
+func (c *userServiceClient) ListUsersByIDs(ctx context.Context, in *ListUsersByIDsRequest, opts ...grpc.CallOption) (*ListUsersByIDsResponse, error) {
+	out := new(ListUsersByIDsResponse)
+	err := c.cc.Invoke(ctx, "/api.protobuf.UserService/ListUsersByIDs", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +102,7 @@ func (c *userServiceClient) DeleteUser(ctx context.Context, in *DeleteUserReques
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
 type UserServiceServer interface {
-	GetUserListByIDs(context.Context, *GetUserListByIDsRequest) (*GetUserListByIDsResponse, error)
+	ListUsersByIDs(context.Context, *ListUsersByIDsRequest) (*ListUsersByIDsResponse, error)
 	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
 	GetUserByEmail(context.Context, *GetUserByEmailRequest) (*GetUserResponse, error)
 	GetUserByUsername(context.Context, *GetUserByUsernameRequest) (*GetUserResponse, error)
@@ -116,8 +116,8 @@ type UserServiceServer interface {
 type UnimplementedUserServiceServer struct {
 }
 
-func (UnimplementedUserServiceServer) GetUserListByIDs(context.Context, *GetUserListByIDsRequest) (*GetUserListByIDsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUserListByIDs not implemented")
+func (UnimplementedUserServiceServer) ListUsersByIDs(context.Context, *ListUsersByIDsRequest) (*ListUsersByIDsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListUsersByIDs not implemented")
 }
 func (UnimplementedUserServiceServer) GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
@@ -150,20 +150,20 @@ func RegisterUserServiceServer(s grpc.ServiceRegistrar, srv UserServiceServer) {
 	s.RegisterService(&UserService_ServiceDesc, srv)
 }
 
-func _UserService_GetUserListByIDs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetUserListByIDsRequest)
+func _UserService_ListUsersByIDs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListUsersByIDsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).GetUserListByIDs(ctx, in)
+		return srv.(UserServiceServer).ListUsersByIDs(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.UserService/GetUserListByIDs",
+		FullMethod: "/api.protobuf.UserService/ListUsersByIDs",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).GetUserListByIDs(ctx, req.(*GetUserListByIDsRequest))
+		return srv.(UserServiceServer).ListUsersByIDs(ctx, req.(*ListUsersByIDsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -284,8 +284,8 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UserServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetUserListByIDs",
-			Handler:    _UserService_GetUserListByIDs_Handler,
+			MethodName: "ListUsersByIDs",
+			Handler:    _UserService_ListUsersByIDs_Handler,
 		},
 		{
 			MethodName: "GetUser",
