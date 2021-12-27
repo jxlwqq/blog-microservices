@@ -10,16 +10,6 @@ init:
 	go install -tags 'mysql' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 	@echo "Installing PGV can currently only be done from source. See: https://github.com/envoyproxy/protoc-gen-validate#installation"
 
-
-.PHONY: wire
-wire:
-	wire ./...
-
-.PHONY: update
-update:
-	go get -u ./...
-	go mod tidy
-
 .PHONY: protoc
 protoc:
 	for file in $$(find api -name '*.proto'); do \
@@ -32,6 +22,27 @@ protoc:
 		--grpc-gateway_out=:$$(dirname $$file) --grpc-gateway_opt=paths=source_relative \
 		$$file; \
 	done
+
+.PHONY: wire
+wire:
+	wire ./...
+
+.PHONY: test
+test:
+	go test -cover -race ./...
+
+.PHONY: migrate-up
+migrate-up:
+	migrate -path ./migrations/user -database "mysql://root:@tcp(localhost:3306)/users" -verbose up
+	migrate -path ./migrations/post -database "mysql://root:@tcp(localhost:3306)/posts" -verbose up
+	migrate -path ./migrations/comment -database "mysql://root:@tcp(localhost:3306)/comments" -verbose up
+
+.PHONY: migrate-down
+migrate-down:
+	migrate -path ./migrations/user -database "mysql://root:@tcp(localhost:3306)/users" -verbose down
+	migrate -path ./migrations/post -database "mysql://root:@tcp(localhost:3306)/posts" -verbose down
+	migrate -path ./migrations/comment -database "mysql://root:@tcp(localhost:3306)/comments" -verbose down
+
 
 .PHONY: blog-server
 blog-server:
@@ -74,6 +85,7 @@ kube-deploy:
 	kubectl apply -f ./deployments/post/
 	kubectl apply -f ./deployments/auth/
 	kubectl apply -f ./deployments/comment/
+	kubectl apply -f ./deployments/addons/
 
 .PHONY: kube-delete
 kube-delete:
@@ -84,7 +96,7 @@ kube-delete:
 	kubectl delete -f ./deployments/post/
 	kubectl delete -f ./deployments/auth/
 	kubectl delete -f ./deployments/comment/
-
+	kubectl apply -f ./deployments/addons/
 
 .PHONY: kube-redeploy
 kube-redeploy:
@@ -94,19 +106,3 @@ kube-redeploy:
 	kubectl patch deployment auth-server -p '{"spec": {"template": {"metadata": {"annotations": {"redeployed-at": "'${redeployed-at}'" }}}}}'
 	kubectl patch deployment post-server -p '{"spec": {"template": {"metadata": {"annotations": {"redeployed-at": "'${redeployed-at}'" }}}}}'
 	kubectl patch deployment comment-server -p '{"spec": {"template": {"metadata": {"annotations": {"redeployed-at": "'${redeployed-at}'" }}}}}'
-
-.PHONY: test
-test:
-	go test -cover -race ./...
-
-.PHONY: migrate-up
-migrate-up:
-	migrate -path ./migrations/user -database "mysql://root:@tcp(localhost:3306)/users" -verbose up
-	migrate -path ./migrations/post -database "mysql://root:@tcp(localhost:3306)/posts" -verbose up
-	migrate -path ./migrations/comment -database "mysql://root:@tcp(localhost:3306)/comments" -verbose up
-
-.PHONY: migrate-down
-migrate-down:
-	migrate -path ./migrations/user -database "mysql://root:@tcp(localhost:3306)/users" -verbose down
-	migrate -path ./migrations/post -database "mysql://root:@tcp(localhost:3306)/posts" -verbose down
-	migrate -path ./migrations/comment -database "mysql://root:@tcp(localhost:3306)/comments" -verbose down
