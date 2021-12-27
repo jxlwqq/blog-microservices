@@ -104,7 +104,7 @@ func (s Server) DeleteComment(ctx context.Context, req *v1.DeleteCommentRequest)
 	}, nil
 }
 
-func (s Server) GetCommentListByPostID(ctx context.Context, req *v1.GetCommentListByPostIDRequest) (*v1.GetCommentListByPostIDResponse, error) {
+func (s Server) ListCommentsByPostID(ctx context.Context, req *v1.ListCommentsByPostIDRequest) (*v1.ListCommentsByPostIDResponse, error) {
 	postID := req.GetPostId()
 	offset := req.GetOffset()
 	limit := req.GetLimit()
@@ -124,7 +124,7 @@ func (s Server) GetCommentListByPostID(ctx context.Context, req *v1.GetCommentLi
 		return nil, status.Errorf(codes.Internal, "could not get comments: %v", err)
 	}
 
-	return &v1.GetCommentListByPostIDResponse{
+	return &v1.ListCommentsByPostIDResponse{
 		Comments: comments,
 		Total:    total,
 	}, nil

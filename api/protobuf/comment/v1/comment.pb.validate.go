@@ -908,22 +908,22 @@ var _ interface {
 	ErrorName() string
 } = DeleteCommentResponseValidationError{}
 
-// Validate checks the field values on GetCommentListByPostIDRequest with the
+// Validate checks the field values on ListCommentsByPostIDRequest with the
 // rules defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
-func (m *GetCommentListByPostIDRequest) Validate() error {
+func (m *ListCommentsByPostIDRequest) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on GetCommentListByPostIDRequest with
-// the rules defined in the proto definition for this message. If any rules
-// are violated, the result is a list of violation errors wrapped in
-// GetCommentListByPostIDRequestMultiError, or nil if none found.
-func (m *GetCommentListByPostIDRequest) ValidateAll() error {
+// ValidateAll checks the field values on ListCommentsByPostIDRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ListCommentsByPostIDRequestMultiError, or nil if none found.
+func (m *ListCommentsByPostIDRequest) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *GetCommentListByPostIDRequest) validate(all bool) error {
+func (m *ListCommentsByPostIDRequest) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -937,18 +937,18 @@ func (m *GetCommentListByPostIDRequest) validate(all bool) error {
 	// no validation rules for Offset
 
 	if len(errors) > 0 {
-		return GetCommentListByPostIDRequestMultiError(errors)
+		return ListCommentsByPostIDRequestMultiError(errors)
 	}
 	return nil
 }
 
-// GetCommentListByPostIDRequestMultiError is an error wrapping multiple
-// validation errors returned by GetCommentListByPostIDRequest.ValidateAll()
-// if the designated constraints aren't met.
-type GetCommentListByPostIDRequestMultiError []error
+// ListCommentsByPostIDRequestMultiError is an error wrapping multiple
+// validation errors returned by ListCommentsByPostIDRequest.ValidateAll() if
+// the designated constraints aren't met.
+type ListCommentsByPostIDRequestMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m GetCommentListByPostIDRequestMultiError) Error() string {
+func (m ListCommentsByPostIDRequestMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -957,12 +957,12 @@ func (m GetCommentListByPostIDRequestMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m GetCommentListByPostIDRequestMultiError) AllErrors() []error { return m }
+func (m ListCommentsByPostIDRequestMultiError) AllErrors() []error { return m }
 
-// GetCommentListByPostIDRequestValidationError is the validation error
-// returned by GetCommentListByPostIDRequest.Validate if the designated
-// constraints aren't met.
-type GetCommentListByPostIDRequestValidationError struct {
+// ListCommentsByPostIDRequestValidationError is the validation error returned
+// by ListCommentsByPostIDRequest.Validate if the designated constraints
+// aren't met.
+type ListCommentsByPostIDRequestValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -970,24 +970,24 @@ type GetCommentListByPostIDRequestValidationError struct {
 }
 
 // Field function returns field value.
-func (e GetCommentListByPostIDRequestValidationError) Field() string { return e.field }
+func (e ListCommentsByPostIDRequestValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e GetCommentListByPostIDRequestValidationError) Reason() string { return e.reason }
+func (e ListCommentsByPostIDRequestValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e GetCommentListByPostIDRequestValidationError) Cause() error { return e.cause }
+func (e ListCommentsByPostIDRequestValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e GetCommentListByPostIDRequestValidationError) Key() bool { return e.key }
+func (e ListCommentsByPostIDRequestValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e GetCommentListByPostIDRequestValidationError) ErrorName() string {
-	return "GetCommentListByPostIDRequestValidationError"
+func (e ListCommentsByPostIDRequestValidationError) ErrorName() string {
+	return "ListCommentsByPostIDRequestValidationError"
 }
 
 // Error satisfies the builtin error interface
-func (e GetCommentListByPostIDRequestValidationError) Error() string {
+func (e ListCommentsByPostIDRequestValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -999,14 +999,14 @@ func (e GetCommentListByPostIDRequestValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sGetCommentListByPostIDRequest.%s: %s%s",
+		"invalid %sListCommentsByPostIDRequest.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = GetCommentListByPostIDRequestValidationError{}
+var _ error = ListCommentsByPostIDRequestValidationError{}
 
 var _ interface {
 	Field() string
@@ -1014,24 +1014,24 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = GetCommentListByPostIDRequestValidationError{}
+} = ListCommentsByPostIDRequestValidationError{}
 
-// Validate checks the field values on GetCommentListByPostIDResponse with the
+// Validate checks the field values on ListCommentsByPostIDResponse with the
 // rules defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
-func (m *GetCommentListByPostIDResponse) Validate() error {
+func (m *ListCommentsByPostIDResponse) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on GetCommentListByPostIDResponse with
-// the rules defined in the proto definition for this message. If any rules
-// are violated, the result is a list of violation errors wrapped in
-// GetCommentListByPostIDResponseMultiError, or nil if none found.
-func (m *GetCommentListByPostIDResponse) ValidateAll() error {
+// ValidateAll checks the field values on ListCommentsByPostIDResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ListCommentsByPostIDResponseMultiError, or nil if none found.
+func (m *ListCommentsByPostIDResponse) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *GetCommentListByPostIDResponse) validate(all bool) error {
+func (m *ListCommentsByPostIDResponse) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -1045,7 +1045,7 @@ func (m *GetCommentListByPostIDResponse) validate(all bool) error {
 			switch v := interface{}(item).(type) {
 			case interface{ ValidateAll() error }:
 				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, GetCommentListByPostIDResponseValidationError{
+					errors = append(errors, ListCommentsByPostIDResponseValidationError{
 						field:  fmt.Sprintf("Comments[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
@@ -1053,7 +1053,7 @@ func (m *GetCommentListByPostIDResponse) validate(all bool) error {
 				}
 			case interface{ Validate() error }:
 				if err := v.Validate(); err != nil {
-					errors = append(errors, GetCommentListByPostIDResponseValidationError{
+					errors = append(errors, ListCommentsByPostIDResponseValidationError{
 						field:  fmt.Sprintf("Comments[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
@@ -1062,7 +1062,7 @@ func (m *GetCommentListByPostIDResponse) validate(all bool) error {
 			}
 		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
 			if err := v.Validate(); err != nil {
-				return GetCommentListByPostIDResponseValidationError{
+				return ListCommentsByPostIDResponseValidationError{
 					field:  fmt.Sprintf("Comments[%v]", idx),
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -1075,18 +1075,18 @@ func (m *GetCommentListByPostIDResponse) validate(all bool) error {
 	// no validation rules for Total
 
 	if len(errors) > 0 {
-		return GetCommentListByPostIDResponseMultiError(errors)
+		return ListCommentsByPostIDResponseMultiError(errors)
 	}
 	return nil
 }
 
-// GetCommentListByPostIDResponseMultiError is an error wrapping multiple
-// validation errors returned by GetCommentListByPostIDResponse.ValidateAll()
-// if the designated constraints aren't met.
-type GetCommentListByPostIDResponseMultiError []error
+// ListCommentsByPostIDResponseMultiError is an error wrapping multiple
+// validation errors returned by ListCommentsByPostIDResponse.ValidateAll() if
+// the designated constraints aren't met.
+type ListCommentsByPostIDResponseMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m GetCommentListByPostIDResponseMultiError) Error() string {
+func (m ListCommentsByPostIDResponseMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -1095,12 +1095,12 @@ func (m GetCommentListByPostIDResponseMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m GetCommentListByPostIDResponseMultiError) AllErrors() []error { return m }
+func (m ListCommentsByPostIDResponseMultiError) AllErrors() []error { return m }
 
-// GetCommentListByPostIDResponseValidationError is the validation error
-// returned by GetCommentListByPostIDResponse.Validate if the designated
-// constraints aren't met.
-type GetCommentListByPostIDResponseValidationError struct {
+// ListCommentsByPostIDResponseValidationError is the validation error returned
+// by ListCommentsByPostIDResponse.Validate if the designated constraints
+// aren't met.
+type ListCommentsByPostIDResponseValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -1108,24 +1108,24 @@ type GetCommentListByPostIDResponseValidationError struct {
 }
 
 // Field function returns field value.
-func (e GetCommentListByPostIDResponseValidationError) Field() string { return e.field }
+func (e ListCommentsByPostIDResponseValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e GetCommentListByPostIDResponseValidationError) Reason() string { return e.reason }
+func (e ListCommentsByPostIDResponseValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e GetCommentListByPostIDResponseValidationError) Cause() error { return e.cause }
+func (e ListCommentsByPostIDResponseValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e GetCommentListByPostIDResponseValidationError) Key() bool { return e.key }
+func (e ListCommentsByPostIDResponseValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e GetCommentListByPostIDResponseValidationError) ErrorName() string {
-	return "GetCommentListByPostIDResponseValidationError"
+func (e ListCommentsByPostIDResponseValidationError) ErrorName() string {
+	return "ListCommentsByPostIDResponseValidationError"
 }
 
 // Error satisfies the builtin error interface
-func (e GetCommentListByPostIDResponseValidationError) Error() string {
+func (e ListCommentsByPostIDResponseValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -1137,14 +1137,14 @@ func (e GetCommentListByPostIDResponseValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sGetCommentListByPostIDResponse.%s: %s%s",
+		"invalid %sListCommentsByPostIDResponse.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = GetCommentListByPostIDResponseValidationError{}
+var _ error = ListCommentsByPostIDResponseValidationError{}
 
 var _ interface {
 	Field() string
@@ -1152,7 +1152,7 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = GetCommentListByPostIDResponseValidationError{}
+} = ListCommentsByPostIDResponseValidationError{}
 
 // Validate checks the field values on GetCommentByUUIDRequest with the rules
 // defined in the proto definition for this message. If any rules are

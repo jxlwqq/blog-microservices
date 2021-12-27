@@ -13,7 +13,7 @@ service CommentService {
   rpc GetCommentByUUID(GetCommentByUUIDRequest) returns (GetCommentByUUIDResponse) {}
   rpc UpdateComment(UpdateCommentRequest) returns (UpdateCommentResponse) {}
   rpc DeleteComment(DeleteCommentRequest) returns (DeleteCommentResponse) {}
-  rpc GetCommentListByPostID(GetCommentListByPostIDRequest) returns (GetCommentListByPostIDResponse) {}
+  rpc ListCommentsByPostID(ListCommentsByPostIDRequest) returns (ListCommentsByPostIDResponse) {}
 }
 
 message Comment {
@@ -50,13 +50,13 @@ message DeleteCommentResponse {
   bool success = 1;
 }
 
-message GetCommentListByPostIDRequest {
+message ListCommentsByPostIDRequest {
   uint64 post_id = 1;
   int32 limit = 2;
   int32 offset = 3;
 }
 
-message GetCommentListByPostIDResponse {
+message ListCommentsByPostIDResponse {
   repeated Comment comments = 1;
   uint64 total = 2;
 }
