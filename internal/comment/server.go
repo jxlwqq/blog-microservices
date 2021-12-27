@@ -56,6 +56,17 @@ func (s Server) CreateCommentCompensate(ctx context.Context, req *v1.CreateComme
 	return &v1.CreateCommentResponse{}, nil
 }
 
+func (s Server) GetCommentByUUID(ctx context.Context, req *v1.GetCommentByUUIDRequest) (*v1.GetCommentByUUIDResponse, error) {
+	comment, err := s.repo.GetByUUID(req.GetUuid())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "could not get comment: %v", err)
+	}
+
+	return &v1.GetCommentByUUIDResponse{
+		Comment: entityToProtobuf(comment),
+	}, nil
+}
+
 func (s Server) UpdateComment(ctx context.Context, req *v1.UpdateCommentRequest) (*v1.UpdateCommentResponse, error) {
 
 	commentID := req.GetComment().GetId()

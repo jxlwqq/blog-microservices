@@ -27,6 +27,19 @@ service BlogService {
       body: "*"
     };
   }
+
+  rpc GetPost (GetPostRequest) returns (GetPostResponse) {
+    option (google.api.http) = {
+      get: "/api.rest.blog.v1/posts/{id}"
+    };
+  }
+
+  rpc ListPosts (ListPostsRequest) returns (ListPostsResponse) {
+    option (google.api.http) = {
+      get: "/api.rest.blog.v1/posts"
+    };
+  }
+
   rpc CreateComment (CreateCommentRequest) returns (CreateCommentResponse) {
     option (google.api.http) = {
       post: "/api.rest.blog.v1/comments"
@@ -99,4 +112,22 @@ message CreateCommentRequest {
 
 message CreateCommentResponse {
   Comment comment = 1;
+}
+
+message GetPostRequest {
+  uint64 id = 1;
+}
+
+message GetPostResponse {
+  Post post = 1;
+}
+
+message ListPostsRequest {
+  uint32 offset = 1;
+  uint32 limit = 2;
+}
+
+message ListPostsResponse {
+  repeated Post posts = 1;
+  uint32 total = 2;
 }
