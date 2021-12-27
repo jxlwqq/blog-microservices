@@ -96,7 +96,7 @@ kube-delete:
 	kubectl delete -f ./deployments/post/
 	kubectl delete -f ./deployments/auth/
 	kubectl delete -f ./deployments/comment/
-	kubectl apply -f ./deployments/addons/
+	kubectl delete -f ./deployments/addons/
 
 .PHONY: kube-redeploy
 kube-redeploy:
