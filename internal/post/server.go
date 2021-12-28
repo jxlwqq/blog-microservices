@@ -117,6 +117,16 @@ func (s Server) UpdatePost(ctx context.Context, req *v1.UpdatePostRequest) (*v1.
 		return nil, status.Errorf(codes.NotFound, "post %d not found", postID)
 	}
 
+	if req.GetPost().GetTitle() != "" {
+		post.Title = req.GetPost().GetTitle()
+	}
+
+	if req.GetPost().GetContent() != "" {
+		post.Content = req.GetPost().GetContent()
+	}
+
+	s.logger.Info("update post", post)
+
 	err = s.repo.Update(post)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update post: %v", err)

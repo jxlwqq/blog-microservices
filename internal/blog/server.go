@@ -15,12 +15,13 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-var prefix = "/api.protobuf.blog.v1.BlogService/"
+var prefix = "/" + v1.BlogService_ServiceDesc.ServiceName + "/"
 
 var AuthMethods = map[string]bool{
-	prefix + "SignUp":        false,
+	prefix + "SignUp":        false, // 不需要验证
 	prefix + "SignIn":        false,
-	prefix + "CreatePost":    true,
+	prefix + "CreatePost":    true, // 需要验证
+	prefix + "UpdatePost":    true,
 	prefix + "CreateComment": true,
 	prefix + "GetPost":       false,
 	prefix + "ListPosts":     false,
@@ -137,6 +138,55 @@ func (s Server) GetPost(ctx context.Context, req *v1.GetPostRequest) (*v1.GetPos
 	}}, nil
 }
 
+func (s Server) UpdatePost(ctx context.Context, req *v1.UpdatePostRequest) (*v1.UpdatePostResponse, error) {
+	userID, ok := ctx.Value("ID").(uint64)
+	if !ok {
+		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
+	}
+	userResp, err := s.userClient.GetUser(ctx, &userv1.GetUserRequest{
+		Id: userID,
+	})
+	if err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
+	postResp, err := s.postClient.GetPost(ctx, &postv1.GetPostRequest{
+		Id: req.GetPost().GetId(),
+	})
+	if err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
+
+	// 授权检查，只能修改自己发布的文章
+	if userResp.GetUser().GetId() != postResp.GetPost().GetUserId() {
+		return nil, status.Error(codes.PermissionDenied, "user not authorized")
+	}
+
+	updatedPost := &postv1.Post{
+		Id: req.GetPost().GetId(),
+	}
+
+	if req.GetPost().GetTitle() != "" {
+		updatedPost.Title = req.GetPost().GetTitle()
+	}
+
+	if req.GetPost().GetContent() != "" {
+		updatedPost.Content = req.GetPost().GetContent()
+	}
+
+	updatePostResp, err := s.postClient.UpdatePost(ctx, &postv1.UpdatePostRequest{
+		Post: updatedPost,
+	})
+
+	if err != nil || !updatePostResp.GetSuccess() {
+		return nil, status.Error(codes.Internal, "hhhh")
+	}
+
+	return &v1.UpdatePostResponse{
+		Success: true,
+	}, nil
+
+}
+
 func (s Server) ListPosts(ctx context.Context, req *v1.ListPostsRequest) (*v1.ListPostsResponse, error) {
 	offset := req.GetOffset()
 	limit := req.GetLimit()
@@ -159,6 +209,10 @@ func (s Server) ListPosts(ctx context.Context, req *v1.ListPostsRequest) (*v1.Li
 	postUserResp, err := s.userClient.ListUsersByIDs(ctx, &userv1.ListUsersByIDsRequest{
 		Ids: postUserIDs,
 	})
+
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
 
 	for _, post := range postResp.GetPosts() {
 		for _, postUser := range postUserResp.GetUsers() {
@@ -188,7 +242,10 @@ func (s Server) ListPosts(ctx context.Context, req *v1.ListPostsRequest) (*v1.Li
 }
 
 func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest) (*v1.CreateCommentResponse, error) {
-	userID := ctx.Value("ID").(uint64)
+	userID, ok := ctx.Value("ID").(uint64)
+	if !ok {
+		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
+	}
 	userResp, err := s.userClient.GetUser(ctx, &userv1.GetUserRequest{
 		Id: userID,
 	})
@@ -245,6 +302,10 @@ func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest)
 	commentResp, err := s.commentClient.GetCommentByUUID(ctx, &commentv1.GetCommentByUUIDRequest{
 		Uuid: comment.GetUuid(),
 	})
+
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
 
 	return &v1.CreateCommentResponse{
 		Comment: &v1.Comment{

@@ -40,6 +40,13 @@ service BlogService {
     };
   }
 
+  rpc UpdatePost (UpdatePostRequest) returns (UpdatePostResponse) {
+    option (google.api.http) = {
+      put: "/api.rest.blog.v1/posts/{post.id}"
+      body: "*"
+    };
+  }
+
   rpc CreateComment (CreateCommentRequest) returns (CreateCommentResponse) {
     option (google.api.http) = {
       post: "/api.rest.blog.v1/comments"
@@ -126,6 +133,14 @@ message GetPostRequest {
 
 message GetPostResponse {
   Post post = 1;
+}
+
+message UpdatePostRequest {
+  Post post = 1;
+}
+
+message UpdatePostResponse {
+  bool success = 1;
 }
 
 message ListPostsRequest {
