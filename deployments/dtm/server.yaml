@@ -60,6 +60,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: dtm-server
+  labels:
+    app: dtm-server
 spec:
   ports:
     - port: 36790
