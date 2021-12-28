@@ -8,6 +8,10 @@ blog microservices deployed in an Istio-enabled kubernetes cluster.
 
 ![architecture](./assets/architecture.png)
 
+### Kiali Console
+
+![kiali-console](./assets/kiali-console.jpeg)
+
 ### 目录结构
 
 主要遵循 [Standard Go Project Layout](https://github.com/golang-standards/project-layout) 推荐的目录分层。
