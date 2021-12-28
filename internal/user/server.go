@@ -83,9 +83,12 @@ func (s Server) GetUserByEmail(ctx context.Context, req *v1.GetUserByEmailReques
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get user by email: %v", err)
 	}
-	ok := isCorrectPassword(user.Password, req.GetPassword())
-	if !ok {
-		return nil, status.Errorf(codes.Internal, "incorrect password")
+	// 如果传递了密码，则需要验证密码
+	if req.GetPassword() != "" {
+		ok := isCorrectPassword(user.Password, req.GetPassword())
+		if !ok {
+			return nil, status.Errorf(codes.Internal, "incorrect password")
+		}
 	}
 	resp := &v1.GetUserResponse{
 		User: entityToProtobuf(user),
@@ -104,10 +107,14 @@ func (s Server) GetUserByUsername(ctx context.Context, req *v1.GetUserByUsername
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get user by username: %v", err)
 	}
-	ok := isCorrectPassword(user.Password, req.GetPassword())
-	if !ok {
-		return nil, status.Errorf(codes.Internal, "incorrect password")
+	// 如果传递了密码，则需要验证密码
+	if req.GetPassword() != "" {
+		ok := isCorrectPassword(user.Password, req.GetPassword())
+		if !ok {
+			return nil, status.Errorf(codes.Internal, "incorrect password")
+		}
 	}
+
 	resp := &v1.GetUserResponse{
 		User: entityToProtobuf(user),
 	}

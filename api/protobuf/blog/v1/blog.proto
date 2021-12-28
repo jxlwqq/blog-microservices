@@ -94,8 +94,8 @@ message SignUpResponse {
 
 message SignInRequest {
   oneof request {
-    string username = 1;
-    string email = 2;
+    string username = 1 [(validate.rules).string = {min_len: 1, max_len: 30}];
+    string email = 2 [(validate.rules).string.email = true];
   }
   string password = 3;
 }

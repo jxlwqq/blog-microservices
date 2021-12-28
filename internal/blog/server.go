@@ -211,10 +211,10 @@ func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest)
 	}
 
 	// 分布式事务(Saga 模式)
-	DtmGrpcServer := s.conf.DTM.Server.Host + s.conf.DTM.Server.GRPC.Port
-	gid := dtmgrpc.MustGenGid(DtmGrpcServer)
+	DtmGrpcServerAddr := s.conf.DTM.Server.Host + s.conf.DTM.Server.GRPC.Port
+	gid := dtmgrpc.MustGenGid(DtmGrpcServerAddr)
 	s.logger.Info("gid:", gid)
-	saga := dtmgrpc.NewSagaGrpc(DtmGrpcServer, gid).Add(
+	saga := dtmgrpc.NewSagaGrpc(DtmGrpcServerAddr, gid).Add(
 		s.conf.Comment.Server.Host+s.conf.Comment.Server.GRPC.Port+"/"+commentv1.CommentService_ServiceDesc.ServiceName+"/CreateComment",
 		s.conf.Comment.Server.Host+s.conf.Comment.Server.GRPC.Port+"/"+commentv1.CommentService_ServiceDesc.ServiceName+"/CreateCommentCompensate",
 		&commentv1.CreateCommentRequest{
@@ -309,9 +309,28 @@ func (s Server) ListCommentsByPostID(ctx context.Context, req *v1.ListCommentsBy
 }
 
 func (s Server) SignUp(ctx context.Context, req *v1.SignUpRequest) (*v1.SignUpResponse, error) {
+	err := req.ValidateAll()
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
 	username := req.GetUsername()
 	email := req.GetEmail()
 	password := req.GetPassword()
+
+	usernameResp, err := s.userClient.GetUserByUsername(ctx, &userv1.GetUserByUsernameRequest{
+		Username: username,
+	})
+	s.logger.Info("usernameResp:", usernameResp)
+	if err == nil && usernameResp.GetUser().GetId() != 0 {
+		return nil, status.Error(codes.AlreadyExists, "username already exists")
+	}
+
+	emailResp, err := s.userClient.GetUserByEmail(ctx, &userv1.GetUserByEmailRequest{
+		Email: email,
+	})
+	if err == nil && emailResp.GetUser().GetId() != 0 {
+		return nil, status.Error(codes.AlreadyExists, "email already exists")
+	}
 
 	userResp, err := s.userClient.CreateUser(ctx, &userv1.CreateUserRequest{
 		User: &userv1.User{
