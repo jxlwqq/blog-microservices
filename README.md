@@ -2,7 +2,10 @@
 
 [![test](https://github.com/stonecutter/blog-microservices/actions/workflows/test.yaml/badge.svg)](https://github.com/stonecutter/blog-microservices/actions/workflows/test.yaml)
 
-blog microservices deployed in an Istio-enabled kubernetes cluster.
+Blog microservices deployed in an Istio-enabled kubernetes cluster.
+
+If you’re using this demo, please ★Star this repository to show your interest!
+
 
 ### 架构
 
