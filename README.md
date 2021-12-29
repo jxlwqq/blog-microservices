@@ -81,6 +81,7 @@ kubectl label namespace default istio-injection=enabled
 部署的资源比较多，请尽可能地将 Docker Desktop 的 CPU、Memory 拉高，避免 Pod 无法完成调度，详见 [这里](https://istio.io/latest/zh/docs/setup/platform-setup/docker/)。
 
 ```shell
+make docker-build
 make kube-deploy
 ```
 
