@@ -158,4 +158,12 @@ kube-system    kube-dns               ClusterIP      10.96.0.10       <none>    
 
 ### 访问服务
 
-推荐使用 [BloomRPC](https://github.com/bloomrpc/bloomrpc) 或者 [Insomnia](https://github.com/Kong/insomnia)
+推荐使用 [BloomRPC](https://github.com/bloomrpc/bloomrpc) 或者 [Insomnia](https://github.com/Kong/insomnia) ，导入 api/protobuf/blog.proto 文件后， 服务地址填写 `localhost:80` 端口即可访问，如下图所示：
+
+注册：
+
+![sign-up](./assets/bloom-rpc-sign-up.png)
+
+创建文章：
+
+![create-post](./assets/bloom-rpc-create-post.png)
