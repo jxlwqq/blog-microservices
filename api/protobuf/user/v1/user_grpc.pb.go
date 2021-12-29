@@ -37,7 +37,7 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 
 func (c *userServiceClient) ListUsersByIDs(ctx context.Context, in *ListUsersByIDsRequest, opts ...grpc.CallOption) (*ListUsersByIDsResponse, error) {
 	out := new(ListUsersByIDsResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.UserService/ListUsersByIDs", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.user.v1.UserService/ListUsersByIDs", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *userServiceClient) ListUsersByIDs(ctx context.Context, in *ListUsersByI
 
 func (c *userServiceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error) {
 	out := new(GetUserResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.UserService/GetUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.user.v1.UserService/GetUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func (c *userServiceClient) GetUser(ctx context.Context, in *GetUserRequest, opt
 
 func (c *userServiceClient) GetUserByEmail(ctx context.Context, in *GetUserByEmailRequest, opts ...grpc.CallOption) (*GetUserResponse, error) {
 	out := new(GetUserResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.UserService/GetUserByEmail", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.user.v1.UserService/GetUserByEmail", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (c *userServiceClient) GetUserByEmail(ctx context.Context, in *GetUserByEma
 
 func (c *userServiceClient) GetUserByUsername(ctx context.Context, in *GetUserByUsernameRequest, opts ...grpc.CallOption) (*GetUserResponse, error) {
 	out := new(GetUserResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.UserService/GetUserByUsername", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.user.v1.UserService/GetUserByUsername", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func (c *userServiceClient) GetUserByUsername(ctx context.Context, in *GetUserBy
 
 func (c *userServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error) {
 	out := new(CreateUserResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.UserService/CreateUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.user.v1.UserService/CreateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func (c *userServiceClient) CreateUser(ctx context.Context, in *CreateUserReques
 
 func (c *userServiceClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error) {
 	out := new(UpdateUserResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.UserService/UpdateUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.user.v1.UserService/UpdateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +91,7 @@ func (c *userServiceClient) UpdateUser(ctx context.Context, in *UpdateUserReques
 
 func (c *userServiceClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error) {
 	out := new(DeleteUserResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.UserService/DeleteUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.user.v1.UserService/DeleteUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +160,7 @@ func _UserService_ListUsersByIDs_Handler(srv interface{}, ctx context.Context, d
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.UserService/ListUsersByIDs",
+		FullMethod: "/api.protobuf.user.v1.UserService/ListUsersByIDs",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).ListUsersByIDs(ctx, req.(*ListUsersByIDsRequest))
@@ -178,7 +178,7 @@ func _UserService_GetUser_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.UserService/GetUser",
+		FullMethod: "/api.protobuf.user.v1.UserService/GetUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).GetUser(ctx, req.(*GetUserRequest))
@@ -196,7 +196,7 @@ func _UserService_GetUserByEmail_Handler(srv interface{}, ctx context.Context, d
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.UserService/GetUserByEmail",
+		FullMethod: "/api.protobuf.user.v1.UserService/GetUserByEmail",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).GetUserByEmail(ctx, req.(*GetUserByEmailRequest))
@@ -214,7 +214,7 @@ func _UserService_GetUserByUsername_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.UserService/GetUserByUsername",
+		FullMethod: "/api.protobuf.user.v1.UserService/GetUserByUsername",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).GetUserByUsername(ctx, req.(*GetUserByUsernameRequest))
@@ -232,7 +232,7 @@ func _UserService_CreateUser_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.UserService/CreateUser",
+		FullMethod: "/api.protobuf.user.v1.UserService/CreateUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).CreateUser(ctx, req.(*CreateUserRequest))
@@ -250,7 +250,7 @@ func _UserService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.UserService/UpdateUser",
+		FullMethod: "/api.protobuf.user.v1.UserService/UpdateUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).UpdateUser(ctx, req.(*UpdateUserRequest))
@@ -268,7 +268,7 @@ func _UserService_DeleteUser_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.UserService/DeleteUser",
+		FullMethod: "/api.protobuf.user.v1.UserService/DeleteUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).DeleteUser(ctx, req.(*DeleteUserRequest))
@@ -280,7 +280,7 @@ func _UserService_DeleteUser_Handler(srv interface{}, ctx context.Context, dec f
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var UserService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "api.protobuf.UserService",
+	ServiceName: "api.protobuf.user.v1.UserService",
 	HandlerType: (*UserServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

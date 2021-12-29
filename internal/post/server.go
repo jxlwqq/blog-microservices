@@ -20,7 +20,7 @@ type Server struct {
 	repo   Repository
 }
 
-func (s Server) IncrementCommentCount(_ context.Context, req *v1.IncrementCommentCountRequest) (*v1.IncrementCommentCountResponse, error) {
+func (s Server) IncrementCommentsCount(_ context.Context, req *v1.IncrementCommentsCountRequest) (*v1.IncrementCommentsCountResponse, error) {
 	postID := req.GetId()
 	p, err := s.repo.Get(postID)
 	if err != nil {
@@ -33,10 +33,10 @@ func (s Server) IncrementCommentCount(_ context.Context, req *v1.IncrementCommen
 		return nil, status.Errorf(codes.Internal, "failed to update post %d", postID)
 	}
 
-	return &v1.IncrementCommentCountResponse{Success: true}, nil
+	return &v1.IncrementCommentsCountResponse{Success: true}, nil
 }
 
-func (s Server) IncrementCommentCountCompensate(ctx context.Context, req *v1.IncrementCommentCountRequest) (*v1.IncrementCommentCountResponse, error) {
+func (s Server) IncrementCommentsCountCompensate(_ context.Context, req *v1.IncrementCommentsCountRequest) (*v1.IncrementCommentsCountResponse, error) {
 	postID := req.GetId()
 	p, err := s.repo.Get(postID)
 	if err != nil {
@@ -47,10 +47,10 @@ func (s Server) IncrementCommentCountCompensate(ctx context.Context, req *v1.Inc
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update post %d", postID)
 	}
-	return &v1.IncrementCommentCountResponse{Success: true}, nil
+	return &v1.IncrementCommentsCountResponse{Success: true}, nil
 }
 
-func (s Server) DecrementCommentCount(_ context.Context, request *v1.DecrementCommentCountRequest) (*v1.DecrementCommentCountResponse, error) {
+func (s Server) DecrementCommentsCount(_ context.Context, request *v1.DecrementCommentsCountRequest) (*v1.DecrementCommentsCountResponse, error) {
 	postID := request.GetId()
 	p, err := s.repo.Get(postID)
 	if err != nil {
@@ -61,10 +61,10 @@ func (s Server) DecrementCommentCount(_ context.Context, request *v1.DecrementCo
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update post %d", postID)
 	}
-	return &v1.DecrementCommentCountResponse{Success: true}, nil
+	return &v1.DecrementCommentsCountResponse{Success: true}, nil
 }
 
-func (s Server) GetPost(ctx context.Context, req *v1.GetPostRequest) (*v1.GetPostResponse, error) {
+func (s Server) GetPost(_ context.Context, req *v1.GetPostRequest) (*v1.GetPostResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
@@ -81,7 +81,7 @@ func (s Server) GetPost(ctx context.Context, req *v1.GetPostRequest) (*v1.GetPos
 	return resp, nil
 }
 
-func (s Server) CreatePost(ctx context.Context, req *v1.CreatePostRequest) (*v1.CreatePostResponse, error) {
+func (s Server) CreatePost(_ context.Context, req *v1.CreatePostRequest) (*v1.CreatePostResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
@@ -105,7 +105,7 @@ func (s Server) CreatePost(ctx context.Context, req *v1.CreatePostRequest) (*v1.
 	return resp, nil
 }
 
-func (s Server) UpdatePost(ctx context.Context, req *v1.UpdatePostRequest) (*v1.UpdatePostResponse, error) {
+func (s Server) UpdatePost(_ context.Context, req *v1.UpdatePostRequest) (*v1.UpdatePostResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
@@ -139,7 +139,7 @@ func (s Server) UpdatePost(ctx context.Context, req *v1.UpdatePostRequest) (*v1.
 	return resp, nil
 }
 
-func (s Server) DeletePost(ctx context.Context, req *v1.DeletePostRequest) (*v1.DeletePostResponse, error) {
+func (s Server) DeletePost(_ context.Context, req *v1.DeletePostRequest) (*v1.DeletePostResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
@@ -161,7 +161,7 @@ func (s Server) DeletePost(ctx context.Context, req *v1.DeletePostRequest) (*v1.
 	return resp, nil
 }
 
-func (s Server) ListPosts(ctx context.Context, req *v1.ListPostsRequest) (*v1.ListPostsResponse, error) {
+func (s Server) ListPosts(_ context.Context, req *v1.ListPostsRequest) (*v1.ListPostsResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())

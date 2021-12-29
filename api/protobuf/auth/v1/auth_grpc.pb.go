@@ -33,7 +33,7 @@ func NewAuthServiceClient(cc grpc.ClientConnInterface) AuthServiceClient {
 
 func (c *authServiceClient) GenerateToken(ctx context.Context, in *GenerateTokenRequest, opts ...grpc.CallOption) (*GenerateTokenResponse, error) {
 	out := new(GenerateTokenResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.blog.v1.AuthService/GenerateToken", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.auth.v1.AuthService/GenerateToken", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func (c *authServiceClient) GenerateToken(ctx context.Context, in *GenerateToken
 
 func (c *authServiceClient) ValidateToken(ctx context.Context, in *ValidateTokenRequest, opts ...grpc.CallOption) (*ValidateTokenResponse, error) {
 	out := new(ValidateTokenResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.blog.v1.AuthService/ValidateToken", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.auth.v1.AuthService/ValidateToken", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (c *authServiceClient) ValidateToken(ctx context.Context, in *ValidateToken
 
 func (c *authServiceClient) RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error) {
 	out := new(RefreshTokenResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.blog.v1.AuthService/RefreshToken", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.protobuf.auth.v1.AuthService/RefreshToken", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +104,7 @@ func _AuthService_GenerateToken_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.blog.v1.AuthService/GenerateToken",
+		FullMethod: "/api.protobuf.auth.v1.AuthService/GenerateToken",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthServiceServer).GenerateToken(ctx, req.(*GenerateTokenRequest))
@@ -122,7 +122,7 @@ func _AuthService_ValidateToken_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.blog.v1.AuthService/ValidateToken",
+		FullMethod: "/api.protobuf.auth.v1.AuthService/ValidateToken",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthServiceServer).ValidateToken(ctx, req.(*ValidateTokenRequest))
@@ -140,7 +140,7 @@ func _AuthService_RefreshToken_Handler(srv interface{}, ctx context.Context, dec
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.blog.v1.AuthService/RefreshToken",
+		FullMethod: "/api.protobuf.auth.v1.AuthService/RefreshToken",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthServiceServer).RefreshToken(ctx, req.(*RefreshTokenRequest))
@@ -152,7 +152,7 @@ func _AuthService_RefreshToken_Handler(srv interface{}, ctx context.Context, dec
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var AuthService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "api.protobuf.blog.v1.AuthService",
+	ServiceName: "api.protobuf.auth.v1.AuthService",
 	HandlerType: (*AuthServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

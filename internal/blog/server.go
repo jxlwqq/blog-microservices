@@ -278,9 +278,9 @@ func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest)
 			Comment: comment,
 		},
 	).Add(
-		s.conf.Post.Server.Host+s.conf.Post.Server.GRPC.Port+"/"+postv1.PostService_ServiceDesc.ServiceName+"/IncrementCommentCount",
-		s.conf.Post.Server.Host+s.conf.Post.Server.GRPC.Port+"/"+postv1.PostService_ServiceDesc.ServiceName+"/IncrementCommentCountCompensate",
-		&postv1.IncrementCommentCountRequest{
+		s.conf.Post.Server.Host+s.conf.Post.Server.GRPC.Port+"/"+postv1.PostService_ServiceDesc.ServiceName+"/IncrementCommentsCount",
+		s.conf.Post.Server.Host+s.conf.Post.Server.GRPC.Port+"/"+postv1.PostService_ServiceDesc.ServiceName+"/IncrementCommentsCountCompensate",
+		&postv1.IncrementCommentsCountRequest{
 			Id: postID,
 		},
 	)

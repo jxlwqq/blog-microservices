@@ -23,9 +23,9 @@ type PostServiceClient interface {
 	UpdatePost(ctx context.Context, in *UpdatePostRequest, opts ...grpc.CallOption) (*UpdatePostResponse, error)
 	DeletePost(ctx context.Context, in *DeletePostRequest, opts ...grpc.CallOption) (*DeletePostResponse, error)
 	ListPosts(ctx context.Context, in *ListPostsRequest, opts ...grpc.CallOption) (*ListPostsResponse, error)
-	IncrementCommentCount(ctx context.Context, in *IncrementCommentCountRequest, opts ...grpc.CallOption) (*IncrementCommentCountResponse, error)
-	IncrementCommentCountCompensate(ctx context.Context, in *IncrementCommentCountRequest, opts ...grpc.CallOption) (*IncrementCommentCountResponse, error)
-	DecrementCommentCount(ctx context.Context, in *DecrementCommentCountRequest, opts ...grpc.CallOption) (*DecrementCommentCountResponse, error)
+	IncrementCommentsCount(ctx context.Context, in *IncrementCommentsCountRequest, opts ...grpc.CallOption) (*IncrementCommentsCountResponse, error)
+	IncrementCommentsCountCompensate(ctx context.Context, in *IncrementCommentsCountRequest, opts ...grpc.CallOption) (*IncrementCommentsCountResponse, error)
+	DecrementCommentsCount(ctx context.Context, in *DecrementCommentsCountRequest, opts ...grpc.CallOption) (*DecrementCommentsCountResponse, error)
 }
 
 type postServiceClient struct {
@@ -81,27 +81,27 @@ func (c *postServiceClient) ListPosts(ctx context.Context, in *ListPostsRequest,
 	return out, nil
 }
 
-func (c *postServiceClient) IncrementCommentCount(ctx context.Context, in *IncrementCommentCountRequest, opts ...grpc.CallOption) (*IncrementCommentCountResponse, error) {
-	out := new(IncrementCommentCountResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.post.v1.PostService/IncrementCommentCount", in, out, opts...)
+func (c *postServiceClient) IncrementCommentsCount(ctx context.Context, in *IncrementCommentsCountRequest, opts ...grpc.CallOption) (*IncrementCommentsCountResponse, error) {
+	out := new(IncrementCommentsCountResponse)
+	err := c.cc.Invoke(ctx, "/api.protobuf.post.v1.PostService/IncrementCommentsCount", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *postServiceClient) IncrementCommentCountCompensate(ctx context.Context, in *IncrementCommentCountRequest, opts ...grpc.CallOption) (*IncrementCommentCountResponse, error) {
-	out := new(IncrementCommentCountResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.post.v1.PostService/IncrementCommentCountCompensate", in, out, opts...)
+func (c *postServiceClient) IncrementCommentsCountCompensate(ctx context.Context, in *IncrementCommentsCountRequest, opts ...grpc.CallOption) (*IncrementCommentsCountResponse, error) {
+	out := new(IncrementCommentsCountResponse)
+	err := c.cc.Invoke(ctx, "/api.protobuf.post.v1.PostService/IncrementCommentsCountCompensate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *postServiceClient) DecrementCommentCount(ctx context.Context, in *DecrementCommentCountRequest, opts ...grpc.CallOption) (*DecrementCommentCountResponse, error) {
-	out := new(DecrementCommentCountResponse)
-	err := c.cc.Invoke(ctx, "/api.protobuf.post.v1.PostService/DecrementCommentCount", in, out, opts...)
+func (c *postServiceClient) DecrementCommentsCount(ctx context.Context, in *DecrementCommentsCountRequest, opts ...grpc.CallOption) (*DecrementCommentsCountResponse, error) {
+	out := new(DecrementCommentsCountResponse)
+	err := c.cc.Invoke(ctx, "/api.protobuf.post.v1.PostService/DecrementCommentsCount", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -117,9 +117,9 @@ type PostServiceServer interface {
 	UpdatePost(context.Context, *UpdatePostRequest) (*UpdatePostResponse, error)
 	DeletePost(context.Context, *DeletePostRequest) (*DeletePostResponse, error)
 	ListPosts(context.Context, *ListPostsRequest) (*ListPostsResponse, error)
-	IncrementCommentCount(context.Context, *IncrementCommentCountRequest) (*IncrementCommentCountResponse, error)
-	IncrementCommentCountCompensate(context.Context, *IncrementCommentCountRequest) (*IncrementCommentCountResponse, error)
-	DecrementCommentCount(context.Context, *DecrementCommentCountRequest) (*DecrementCommentCountResponse, error)
+	IncrementCommentsCount(context.Context, *IncrementCommentsCountRequest) (*IncrementCommentsCountResponse, error)
+	IncrementCommentsCountCompensate(context.Context, *IncrementCommentsCountRequest) (*IncrementCommentsCountResponse, error)
+	DecrementCommentsCount(context.Context, *DecrementCommentsCountRequest) (*DecrementCommentsCountResponse, error)
 	mustEmbedUnimplementedPostServiceServer()
 }
 
@@ -142,14 +142,14 @@ func (UnimplementedPostServiceServer) DeletePost(context.Context, *DeletePostReq
 func (UnimplementedPostServiceServer) ListPosts(context.Context, *ListPostsRequest) (*ListPostsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListPosts not implemented")
 }
-func (UnimplementedPostServiceServer) IncrementCommentCount(context.Context, *IncrementCommentCountRequest) (*IncrementCommentCountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method IncrementCommentCount not implemented")
+func (UnimplementedPostServiceServer) IncrementCommentsCount(context.Context, *IncrementCommentsCountRequest) (*IncrementCommentsCountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IncrementCommentsCount not implemented")
 }
-func (UnimplementedPostServiceServer) IncrementCommentCountCompensate(context.Context, *IncrementCommentCountRequest) (*IncrementCommentCountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method IncrementCommentCountCompensate not implemented")
+func (UnimplementedPostServiceServer) IncrementCommentsCountCompensate(context.Context, *IncrementCommentsCountRequest) (*IncrementCommentsCountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IncrementCommentsCountCompensate not implemented")
 }
-func (UnimplementedPostServiceServer) DecrementCommentCount(context.Context, *DecrementCommentCountRequest) (*DecrementCommentCountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DecrementCommentCount not implemented")
+func (UnimplementedPostServiceServer) DecrementCommentsCount(context.Context, *DecrementCommentsCountRequest) (*DecrementCommentsCountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DecrementCommentsCount not implemented")
 }
 func (UnimplementedPostServiceServer) mustEmbedUnimplementedPostServiceServer() {}
 
@@ -254,56 +254,56 @@ func _PostService_ListPosts_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PostService_IncrementCommentCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IncrementCommentCountRequest)
+func _PostService_IncrementCommentsCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IncrementCommentsCountRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PostServiceServer).IncrementCommentCount(ctx, in)
+		return srv.(PostServiceServer).IncrementCommentsCount(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.post.v1.PostService/IncrementCommentCount",
+		FullMethod: "/api.protobuf.post.v1.PostService/IncrementCommentsCount",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PostServiceServer).IncrementCommentCount(ctx, req.(*IncrementCommentCountRequest))
+		return srv.(PostServiceServer).IncrementCommentsCount(ctx, req.(*IncrementCommentsCountRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PostService_IncrementCommentCountCompensate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IncrementCommentCountRequest)
+func _PostService_IncrementCommentsCountCompensate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IncrementCommentsCountRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PostServiceServer).IncrementCommentCountCompensate(ctx, in)
+		return srv.(PostServiceServer).IncrementCommentsCountCompensate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.post.v1.PostService/IncrementCommentCountCompensate",
+		FullMethod: "/api.protobuf.post.v1.PostService/IncrementCommentsCountCompensate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PostServiceServer).IncrementCommentCountCompensate(ctx, req.(*IncrementCommentCountRequest))
+		return srv.(PostServiceServer).IncrementCommentsCountCompensate(ctx, req.(*IncrementCommentsCountRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PostService_DecrementCommentCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DecrementCommentCountRequest)
+func _PostService_DecrementCommentsCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DecrementCommentsCountRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PostServiceServer).DecrementCommentCount(ctx, in)
+		return srv.(PostServiceServer).DecrementCommentsCount(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.protobuf.post.v1.PostService/DecrementCommentCount",
+		FullMethod: "/api.protobuf.post.v1.PostService/DecrementCommentsCount",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PostServiceServer).DecrementCommentCount(ctx, req.(*DecrementCommentCountRequest))
+		return srv.(PostServiceServer).DecrementCommentsCount(ctx, req.(*DecrementCommentsCountRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -336,16 +336,16 @@ var PostService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _PostService_ListPosts_Handler,
 		},
 		{
-			MethodName: "IncrementCommentCount",
-			Handler:    _PostService_IncrementCommentCount_Handler,
+			MethodName: "IncrementCommentsCount",
+			Handler:    _PostService_IncrementCommentsCount_Handler,
 		},
 		{
-			MethodName: "IncrementCommentCountCompensate",
-			Handler:    _PostService_IncrementCommentCountCompensate_Handler,
+			MethodName: "IncrementCommentsCountCompensate",
+			Handler:    _PostService_IncrementCommentsCountCompensate_Handler,
 		},
 		{
-			MethodName: "DecrementCommentCount",
-			Handler:    _PostService_DecrementCommentCount_Handler,
+			MethodName: "DecrementCommentsCount",
+			Handler:    _PostService_DecrementCommentsCount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

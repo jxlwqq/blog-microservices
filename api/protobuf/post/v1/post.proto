@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package api.protobuf.post.v1;
 
-option go_package = "github.com/stonecutter/blog-microservices/api/protobuf/post/v1";
+option go_package = "github.com/jxlwqq/blog-microservices/api/protobuf/post/v1";
 
 import "google/protobuf/timestamp.proto";
 import "validate/validate.proto";
@@ -13,9 +13,9 @@ service PostService {
   rpc UpdatePost(UpdatePostRequest) returns (UpdatePostResponse) {}
   rpc DeletePost(DeletePostRequest) returns (DeletePostResponse) {}
   rpc ListPosts(ListPostsRequest) returns (ListPostsResponse) {}
-  rpc IncrementCommentCount(IncrementCommentCountRequest) returns (IncrementCommentCountResponse) {}
-  rpc IncrementCommentCountCompensate(IncrementCommentCountRequest) returns (IncrementCommentCountResponse) {}
-  rpc DecrementCommentCount(DecrementCommentCountRequest) returns (DecrementCommentCountResponse) {}
+  rpc IncrementCommentsCount(IncrementCommentsCountRequest) returns (IncrementCommentsCountResponse) {}
+  rpc IncrementCommentsCountCompensate(IncrementCommentsCountRequest) returns (IncrementCommentsCountResponse) {}
+  rpc DecrementCommentsCount(DecrementCommentsCountRequest) returns (DecrementCommentsCountResponse) {}
 }
 
 message Post {
@@ -71,18 +71,18 @@ message ListPostsResponse {
   uint64 count = 2;
 }
 
-message IncrementCommentCountRequest {
+message IncrementCommentsCountRequest {
   uint64 id = 1;
 }
 
-message IncrementCommentCountResponse {
+message IncrementCommentsCountResponse {
   bool success = 1;
 }
 
-message DecrementCommentCountRequest {
+message DecrementCommentsCountRequest {
   uint64 id = 1;
 }
 
-message DecrementCommentCountResponse {
+message DecrementCommentsCountResponse {
   bool success = 1;
 }

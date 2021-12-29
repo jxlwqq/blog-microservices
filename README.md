@@ -1,8 +1,8 @@
 # blog-microservices
 
-[![test](https://github.com/stonecutter/blog-microservices/actions/workflows/test.yaml/badge.svg)](https://github.com/stonecutter/blog-microservices/actions/workflows/test.yaml)
+[![test](https://github.com/jxlwqq/blog-microservices/actions/workflows/test.yaml/badge.svg)](https://github.com/jxlwqq/blog-microservices/actions/workflows/test.yaml)
 
-Blog microservices deployed in an Istio-enabled kubernetes cluster.
+A blog microservices deployed in an Istio-enabled kubernetes cluster.
 
 If you’re using this demo, please ★Star this repository to show your interest!
 
@@ -50,7 +50,7 @@ If you’re using this demo, please ★Star this repository to show your interes
 | `make docker-build`   | 构建 Docker 镜像                                                 |
 | `make kube-deploy`    | 在集群中部署 blog、user、post、comment、auth 以及 dtm 服务                 |
 | `make kube-delete`    | 在集群中删除上述服务                                                   |
-| `make kube-redeploy`  | 在集群中重新部署服务(数据库服务不删除)                                         |
+| `make kube-redeploy`  | 在集群中重新部署服务（⚠️ 数据库服务不会重新部署）                                   |
 
 ### 本地环境搭建
 
@@ -126,7 +126,7 @@ kube-system    vpnkit-controller                        1/1     Running   177 (2
 查看 Service 资源：
 
 ```shell
-kubectl get svc -A
+kubectl get services -A
 ```
 
 返回：

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package api.protobuf.comment.v1;
 
-option go_package = "github.com/stonecutter/blog-microservices/api/protobuf/comment/v1";
+option go_package = "github.com/jxlwqq/blog-microservices/api/protobuf/comment/v1";
 
 import 'google/protobuf/timestamp.proto';
 import "validate/validate.proto";
