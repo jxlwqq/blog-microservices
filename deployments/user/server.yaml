@@ -4,15 +4,18 @@ metadata:
   name: user-server
   labels:
     app: user-server
+    version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: user-server
+      version: v1
   template:
     metadata:
       labels:
         app: user-server
+        version: v1
     spec:
       containers:
         - name: user-server

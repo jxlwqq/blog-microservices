@@ -4,15 +4,18 @@ metadata:
   name: post-server
   labels:
     app: post-server
+    version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: post-server
+      version: v1
   template:
     metadata:
       labels:
         app: post-server
+        version: v1
     spec:
       containers:
         - name: post-server

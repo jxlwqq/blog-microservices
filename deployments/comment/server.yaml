@@ -4,15 +4,18 @@ metadata:
   name: comment-server
   labels:
     app: comment-server
+    version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: comment-server
+      version: v1
   template:
     metadata:
       labels:
         app: comment-server
+        version: v1
     spec:
       containers:
         - name: comment-server
