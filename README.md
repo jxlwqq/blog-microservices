@@ -74,6 +74,8 @@ istioctl install -y
 kubectl label namespace default istio-injection=enabled
 ```
 
+> ARM64 架构的用户安装 Istio，请查看 [这里](https://github.com/istio/istio/issues/21094#issuecomment-956117650) 以获取更多信息。
+
 ### 一键部署到本地集群
 
 数据库初始化，项目相关的配置已经在 `deployments` 目录中的 yaml 文件中设置好，直接一键部署即可。
