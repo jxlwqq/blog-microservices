@@ -39,3 +39,163 @@ spec:
             host: blog-server.default.svc.cluster.local
             port:
               number: 8050
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: user-virtual-service
+spec:
+  gateways:
+    - mesh
+  hosts:
+    - user-server.default.svc.cluster.local
+  http:
+    - route:
+        - destination:
+            host: user-server.default.svc.cluster.local
+            port:
+              number: 50051
+            subset: v1
+          weight: 100
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: user-destination-rule
+spec:
+  host: user-server.default.svc.cluster.local
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: post-virtual-service
+spec:
+  gateways:
+    - mesh
+  hosts:
+    - post-server.default.svc.cluster.local
+  http:
+    - route:
+        - destination:
+            host: post-server.default.svc.cluster.local
+            port:
+              number: 50052
+            subset: v1
+          weight: 100
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: post-destination-rule
+spec:
+  host: post-server.default.svc.cluster.local
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: comment-virtual-service
+spec:
+  gateways:
+    - mesh
+  hosts:
+    - comment-server.default.svc.cluster.local
+  http:
+    - route:
+        - destination:
+            host: comment-server.default.svc.cluster.local
+            port:
+              number: 50053
+            subset: v1
+          weight: 100
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: comment-destination-rule
+spec:
+  host: comment-server.default.svc.cluster.local
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: auth-virtual-service
+spec:
+  gateways:
+    - mesh
+  hosts:
+    - auth-server.default.svc.cluster.local
+  http:
+    - route:
+        - destination:
+            host: auth-server.default.svc.cluster.local
+            port:
+              number: 50054
+            subset: v1
+          weight: 100
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: auth-destination-rule
+spec:
+  host: auth-server.default.svc.cluster.local
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: dtm-virtual-service
+spec:
+  gateways:
+    - mesh
+  hosts:
+    - dtm-server.default.svc.cluster.local
+  http:
+    - route:
+        - destination:
+            host: dtm-server.default.svc.cluster.local
+            port:
+              number: 36790
+            subset: v1
+          weight: 100
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: dtm-destination-rule
+spec:
+  host: dtm-server.default.svc.cluster.local
+  subsets:
+    - name: v1
+      labels:
+        version: v1

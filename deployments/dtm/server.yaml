@@ -3,16 +3,19 @@ kind: Deployment
 metadata:
   labels:
     app: dtm-server
+    version: v1
   name: dtm-server
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: dtm-server
+      version: v1
   template:
     metadata:
       labels:
         app: dtm-server
+        version: v1
     spec:
       containers:
         - name: dtm-server
