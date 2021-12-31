@@ -28,6 +28,12 @@ spec:
               name: dtm-db
             - mountPath: /docker-entrypoint-initdb.d
               name: dtm-initdb
+          livenessProbe:
+            exec:
+              command: [ "mysqladmin", "ping" ]
+          readinessProbe:
+            exec:
+              command: [ "mysql", "-h", "127.0.0.1", "-e", "SELECT 1" ]
           resources:
             requests:
               cpu: 200m
