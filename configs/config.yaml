@@ -74,8 +74,6 @@ dtm:
       port: ':36790'
     http:
       port: ':36789'
-    metrics:
-      port: ':8889'
 jwt:
   secret: 'secret'
   expires: 36000

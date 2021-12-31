@@ -139,7 +139,7 @@ default        blog-server            ClusterIP      10.96.207.114    <none>    
 default        comment-db             ClusterIP      10.99.195.67     <none>        3306/TCP                                                                     15m
 default        comment-server         ClusterIP      10.96.179.191    <none>        50053/TCP,9053/TCP                                                           15m
 default        dtm-db                 ClusterIP      10.106.31.52     <none>        3306/TCP                                                                     15m
-default        dtm-server             ClusterIP      10.99.170.244    <none>        36790/TCP,36789/TCP,8889/TCP                                                 15m
+default        dtm-server             ClusterIP      10.99.170.244    <none>        36790/TCP,36789/TCP                                                          15m
 default        kubernetes             ClusterIP      10.96.0.1        <none>        443/TCP                                                                      13d
 default        post-db                ClusterIP      10.103.103.106   <none>        3306/TCP                                                                     15m
 default        post-server            ClusterIP      10.96.232.141    <none>        50052/TCP,9052/TCP                                                           15m

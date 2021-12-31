@@ -33,9 +33,6 @@ spec:
             - containerPort: 36790
               protocol: TCP
               name: grpc
-            - containerPort: 8889
-              protocol: TCP
-              name: metrics
           livenessProbe:
             httpGet:
               path: /api/ping
@@ -70,10 +67,6 @@ spec:
     - port: 36789
       targetPort: 36789
       name: http
-      appProtocol: http
-    - port: 8889
-      targetPort: 8889
-      name: metrics
       appProtocol: http
   selector:
     app: dtm-server
