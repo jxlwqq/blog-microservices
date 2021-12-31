@@ -136,8 +136,6 @@ github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZm
 github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f/go.mod h1:cuUVRXasLTGF7a8hSLbxyZXjz+1KgoB3wDUb6vlszIc=
 github.com/docker/spdystream v0.0.0-20160310174837-449fdfce4d96/go.mod h1:Qh8CwZgvJUkLughtfhJv5dyTYa91l1fOUCrgjqmcifM=
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:WwZ+bS3ebgob9U8Nd0kOddGdZWjyMGR8Wziv+TBNwSE=
-github.com/dtm-labs/dtm v1.7.5 h1:72YkV0PgaN8rde5hHb0qa5xMwqQmUIv1zrFTyS3YqyA=
-github.com/dtm-labs/dtm v1.7.5/go.mod h1:bCVoD/C+rjVciEj9tNv0ku5jC/BIrbACQuTjDXRm4TI=
 github.com/dtm-labs/dtm v1.8.1 h1:+RaBzSe52LM20SzNKS0RYp+zoZOTjCGP8boFyOv6DEs=
 github.com/dtm-labs/dtm v1.8.1/go.mod h1:L4P5xpAJGeMxxBIGuYLg6IUDgySOSlBqHQGpZYBHlBI=
 github.com/dtm-labs/dtmdriver v0.0.1 h1:dHUZQ6g2ZN6eRUqds9kKq/3K7u9bcUGatUlbthD92fA=
