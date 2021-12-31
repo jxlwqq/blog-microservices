@@ -19,8 +19,13 @@ spec:
     spec:
       containers:
         - name: dtm-server
-          image: yedf/dtm:latest
+          image: yedf/dtm:1.8.1
           imagePullPolicy: IfNotPresent
+          command:
+            ["/app/dtm/dtm", "-c", "/app/dtm/configs/config.yaml"]
+          volumeMounts:
+            - mountPath: /app/dtm/configs
+              name: config
           ports:
             - containerPort: 36789
               protocol: TCP
@@ -31,19 +36,6 @@ spec:
             - containerPort: 8889
               protocol: TCP
               name: metrics
-          env:
-            - name: DB_HOST
-              value: dtm-db
-            - name: DB_PORT
-              value: "3306"
-            - name: DB_USER
-              value: root
-            - name: DB_PASSWORD
-              value: ''
-            - name: TRANS_CRON_INTERVAL
-              value: "10"
-            - name: IS_DOCKER
-              value: '1'
           livenessProbe:
             httpGet:
               path: /api/ping
@@ -58,6 +50,10 @@ spec:
             requests:
               cpu: 200m
               memory: 200Mi
+      volumes:
+        - name: config
+          configMap:
+            name: dtm-config
 ---
 apiVersion: v1
 kind: Service
@@ -81,3 +77,18 @@ spec:
       appProtocol: http
   selector:
     app: dtm-server
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dtm-config
+  labels:
+    app: dtm-server
+data:
+  config.yaml: |-
+    Store:
+      Driver: mysql
+      Host: dtm-db
+      Port: 3306
+      User: root
+      Password: ''

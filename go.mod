@@ -3,7 +3,7 @@ module github.com/jxlwqq/blog-microservices
 go 1.17
 
 require (
-	github.com/dtm-labs/dtm v1.7.5
+	github.com/dtm-labs/dtm v1.8.1
 	github.com/envoyproxy/protoc-gen-validate v0.6.2
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.3.0
