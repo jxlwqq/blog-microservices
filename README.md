@@ -13,7 +13,7 @@ If you’re using this demo, please ★Star this repository to show your interes
 
 ### Kiali Console
 
-![kiali-console](./assets/kiali-console.jpeg)
+![kiali-console](./assets/kiali-console.png)
 
 ### 目录结构
 
