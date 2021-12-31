@@ -61,11 +61,15 @@ func main() {
 
 	// Start Metrics server
 	logger.Infof("Metrics Listening on port %s", conf.Post.Server.Metrics.Port)
-
+	metricsMux := http.NewServeMux()
+	metricsMux.Handle("/metrics", promhttp.Handler())
+	metricsServer := &http.Server{
+		Addr:    conf.Post.Server.Metrics.Port,
+		Handler: metricsMux,
+	}
 	go func() {
-		http.Handle("/metrics", promhttp.Handler())
-		if err = http.ListenAndServe(conf.Post.Server.Metrics.Port, nil); err != nil {
-			panic(err)
+		if err = metricsServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			logger.Fatal(err)
 		}
 	}()
 
@@ -74,6 +78,9 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	grpcServer.GracefulStop()
+	if err = metricsServer.Shutdown(ctx); err != nil {
+		logger.Fatal(err)
+	}
 	<-ctx.Done()
 	close(ch)
 	fmt.Println("Graceful Shutdown end")

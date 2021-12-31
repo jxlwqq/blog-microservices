@@ -64,33 +64,40 @@ func main() {
 	// Start gRPC server
 	logger.Infof("gRPC Listening on port %s", conf.Blog.Server.GRPC.Port)
 	go func() {
-		err = grpcServer.Serve(listen)
-		if err != nil {
+		if err = grpcServer.Serve(listen); err != nil {
 			logger.Fatal("grpc serve failed", err)
 		}
 	}()
 
 	// Start HTTP server
 	logger.Infof("HTTP Listening on port %s", conf.Blog.Server.HTTP.Port)
+	httpMux := runtime.NewServeMux()
+	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	if err = v1.RegisterBlogServiceHandlerFromEndpoint(context.Background(), httpMux, conf.Blog.Server.GRPC.Port, opts); err != nil {
+		logger.Fatal(err)
+	}
+	httpServer := &http.Server{
+		Addr:    conf.Blog.Server.HTTP.Port,
+		Handler: httpMux,
+	}
 	go func() {
-		mux := runtime.NewServeMux()
-		opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-		if err = v1.RegisterBlogServiceHandlerFromEndpoint(context.Background(), mux, conf.Blog.Server.GRPC.Port, opts); err != nil {
-			logger.Fatal(err)
-		}
-		err = http.ListenAndServe(conf.Blog.Server.HTTP.Port, mux)
-		if err != nil {
+		if err = httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			logger.Fatal(err)
 		}
 	}()
 
 	// Start Metrics server
 	logger.Infof("Metrics Listening on port %s", conf.Blog.Server.Metrics.Port)
+	metricsMux := http.NewServeMux()
+	metricsMux.Handle("/metrics", promhttp.Handler())
+	metricsServer := &http.Server{
+		Addr:    conf.Blog.Server.Metrics.Port,
+		Handler: metricsMux,
+	}
 	go func() {
-		mux := http.NewServeMux()
-		mux.Handle("/metrics", promhttp.Handler())
-		err = http.ListenAndServe(conf.Blog.Server.Metrics.Port, mux)
-		panic(err)
+		if err = metricsServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			logger.Fatal(err)
+		}
 	}()
 
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
@@ -98,6 +105,12 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	grpcServer.GracefulStop()
+	if err = httpServer.Shutdown(ctx); err != nil {
+		logger.Fatal(err)
+	}
+	if err = metricsServer.Shutdown(ctx); err != nil {
+		logger.Fatal(err)
+	}
 	<-ctx.Done()
 	close(ch)
 	logger.Info("Graceful Shutdown end")
