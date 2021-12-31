@@ -1,6 +1,7 @@
 package user
 
 import (
+	"context"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/dbcontext"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
@@ -25,32 +26,32 @@ func TestRepository(t *testing.T) {
 		Password: "test",
 		Avatar:   "https://test.com/avatar.png",
 	}
-	err = repo.Create(u)
+	err = repo.Create(context.Background(), u)
 	require.NoError(t, err)
 	require.NotEmpty(t, u.ID)
 
 	// Test Get
-	u2, err := repo.Get(u.ID)
+	u2, err := repo.Get(context.Background(), u.ID)
 	require.NoError(t, err)
 	require.Equal(t, u.Username, u2.Username)
 	require.Equal(t, u.Email, u2.Email)
 
 	// Test Update
 	u.Avatar = "https://test.com/avatar2.png"
-	err = repo.Update(u)
+	err = repo.Update(context.Background(), u)
 	require.NoError(t, err)
 
 	// Test GetByEmail
-	u3, err := repo.GetByEmail(u.Email)
+	u3, err := repo.GetByEmail(context.Background(), u.Email)
 	require.NoError(t, err)
 	require.Equal(t, u.Email, u3.Email)
 
 	// Test GetByUsername
-	u4, err := repo.GetByUsername(u.Username)
+	u4, err := repo.GetByUsername(context.Background(), u.Username)
 	require.NoError(t, err)
 	require.Equal(t, u.Username, u4.Username)
 
 	// Test Delete
-	err = repo.Delete(u.ID)
+	err = repo.Delete(context.Background(), u.ID)
 	require.NoError(t, err)
 }

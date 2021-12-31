@@ -1,6 +1,7 @@
 package post
 
 import (
+	"context"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/dbcontext"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 )
@@ -13,13 +14,13 @@ func NewRepository(logger *log.Logger, db *dbcontext.DB) Repository {
 }
 
 type Repository interface {
-	Get(id uint64) (*Post, error)
-	Create(post *Post) error
-	Update(post *Post) error
-	Delete(id uint64) error
-	DeleteByUUID(uuid string) error
-	List(offset, limit int) ([]*Post, error)
-	Count() (uint64, error)
+	Get(ctx context.Context, id uint64) (*Post, error)
+	Create(ctx context.Context, post *Post) error
+	Update(ctx context.Context, post *Post) error
+	Delete(ctx context.Context, id uint64) error
+	DeleteByUUID(ctx context.Context, uuid string) error
+	List(ctx context.Context, offset, limit int) ([]*Post, error)
+	Count(ctx context.Context) (uint64, error)
 }
 
 type repository struct {
@@ -27,35 +28,35 @@ type repository struct {
 	db     *dbcontext.DB
 }
 
-func (r repository) Get(id uint64) (*Post, error) {
+func (r repository) Get(ctx context.Context, id uint64) (*Post, error) {
 	post := &Post{}
 	err := r.db.First(post, id).Error
 	return post, err
 }
 
-func (r repository) Create(post *Post) error {
+func (r repository) Create(ctx context.Context, post *Post) error {
 	return r.db.Create(post).Error
 }
 
-func (r repository) Update(post *Post) error {
+func (r repository) Update(ctx context.Context, post *Post) error {
 	return r.db.Save(post).Error
 }
 
-func (r repository) Delete(id uint64) error {
+func (r repository) Delete(ctx context.Context, id uint64) error {
 	return r.db.Delete(&Post{}, id).Error
 }
 
-func (r repository) DeleteByUUID(uuid string) error {
+func (r repository) DeleteByUUID(ctx context.Context, uuid string) error {
 	return r.db.Delete(&Post{}, "uuid = ?", uuid).Error
 }
 
-func (r repository) List(offset, limit int) ([]*Post, error) {
+func (r repository) List(ctx context.Context, offset, limit int) ([]*Post, error) {
 	var posts []*Post
 	err := r.db.Offset(offset).Limit(limit).Find(&posts).Error
 	return posts, err
 }
 
-func (r repository) Count() (uint64, error) {
+func (r repository) Count(ctx context.Context) (uint64, error) {
 	var count int64
 	err := r.db.Model(&Post{}).Count(&count).Error
 	return uint64(count), err

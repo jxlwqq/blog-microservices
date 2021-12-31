@@ -24,7 +24,7 @@ type Server struct {
 
 func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest) (*v1.CreateCommentResponse, error) {
 
-	find, err := s.repo.GetByUUID(req.GetComment().GetUuid())
+	find, err := s.repo.GetByUUID(ctx, req.GetComment().GetUuid())
 	if err == nil {
 		return &v1.CreateCommentResponse{
 			Comment: entityToProtobuf(find),
@@ -37,7 +37,7 @@ func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest)
 		PostID:  req.GetComment().GetPostId(),
 		UserID:  req.GetComment().GetUserId(),
 	}
-	err = s.repo.Create(comment)
+	err = s.repo.Create(ctx, comment)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "could not create comment: %v", err)
 	}
@@ -48,7 +48,7 @@ func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest)
 }
 
 func (s Server) CreateCommentCompensate(ctx context.Context, req *v1.CreateCommentRequest) (*v1.CreateCommentResponse, error) {
-	err := s.repo.DeleteByUUID(req.GetComment().GetUuid())
+	err := s.repo.DeleteByUUID(ctx, req.GetComment().GetUuid())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "could not create comment: %v", err)
 	}
@@ -57,7 +57,7 @@ func (s Server) CreateCommentCompensate(ctx context.Context, req *v1.CreateComme
 }
 
 func (s Server) GetCommentByUUID(ctx context.Context, req *v1.GetCommentByUUIDRequest) (*v1.GetCommentByUUIDResponse, error) {
-	comment, err := s.repo.GetByUUID(req.GetUuid())
+	comment, err := s.repo.GetByUUID(ctx, req.GetUuid())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "could not get comment: %v", err)
 	}
@@ -70,7 +70,7 @@ func (s Server) GetCommentByUUID(ctx context.Context, req *v1.GetCommentByUUIDRe
 func (s Server) UpdateComment(ctx context.Context, req *v1.UpdateCommentRequest) (*v1.UpdateCommentResponse, error) {
 
 	commentID := req.GetComment().GetId()
-	_, err := s.repo.Get(commentID)
+	_, err := s.repo.Get(ctx, commentID)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "comment %d not found: %v", commentID, err)
 	}
@@ -80,7 +80,7 @@ func (s Server) UpdateComment(ctx context.Context, req *v1.UpdateCommentRequest)
 		Content: req.GetComment().GetContent(),
 	}
 
-	err = s.repo.Update(comment)
+	err = s.repo.Update(ctx, comment)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "could not update comment: %v", err)
 	}
@@ -91,11 +91,11 @@ func (s Server) UpdateComment(ctx context.Context, req *v1.UpdateCommentRequest)
 
 func (s Server) DeleteComment(ctx context.Context, req *v1.DeleteCommentRequest) (*v1.DeleteCommentResponse, error) {
 	commentID := req.GetId()
-	_, err := s.repo.Get(commentID)
+	_, err := s.repo.Get(ctx, commentID)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "comment %d not found: %v", commentID, err)
 	}
-	err = s.repo.Delete(commentID)
+	err = s.repo.Delete(ctx, commentID)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "could not delete comment: %v", err)
 	}
@@ -108,7 +108,7 @@ func (s Server) ListCommentsByPostID(ctx context.Context, req *v1.ListCommentsBy
 	postID := req.GetPostId()
 	offset := req.GetOffset()
 	limit := req.GetLimit()
-	list, err := s.repo.ListByPostID(postID, int(offset), int(limit))
+	list, err := s.repo.ListByPostID(ctx, postID, int(offset), int(limit))
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "could not get comments: %v", err)
 	}
@@ -119,7 +119,7 @@ func (s Server) ListCommentsByPostID(ctx context.Context, req *v1.ListCommentsBy
 		comments = append(comments, entityToProtobuf(comment))
 	}
 
-	total, err := s.repo.CountByPostID(postID)
+	total, err := s.repo.CountByPostID(ctx, postID)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "could not get comments: %v", err)
 	}

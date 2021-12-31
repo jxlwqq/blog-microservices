@@ -1,6 +1,7 @@
 package user
 
 import (
+	"context"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/dbcontext"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 )
@@ -13,13 +14,13 @@ func NewRepository(logger *log.Logger, db *dbcontext.DB) Repository {
 }
 
 type Repository interface {
-	ListUsersByIDs(ids []uint64) ([]*User, error)
-	Get(id uint64) (*User, error)
-	GetByEmail(email string) (*User, error)
-	GetByUsername(username string) (*User, error)
-	Create(user *User) error
-	Update(user *User) error
-	Delete(id uint64) error
+	ListUsersByIDs(ctx context.Context, ids []uint64) ([]*User, error)
+	Get(ctx context.Context, id uint64) (*User, error)
+	GetByEmail(ctx context.Context, email string) (*User, error)
+	GetByUsername(ctx context.Context, username string) (*User, error)
+	Create(ctx context.Context, user *User) error
+	Update(ctx context.Context, user *User) error
+	Delete(ctx context.Context, id uint64) error
 }
 
 type repository struct {
@@ -27,38 +28,38 @@ type repository struct {
 	db     *dbcontext.DB
 }
 
-func (r repository) ListUsersByIDs(ids []uint64) ([]*User, error) {
+func (r repository) ListUsersByIDs(ctx context.Context, ids []uint64) ([]*User, error) {
 	users := []*User{}
 	err := r.db.Where("id IN (?)", ids).Find(&users).Error
 	return users, err
 }
 
-func (r repository) Get(id uint64) (*User, error) {
+func (r repository) Get(ctx context.Context, id uint64) (*User, error) {
 	user := &User{}
 	err := r.db.First(user, id).Error
 	return user, err
 }
 
-func (r repository) GetByEmail(email string) (*User, error) {
+func (r repository) GetByEmail(ctx context.Context, email string) (*User, error) {
 	user := &User{}
 	err := r.db.Where("email = ?", email).First(user).Error
 	return user, err
 }
 
-func (r repository) GetByUsername(username string) (*User, error) {
+func (r repository) GetByUsername(ctx context.Context, username string) (*User, error) {
 	user := &User{}
 	err := r.db.Where("username = ?", username).First(user).Error
 	return user, err
 }
 
-func (r repository) Create(user *User) error {
+func (r repository) Create(ctx context.Context, user *User) error {
 	return r.db.Create(user).Error
 }
 
-func (r repository) Update(user *User) error {
+func (r repository) Update(ctx context.Context, user *User) error {
 	return r.db.Save(user).Error
 }
 
-func (r repository) Delete(id uint64) error {
+func (r repository) Delete(ctx context.Context, id uint64) error {
 	return r.db.Delete(&User{}, id).Error
 }

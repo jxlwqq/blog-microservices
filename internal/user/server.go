@@ -27,7 +27,7 @@ type Server struct {
 
 func (s Server) DeleteUser(ctx context.Context, req *v1.DeleteUserRequest) (*v1.DeleteUserResponse, error) {
 	id := req.GetId()
-	err := s.repo.Delete(id)
+	err := s.repo.Delete(ctx, id)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "could not delete user: %v", err)
 	}
@@ -42,7 +42,7 @@ func (s Server) ListUsersByIDs(ctx context.Context, req *v1.ListUsersByIDsReques
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 	ids := req.GetIds()
-	users, err := s.repo.ListUsersByIDs(ids)
+	users, err := s.repo.ListUsersByIDs(ctx, ids)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get user list by ids: %v", err)
 	}
@@ -62,7 +62,7 @@ func (s Server) GetUser(ctx context.Context, req *v1.GetUserRequest) (*v1.GetUse
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 	id := req.GetId()
-	user, err := s.repo.Get(id)
+	user, err := s.repo.Get(ctx, id)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get user: %v", err)
 	}
@@ -79,7 +79,7 @@ func (s Server) GetUserByEmail(ctx context.Context, req *v1.GetUserByEmailReques
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 	email := req.GetEmail()
-	user, err := s.repo.GetByEmail(email)
+	user, err := s.repo.GetByEmail(ctx, email)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get user by email: %v", err)
 	}
@@ -103,7 +103,7 @@ func (s Server) GetUserByUsername(ctx context.Context, req *v1.GetUserByUsername
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 	username := req.GetUsername()
-	user, err := s.repo.GetByUsername(username)
+	user, err := s.repo.GetByUsername(ctx, username)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get user by username: %v", err)
 	}
@@ -138,7 +138,7 @@ func (s Server) CreateUser(ctx context.Context, req *v1.CreateUserRequest) (*v1.
 		Avatar:   req.GetUser().GetAvatar(),
 		Password: password,
 	}
-	err = s.repo.Create(user)
+	err = s.repo.Create(ctx, user)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create user: %v", err)
 	}
@@ -171,7 +171,7 @@ func (s Server) UpdateUser(ctx context.Context, req *v1.UpdateUserRequest) (*v1.
 	if req.GetUser().Avatar != "" {
 		user.Avatar = req.GetUser().Avatar
 	}
-	err = s.repo.Update(user)
+	err = s.repo.Update(ctx, user)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update user: %v", err)
 	}

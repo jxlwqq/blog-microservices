@@ -20,15 +20,15 @@ type Server struct {
 	repo   Repository
 }
 
-func (s Server) IncrementCommentsCount(_ context.Context, req *v1.IncrementCommentsCountRequest) (*v1.IncrementCommentsCountResponse, error) {
+func (s Server) IncrementCommentsCount(ctx context.Context, req *v1.IncrementCommentsCountRequest) (*v1.IncrementCommentsCountResponse, error) {
 	postID := req.GetId()
-	p, err := s.repo.Get(postID)
+	p, err := s.repo.Get(ctx, postID)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "post %d not found", postID)
 	}
 	p.CommentsCount++
 
-	err = s.repo.Update(p)
+	err = s.repo.Update(ctx, p)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update post %d", postID)
 	}
@@ -36,40 +36,40 @@ func (s Server) IncrementCommentsCount(_ context.Context, req *v1.IncrementComme
 	return &v1.IncrementCommentsCountResponse{Success: true}, nil
 }
 
-func (s Server) IncrementCommentsCountCompensate(_ context.Context, req *v1.IncrementCommentsCountRequest) (*v1.IncrementCommentsCountResponse, error) {
+func (s Server) IncrementCommentsCountCompensate(ctx context.Context, req *v1.IncrementCommentsCountRequest) (*v1.IncrementCommentsCountResponse, error) {
 	postID := req.GetId()
-	p, err := s.repo.Get(postID)
+	p, err := s.repo.Get(ctx, postID)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "post %d not found", postID)
 	}
 	p.CommentsCount--
-	err = s.repo.Update(p)
+	err = s.repo.Update(ctx, p)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update post %d", postID)
 	}
 	return &v1.IncrementCommentsCountResponse{Success: true}, nil
 }
 
-func (s Server) DecrementCommentsCount(_ context.Context, request *v1.DecrementCommentsCountRequest) (*v1.DecrementCommentsCountResponse, error) {
+func (s Server) DecrementCommentsCount(ctx context.Context, request *v1.DecrementCommentsCountRequest) (*v1.DecrementCommentsCountResponse, error) {
 	postID := request.GetId()
-	p, err := s.repo.Get(postID)
+	p, err := s.repo.Get(ctx, postID)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "post %d not found", postID)
 	}
 	p.CommentsCount--
-	err = s.repo.Update(p)
+	err = s.repo.Update(ctx, p)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update post %d", postID)
 	}
 	return &v1.DecrementCommentsCountResponse{Success: true}, nil
 }
 
-func (s Server) GetPost(_ context.Context, req *v1.GetPostRequest) (*v1.GetPostResponse, error) {
+func (s Server) GetPost(ctx context.Context, req *v1.GetPostRequest) (*v1.GetPostResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	post, err := s.repo.Get(req.GetId())
+	post, err := s.repo.Get(ctx, req.GetId())
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "post not found: %v", err)
 	}
@@ -81,7 +81,7 @@ func (s Server) GetPost(_ context.Context, req *v1.GetPostRequest) (*v1.GetPostR
 	return resp, nil
 }
 
-func (s Server) CreatePost(_ context.Context, req *v1.CreatePostRequest) (*v1.CreatePostResponse, error) {
+func (s Server) CreatePost(ctx context.Context, req *v1.CreatePostRequest) (*v1.CreatePostResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
@@ -93,7 +93,7 @@ func (s Server) CreatePost(_ context.Context, req *v1.CreatePostRequest) (*v1.Cr
 		Content: req.GetPost().GetContent(),
 		UserID:  req.GetPost().GetUserId(),
 	}
-	err = s.repo.Create(post)
+	err = s.repo.Create(ctx, post)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create post: %v", err)
 	}
@@ -105,14 +105,14 @@ func (s Server) CreatePost(_ context.Context, req *v1.CreatePostRequest) (*v1.Cr
 	return resp, nil
 }
 
-func (s Server) UpdatePost(_ context.Context, req *v1.UpdatePostRequest) (*v1.UpdatePostResponse, error) {
+func (s Server) UpdatePost(ctx context.Context, req *v1.UpdatePostRequest) (*v1.UpdatePostResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	postID := req.GetPost().GetId()
-	post, err := s.repo.Get(postID)
+	post, err := s.repo.Get(ctx, postID)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "post %d not found", postID)
 	}
@@ -127,7 +127,7 @@ func (s Server) UpdatePost(_ context.Context, req *v1.UpdatePostRequest) (*v1.Up
 
 	s.logger.Info("update post", post)
 
-	err = s.repo.Update(post)
+	err = s.repo.Update(ctx, post)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update post: %v", err)
 	}
@@ -139,17 +139,17 @@ func (s Server) UpdatePost(_ context.Context, req *v1.UpdatePostRequest) (*v1.Up
 	return resp, nil
 }
 
-func (s Server) DeletePost(_ context.Context, req *v1.DeletePostRequest) (*v1.DeletePostResponse, error) {
+func (s Server) DeletePost(ctx context.Context, req *v1.DeletePostRequest) (*v1.DeletePostResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	post, err := s.repo.Get(req.GetId())
+	post, err := s.repo.Get(ctx, req.GetId())
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "post %d not found", req.GetId())
 	}
 
-	err = s.repo.Delete(post.ID)
+	err = s.repo.Delete(ctx, post.ID)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to delete post: %v", err)
 	}
@@ -161,12 +161,12 @@ func (s Server) DeletePost(_ context.Context, req *v1.DeletePostRequest) (*v1.De
 	return resp, nil
 }
 
-func (s Server) ListPosts(_ context.Context, req *v1.ListPostsRequest) (*v1.ListPostsResponse, error) {
+func (s Server) ListPosts(ctx context.Context, req *v1.ListPostsRequest) (*v1.ListPostsResponse, error) {
 	err := req.ValidateAll()
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	list, err := s.repo.List(int(req.GetOffset()), int(req.GetLimit()))
+	list, err := s.repo.List(ctx, int(req.GetOffset()), int(req.GetLimit()))
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to list posts: %v", err)
 	}
@@ -176,7 +176,7 @@ func (s Server) ListPosts(_ context.Context, req *v1.ListPostsRequest) (*v1.List
 		posts = append(posts, entityToProtobuf(post))
 	}
 
-	count, err := s.repo.Count()
+	count, err := s.repo.Count(ctx)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to count posts: %v", err)
 	}
