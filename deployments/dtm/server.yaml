@@ -19,10 +19,10 @@ spec:
     spec:
       containers:
         - name: dtm-server
-          image: yedf/dtm:1.8.1
+          image: yedf/dtm:1.8.4
           imagePullPolicy: IfNotPresent
-          command:
-            ["/app/dtm/dtm", "-c", "/app/dtm/configs/config.yaml"]
+          args:
+            - "-c=/app/dtm/configs/config.yaml"
           volumeMounts:
             - mountPath: /app/dtm/configs
               name: config
