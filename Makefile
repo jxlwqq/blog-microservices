@@ -66,9 +66,9 @@ auth-server:
 
 .PHONY: dtm-server
 dtm-server:
-	@echo "Quick start DTM server. See: https://github.com/dtm-labs/dtm"
+	@echo "Start DTM server, Please see: https://github.com/dtm-labs/dtm"
 	@echo "git clone git@github.com:dtm-labs/dtm.git"
-	@echo "cd dtm && go run app/main.go qs"
+	@echo "cd dtm && go run main.go"
 
 .PHONY: docker-build
 docker-build:
