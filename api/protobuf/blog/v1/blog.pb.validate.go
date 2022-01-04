@@ -1658,6 +1658,212 @@ var _ interface {
 	ErrorName() string
 } = CreateCommentResponseValidationError{}
 
+// Validate checks the field values on DeleteCommentRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *DeleteCommentRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DeleteCommentRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// DeleteCommentRequestMultiError, or nil if none found.
+func (m *DeleteCommentRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DeleteCommentRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	if len(errors) > 0 {
+		return DeleteCommentRequestMultiError(errors)
+	}
+	return nil
+}
+
+// DeleteCommentRequestMultiError is an error wrapping multiple validation
+// errors returned by DeleteCommentRequest.ValidateAll() if the designated
+// constraints aren't met.
+type DeleteCommentRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DeleteCommentRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DeleteCommentRequestMultiError) AllErrors() []error { return m }
+
+// DeleteCommentRequestValidationError is the validation error returned by
+// DeleteCommentRequest.Validate if the designated constraints aren't met.
+type DeleteCommentRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DeleteCommentRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DeleteCommentRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DeleteCommentRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DeleteCommentRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DeleteCommentRequestValidationError) ErrorName() string {
+	return "DeleteCommentRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DeleteCommentRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDeleteCommentRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DeleteCommentRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DeleteCommentRequestValidationError{}
+
+// Validate checks the field values on DeleteCommentResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *DeleteCommentResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DeleteCommentResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// DeleteCommentResponseMultiError, or nil if none found.
+func (m *DeleteCommentResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DeleteCommentResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Success
+
+	if len(errors) > 0 {
+		return DeleteCommentResponseMultiError(errors)
+	}
+	return nil
+}
+
+// DeleteCommentResponseMultiError is an error wrapping multiple validation
+// errors returned by DeleteCommentResponse.ValidateAll() if the designated
+// constraints aren't met.
+type DeleteCommentResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DeleteCommentResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DeleteCommentResponseMultiError) AllErrors() []error { return m }
+
+// DeleteCommentResponseValidationError is the validation error returned by
+// DeleteCommentResponse.Validate if the designated constraints aren't met.
+type DeleteCommentResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DeleteCommentResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DeleteCommentResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DeleteCommentResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DeleteCommentResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DeleteCommentResponseValidationError) ErrorName() string {
+	return "DeleteCommentResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DeleteCommentResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDeleteCommentResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DeleteCommentResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DeleteCommentResponseValidationError{}
+
 // Validate checks the field values on GetPostRequest with the rules defined in
 // the proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.

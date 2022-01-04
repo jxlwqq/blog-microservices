@@ -20,9 +20,11 @@ const _ = grpc.SupportPackageIsVersion7
 type CommentServiceClient interface {
 	CreateComment(ctx context.Context, in *CreateCommentRequest, opts ...grpc.CallOption) (*CreateCommentResponse, error)
 	CreateCommentCompensate(ctx context.Context, in *CreateCommentRequest, opts ...grpc.CallOption) (*CreateCommentResponse, error)
+	GetComment(ctx context.Context, in *GetCommentRequest, opts ...grpc.CallOption) (*GetCommentResponse, error)
 	GetCommentByUUID(ctx context.Context, in *GetCommentByUUIDRequest, opts ...grpc.CallOption) (*GetCommentByUUIDResponse, error)
 	UpdateComment(ctx context.Context, in *UpdateCommentRequest, opts ...grpc.CallOption) (*UpdateCommentResponse, error)
 	DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*DeleteCommentResponse, error)
+	DeleteCommentCompensate(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*DeleteCommentResponse, error)
 	ListCommentsByPostID(ctx context.Context, in *ListCommentsByPostIDRequest, opts ...grpc.CallOption) (*ListCommentsByPostIDResponse, error)
 }
 
@@ -46,6 +48,15 @@ func (c *commentServiceClient) CreateComment(ctx context.Context, in *CreateComm
 func (c *commentServiceClient) CreateCommentCompensate(ctx context.Context, in *CreateCommentRequest, opts ...grpc.CallOption) (*CreateCommentResponse, error) {
 	out := new(CreateCommentResponse)
 	err := c.cc.Invoke(ctx, "/api.protobuf.comment.v1.CommentService/CreateCommentCompensate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *commentServiceClient) GetComment(ctx context.Context, in *GetCommentRequest, opts ...grpc.CallOption) (*GetCommentResponse, error) {
+	out := new(GetCommentResponse)
+	err := c.cc.Invoke(ctx, "/api.protobuf.comment.v1.CommentService/GetComment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -79,6 +90,15 @@ func (c *commentServiceClient) DeleteComment(ctx context.Context, in *DeleteComm
 	return out, nil
 }
 
+func (c *commentServiceClient) DeleteCommentCompensate(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*DeleteCommentResponse, error) {
+	out := new(DeleteCommentResponse)
+	err := c.cc.Invoke(ctx, "/api.protobuf.comment.v1.CommentService/DeleteCommentCompensate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *commentServiceClient) ListCommentsByPostID(ctx context.Context, in *ListCommentsByPostIDRequest, opts ...grpc.CallOption) (*ListCommentsByPostIDResponse, error) {
 	out := new(ListCommentsByPostIDResponse)
 	err := c.cc.Invoke(ctx, "/api.protobuf.comment.v1.CommentService/ListCommentsByPostID", in, out, opts...)
@@ -94,9 +114,11 @@ func (c *commentServiceClient) ListCommentsByPostID(ctx context.Context, in *Lis
 type CommentServiceServer interface {
 	CreateComment(context.Context, *CreateCommentRequest) (*CreateCommentResponse, error)
 	CreateCommentCompensate(context.Context, *CreateCommentRequest) (*CreateCommentResponse, error)
+	GetComment(context.Context, *GetCommentRequest) (*GetCommentResponse, error)
 	GetCommentByUUID(context.Context, *GetCommentByUUIDRequest) (*GetCommentByUUIDResponse, error)
 	UpdateComment(context.Context, *UpdateCommentRequest) (*UpdateCommentResponse, error)
 	DeleteComment(context.Context, *DeleteCommentRequest) (*DeleteCommentResponse, error)
+	DeleteCommentCompensate(context.Context, *DeleteCommentRequest) (*DeleteCommentResponse, error)
 	ListCommentsByPostID(context.Context, *ListCommentsByPostIDRequest) (*ListCommentsByPostIDResponse, error)
 	mustEmbedUnimplementedCommentServiceServer()
 }
@@ -111,6 +133,9 @@ func (UnimplementedCommentServiceServer) CreateComment(context.Context, *CreateC
 func (UnimplementedCommentServiceServer) CreateCommentCompensate(context.Context, *CreateCommentRequest) (*CreateCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCommentCompensate not implemented")
 }
+func (UnimplementedCommentServiceServer) GetComment(context.Context, *GetCommentRequest) (*GetCommentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetComment not implemented")
+}
 func (UnimplementedCommentServiceServer) GetCommentByUUID(context.Context, *GetCommentByUUIDRequest) (*GetCommentByUUIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCommentByUUID not implemented")
 }
@@ -119,6 +144,9 @@ func (UnimplementedCommentServiceServer) UpdateComment(context.Context, *UpdateC
 }
 func (UnimplementedCommentServiceServer) DeleteComment(context.Context, *DeleteCommentRequest) (*DeleteCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteComment not implemented")
+}
+func (UnimplementedCommentServiceServer) DeleteCommentCompensate(context.Context, *DeleteCommentRequest) (*DeleteCommentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteCommentCompensate not implemented")
 }
 func (UnimplementedCommentServiceServer) ListCommentsByPostID(context.Context, *ListCommentsByPostIDRequest) (*ListCommentsByPostIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListCommentsByPostID not implemented")
@@ -168,6 +196,24 @@ func _CommentService_CreateCommentCompensate_Handler(srv interface{}, ctx contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommentServiceServer).CreateCommentCompensate(ctx, req.(*CreateCommentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CommentService_GetComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CommentServiceServer).GetComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.protobuf.comment.v1.CommentService/GetComment",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CommentServiceServer).GetComment(ctx, req.(*GetCommentRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -226,6 +272,24 @@ func _CommentService_DeleteComment_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CommentService_DeleteCommentCompensate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CommentServiceServer).DeleteCommentCompensate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.protobuf.comment.v1.CommentService/DeleteCommentCompensate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CommentServiceServer).DeleteCommentCompensate(ctx, req.(*DeleteCommentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _CommentService_ListCommentsByPostID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListCommentsByPostIDRequest)
 	if err := dec(in); err != nil {
@@ -260,6 +324,10 @@ var CommentService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _CommentService_CreateCommentCompensate_Handler,
 		},
 		{
+			MethodName: "GetComment",
+			Handler:    _CommentService_GetComment_Handler,
+		},
+		{
 			MethodName: "GetCommentByUUID",
 			Handler:    _CommentService_GetCommentByUUID_Handler,
 		},
@@ -270,6 +338,10 @@ var CommentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteComment",
 			Handler:    _CommentService_DeleteComment_Handler,
+		},
+		{
+			MethodName: "DeleteCommentCompensate",
+			Handler:    _CommentService_DeleteCommentCompensate_Handler,
 		},
 		{
 			MethodName: "ListCommentsByPostID",

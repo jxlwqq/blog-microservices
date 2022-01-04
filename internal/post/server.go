@@ -50,13 +50,27 @@ func (s Server) IncrementCommentsCountCompensate(ctx context.Context, req *v1.In
 	return &v1.IncrementCommentsCountResponse{Success: true}, nil
 }
 
-func (s Server) DecrementCommentsCount(ctx context.Context, request *v1.DecrementCommentsCountRequest) (*v1.DecrementCommentsCountResponse, error) {
-	postID := request.GetId()
+func (s Server) DecrementCommentsCount(ctx context.Context, req *v1.DecrementCommentsCountRequest) (*v1.DecrementCommentsCountResponse, error) {
+	postID := req.GetId()
 	p, err := s.repo.Get(ctx, postID)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "post %d not found", postID)
 	}
 	p.CommentsCount--
+	err = s.repo.Update(ctx, p)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update post %d", postID)
+	}
+	return &v1.DecrementCommentsCountResponse{Success: true}, nil
+}
+
+func (s Server) DecrementCommentsCountCompensate(ctx context.Context, req *v1.DecrementCommentsCountRequest) (*v1.DecrementCommentsCountResponse, error) {
+	postID := req.GetId()
+	p, err := s.repo.Get(ctx, postID)
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "post %d not found", postID)
+	}
+	p.CommentsCount++
 	err = s.repo.Update(ctx, p)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update post %d", postID)

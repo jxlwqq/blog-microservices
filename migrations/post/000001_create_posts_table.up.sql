@@ -8,5 +8,6 @@ create table posts
     comments_count int unsigned    not null default 0,
     created_at     timestamp       not null default current_timestamp,
     updated_at     timestamp       not null default current_timestamp on update current_timestamp,
+    deleted_at     timestamp       null,
     index (user_id)
 );

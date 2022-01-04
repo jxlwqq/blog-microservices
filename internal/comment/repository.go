@@ -20,6 +20,7 @@ type Repository interface {
 	DeleteByUUID(ctx context.Context, uuid string) error
 	ListByPostID(ctx context.Context, postID uint64, offset, limit int) ([]*Comment, error)
 	Get(ctx context.Context, id uint64) (*Comment, error)
+	GetWithUnscoped(ctx context.Context, id uint64) (*Comment, error)
 	GetByUUID(ctx context.Context, uuid string) (*Comment, error)
 	CountByPostID(ctx context.Context, postID uint64) (uint64, error)
 }
@@ -38,6 +39,12 @@ func (r repository) CountByPostID(ctx context.Context, postID uint64) (uint64, e
 func (r repository) Get(ctx context.Context, id uint64) (*Comment, error) {
 	comment := &Comment{}
 	err := r.db.First(comment, id).Error
+	return comment, err
+}
+
+func (r repository) GetWithUnscoped(ctx context.Context, id uint64) (*Comment, error) {
+	comment := &Comment{}
+	err := r.db.Unscoped().First(comment, id).Error
 	return comment, err
 }
 

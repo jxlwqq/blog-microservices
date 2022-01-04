@@ -10,9 +10,11 @@ import "validate/validate.proto";
 service CommentService {
   rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse) {}
   rpc CreateCommentCompensate(CreateCommentRequest) returns (CreateCommentResponse) {}
+  rpc GetComment(GetCommentRequest) returns (GetCommentResponse) {}
   rpc GetCommentByUUID(GetCommentByUUIDRequest) returns (GetCommentByUUIDResponse) {}
   rpc UpdateComment(UpdateCommentRequest) returns (UpdateCommentResponse) {}
   rpc DeleteComment(DeleteCommentRequest) returns (DeleteCommentResponse) {}
+  rpc DeleteCommentCompensate(DeleteCommentRequest) returns (DeleteCommentResponse) {}
   rpc ListCommentsByPostID(ListCommentsByPostIDRequest) returns (ListCommentsByPostIDResponse) {}
 }
 
@@ -59,6 +61,14 @@ message ListCommentsByPostIDRequest {
 message ListCommentsByPostIDResponse {
   repeated Comment comments = 1;
   uint64 total = 2;
+}
+
+message GetCommentRequest {
+  uint64 id = 1;
+}
+
+message GetCommentResponse {
+  Comment comment = 1;
 }
 
 message GetCommentByUUIDRequest {

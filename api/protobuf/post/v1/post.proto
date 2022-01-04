@@ -16,6 +16,7 @@ service PostService {
   rpc IncrementCommentsCount(IncrementCommentsCountRequest) returns (IncrementCommentsCountResponse) {}
   rpc IncrementCommentsCountCompensate(IncrementCommentsCountRequest) returns (IncrementCommentsCountResponse) {}
   rpc DecrementCommentsCount(DecrementCommentsCountRequest) returns (DecrementCommentsCountResponse) {}
+  rpc DecrementCommentsCountCompensate(DecrementCommentsCountRequest) returns (DecrementCommentsCountResponse) {}
 }
 
 message Post {

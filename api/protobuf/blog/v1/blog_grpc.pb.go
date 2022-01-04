@@ -25,6 +25,7 @@ type BlogServiceClient interface {
 	ListPosts(ctx context.Context, in *ListPostsRequest, opts ...grpc.CallOption) (*ListPostsResponse, error)
 	UpdatePost(ctx context.Context, in *UpdatePostRequest, opts ...grpc.CallOption) (*UpdatePostResponse, error)
 	CreateComment(ctx context.Context, in *CreateCommentRequest, opts ...grpc.CallOption) (*CreateCommentResponse, error)
+	DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*DeleteCommentResponse, error)
 	ListCommentsByPostID(ctx context.Context, in *ListCommentsByPostIDRequest, opts ...grpc.CallOption) (*ListCommentsByPostIDResponse, error)
 }
 
@@ -99,6 +100,15 @@ func (c *blogServiceClient) CreateComment(ctx context.Context, in *CreateComment
 	return out, nil
 }
 
+func (c *blogServiceClient) DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*DeleteCommentResponse, error) {
+	out := new(DeleteCommentResponse)
+	err := c.cc.Invoke(ctx, "/api.protobuf.blog.v1.BlogService/DeleteComment", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *blogServiceClient) ListCommentsByPostID(ctx context.Context, in *ListCommentsByPostIDRequest, opts ...grpc.CallOption) (*ListCommentsByPostIDResponse, error) {
 	out := new(ListCommentsByPostIDResponse)
 	err := c.cc.Invoke(ctx, "/api.protobuf.blog.v1.BlogService/ListCommentsByPostID", in, out, opts...)
@@ -119,6 +129,7 @@ type BlogServiceServer interface {
 	ListPosts(context.Context, *ListPostsRequest) (*ListPostsResponse, error)
 	UpdatePost(context.Context, *UpdatePostRequest) (*UpdatePostResponse, error)
 	CreateComment(context.Context, *CreateCommentRequest) (*CreateCommentResponse, error)
+	DeleteComment(context.Context, *DeleteCommentRequest) (*DeleteCommentResponse, error)
 	ListCommentsByPostID(context.Context, *ListCommentsByPostIDRequest) (*ListCommentsByPostIDResponse, error)
 	mustEmbedUnimplementedBlogServiceServer()
 }
@@ -147,6 +158,9 @@ func (UnimplementedBlogServiceServer) UpdatePost(context.Context, *UpdatePostReq
 }
 func (UnimplementedBlogServiceServer) CreateComment(context.Context, *CreateCommentRequest) (*CreateCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateComment not implemented")
+}
+func (UnimplementedBlogServiceServer) DeleteComment(context.Context, *DeleteCommentRequest) (*DeleteCommentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteComment not implemented")
 }
 func (UnimplementedBlogServiceServer) ListCommentsByPostID(context.Context, *ListCommentsByPostIDRequest) (*ListCommentsByPostIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListCommentsByPostID not implemented")
@@ -290,6 +304,24 @@ func _BlogService_CreateComment_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BlogService_DeleteComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BlogServiceServer).DeleteComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.protobuf.blog.v1.BlogService/DeleteComment",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BlogServiceServer).DeleteComment(ctx, req.(*DeleteCommentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BlogService_ListCommentsByPostID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListCommentsByPostIDRequest)
 	if err := dec(in); err != nil {
@@ -342,6 +374,10 @@ var BlogService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateComment",
 			Handler:    _BlogService_CreateComment_Handler,
+		},
+		{
+			MethodName: "DeleteComment",
+			Handler:    _BlogService_DeleteComment_Handler,
 		},
 		{
 			MethodName: "ListCommentsByPostID",

@@ -23,6 +23,7 @@ var AuthMethods = map[string]bool{
 	prefix + "CreatePost":    true, // 需要验证
 	prefix + "UpdatePost":    true,
 	prefix + "CreateComment": true,
+	prefix + "DeleteComment": true,
 	prefix + "GetPost":       false,
 	prefix + "ListPosts":     false,
 }
@@ -268,10 +269,10 @@ func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest)
 	}
 
 	// 分布式事务(Saga 模式)
-	DtmGrpcServerAddr := s.conf.DTM.Server.Host + s.conf.DTM.Server.GRPC.Port
-	gid := dtmgrpc.MustGenGid(DtmGrpcServerAddr)
+	dtmGRPCServerAddr := s.conf.DTM.Server.Host + s.conf.DTM.Server.GRPC.Port
+	gid := dtmgrpc.MustGenGid(dtmGRPCServerAddr)
 	s.logger.Info("gid:", gid)
-	saga := dtmgrpc.NewSagaGrpc(DtmGrpcServerAddr, gid).Add(
+	saga := dtmgrpc.NewSagaGrpc(dtmGRPCServerAddr, gid).Add(
 		s.conf.Comment.Server.Host+s.conf.Comment.Server.GRPC.Port+"/"+commentv1.CommentService_ServiceDesc.ServiceName+"/CreateComment",
 		s.conf.Comment.Server.Host+s.conf.Comment.Server.GRPC.Port+"/"+commentv1.CommentService_ServiceDesc.ServiceName+"/CreateCommentCompensate",
 		&commentv1.CreateCommentRequest{
@@ -336,6 +337,64 @@ func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest)
 			},
 		},
 	}, nil
+}
+
+func (s Server) DeleteComment(ctx context.Context, req *v1.DeleteCommentRequest) (*v1.DeleteCommentResponse, error) {
+	userID, ok := ctx.Value("ID").(uint64)
+	if !ok {
+		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
+	}
+	userResp, err := s.userClient.GetUser(ctx, &userv1.GetUserRequest{
+		Id: userID,
+	})
+	if err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
+
+	commentID := req.GetId()
+	commentResp, err := s.commentClient.GetComment(ctx, &commentv1.GetCommentRequest{
+		Id: commentID,
+	})
+	if err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
+
+	postResp, err := s.postClient.GetPost(ctx, &postv1.GetPostRequest{
+		Id: commentResp.GetComment().GetPostId(),
+	})
+	if err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
+
+	if userResp.GetUser().GetId() != commentResp.GetComment().GetUserId() || userResp.GetUser().GetId() != postResp.GetPost().GetUserId() {
+		return nil, status.Error(codes.PermissionDenied, "user not authorized")
+	}
+
+	// 分布式事务(Saga 模式): 删除评论 and 减少帖子评论数
+	dtmGRPCServerAddr := s.conf.DTM.Server.Host + s.conf.DTM.Server.GRPC.Port
+	gid := dtmgrpc.MustGenGid(dtmGRPCServerAddr)
+	s.logger.Info("gid:", gid)
+	saga := dtmgrpc.NewSagaGrpc(dtmGRPCServerAddr, gid).Add(
+		s.conf.Comment.Server.Host+s.conf.Comment.Server.GRPC.Port+"/"+commentv1.CommentService_ServiceDesc.ServiceName+"/DeleteComment",
+		s.conf.Comment.Server.Host+s.conf.Comment.Server.GRPC.Port+"/"+commentv1.CommentService_ServiceDesc.ServiceName+"/DeleteCommentCompensate",
+		&commentv1.DeleteCommentRequest{
+			Id: commentID,
+		},
+	).Add(
+		s.conf.Post.Server.Host+s.conf.Post.Server.GRPC.Port+"/"+postv1.PostService_ServiceDesc.ServiceName+"/DecrementCommentsCount",
+		s.conf.Post.Server.Host+s.conf.Post.Server.GRPC.Port+"/"+postv1.PostService_ServiceDesc.ServiceName+"/DecrementCommentsCountCompensate",
+		&postv1.DecrementCommentsCountRequest{
+			Id: postResp.GetPost().GetId(),
+		},
+	)
+
+	saga.WaitResult = true
+	err = saga.Submit()
+	if err != nil {
+		return nil, status.Error(codes.Internal, "saga submit failed")
+	}
+
+	return &v1.DeleteCommentResponse{Success: true}, nil
 }
 
 func (s Server) ListCommentsByPostID(ctx context.Context, req *v1.ListCommentsByPostIDRequest) (*v1.ListCommentsByPostIDResponse, error) {

@@ -26,6 +26,7 @@ type PostServiceClient interface {
 	IncrementCommentsCount(ctx context.Context, in *IncrementCommentsCountRequest, opts ...grpc.CallOption) (*IncrementCommentsCountResponse, error)
 	IncrementCommentsCountCompensate(ctx context.Context, in *IncrementCommentsCountRequest, opts ...grpc.CallOption) (*IncrementCommentsCountResponse, error)
 	DecrementCommentsCount(ctx context.Context, in *DecrementCommentsCountRequest, opts ...grpc.CallOption) (*DecrementCommentsCountResponse, error)
+	DecrementCommentsCountCompensate(ctx context.Context, in *DecrementCommentsCountRequest, opts ...grpc.CallOption) (*DecrementCommentsCountResponse, error)
 }
 
 type postServiceClient struct {
@@ -108,6 +109,15 @@ func (c *postServiceClient) DecrementCommentsCount(ctx context.Context, in *Decr
 	return out, nil
 }
 
+func (c *postServiceClient) DecrementCommentsCountCompensate(ctx context.Context, in *DecrementCommentsCountRequest, opts ...grpc.CallOption) (*DecrementCommentsCountResponse, error) {
+	out := new(DecrementCommentsCountResponse)
+	err := c.cc.Invoke(ctx, "/api.protobuf.post.v1.PostService/DecrementCommentsCountCompensate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PostServiceServer is the server API for PostService service.
 // All implementations must embed UnimplementedPostServiceServer
 // for forward compatibility
@@ -120,6 +130,7 @@ type PostServiceServer interface {
 	IncrementCommentsCount(context.Context, *IncrementCommentsCountRequest) (*IncrementCommentsCountResponse, error)
 	IncrementCommentsCountCompensate(context.Context, *IncrementCommentsCountRequest) (*IncrementCommentsCountResponse, error)
 	DecrementCommentsCount(context.Context, *DecrementCommentsCountRequest) (*DecrementCommentsCountResponse, error)
+	DecrementCommentsCountCompensate(context.Context, *DecrementCommentsCountRequest) (*DecrementCommentsCountResponse, error)
 	mustEmbedUnimplementedPostServiceServer()
 }
 
@@ -150,6 +161,9 @@ func (UnimplementedPostServiceServer) IncrementCommentsCountCompensate(context.C
 }
 func (UnimplementedPostServiceServer) DecrementCommentsCount(context.Context, *DecrementCommentsCountRequest) (*DecrementCommentsCountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DecrementCommentsCount not implemented")
+}
+func (UnimplementedPostServiceServer) DecrementCommentsCountCompensate(context.Context, *DecrementCommentsCountRequest) (*DecrementCommentsCountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DecrementCommentsCountCompensate not implemented")
 }
 func (UnimplementedPostServiceServer) mustEmbedUnimplementedPostServiceServer() {}
 
@@ -308,6 +322,24 @@ func _PostService_DecrementCommentsCount_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PostService_DecrementCommentsCountCompensate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DecrementCommentsCountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).DecrementCommentsCountCompensate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.protobuf.post.v1.PostService/DecrementCommentsCountCompensate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).DecrementCommentsCountCompensate(ctx, req.(*DecrementCommentsCountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PostService_ServiceDesc is the grpc.ServiceDesc for PostService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -346,6 +378,10 @@ var PostService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DecrementCommentsCount",
 			Handler:    _PostService_DecrementCommentsCount_Handler,
+		},
+		{
+			MethodName: "DecrementCommentsCountCompensate",
+			Handler:    _PostService_DecrementCommentsCountCompensate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

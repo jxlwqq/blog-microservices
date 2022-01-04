@@ -7,6 +7,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
+	"gorm.io/gorm"
 )
 
 func NewServer(logger *log.Logger, repo Repository) v1.CommentServiceServer {
@@ -56,6 +57,18 @@ func (s Server) CreateCommentCompensate(ctx context.Context, req *v1.CreateComme
 	return &v1.CreateCommentResponse{}, nil
 }
 
+func (s Server) GetComment(ctx context.Context, req *v1.GetCommentRequest) (*v1.GetCommentResponse, error) {
+	id := req.GetId()
+	comment, err := s.repo.Get(ctx, id)
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "could not get comment: %v", err)
+	}
+
+	return &v1.GetCommentResponse{
+		Comment: entityToProtobuf(comment),
+	}, nil
+}
+
 func (s Server) GetCommentByUUID(ctx context.Context, req *v1.GetCommentByUUIDRequest) (*v1.GetCommentByUUIDResponse, error) {
 	comment, err := s.repo.GetByUUID(ctx, req.GetUuid())
 	if err != nil {
@@ -96,6 +109,22 @@ func (s Server) DeleteComment(ctx context.Context, req *v1.DeleteCommentRequest)
 		return nil, status.Errorf(codes.NotFound, "comment %d not found: %v", commentID, err)
 	}
 	err = s.repo.Delete(ctx, commentID)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "could not delete comment: %v", err)
+	}
+	return &v1.DeleteCommentResponse{
+		Success: true,
+	}, nil
+}
+
+func (s Server) DeleteCommentCompensate(ctx context.Context, req *v1.DeleteCommentRequest) (*v1.DeleteCommentResponse, error) {
+	commentID := req.GetId()
+	comment, err := s.repo.GetWithUnscoped(ctx, commentID)
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "comment %d not found: %v", commentID, err)
+	}
+	comment.DeletedAt = gorm.DeletedAt{}
+	err = s.repo.Update(ctx, comment)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "could not delete comment: %v", err)
 	}
