@@ -67,8 +67,8 @@ auth-server:
 .PHONY: dtm-server
 dtm-server:
 	@echo "Start DTM server, Please see: https://github.com/dtm-labs/dtm"
-	@echo "git clone git@github.com:dtm-labs/dtm.git"
-	@echo "cd dtm && go run main.go"
+	@echo "From Source: git clone git@github.com:dtm-labs/dtm.git && cd dtm && go run main.go"
+	@echo "For Mac: brew install dtm"
 
 .PHONY: docker-build
 docker-build:
