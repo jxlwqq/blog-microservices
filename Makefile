@@ -39,10 +39,12 @@ migrate-up:
 
 .PHONY: migrate-down
 migrate-down:
-	migrate -path ./migrations/user -database "mysql://root:@tcp(localhost:3306)/users" -verbose down
-	migrate -path ./migrations/post -database "mysql://root:@tcp(localhost:3306)/posts" -verbose down
-	migrate -path ./migrations/comment -database "mysql://root:@tcp(localhost:3306)/comments" -verbose down
+	migrate -path ./migrations/user -database "mysql://root:@tcp(localhost:3306)/users" -verbose down -all
+	migrate -path ./migrations/post -database "mysql://root:@tcp(localhost:3306)/posts" -verbose down -all
+	migrate -path ./migrations/comment -database "mysql://root:@tcp(localhost:3306)/comments" -verbose down -all
 
+.PHONY: migrate-fresh
+migrate-fresh: migrate-down migrate-up
 
 .PHONY: blog-server
 blog-server:
