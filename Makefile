@@ -29,7 +29,7 @@ wire:
 
 .PHONY: test
 test:
-	go test -cover -race ./...
+	go test -cover -race -covermode=atomic -coverprofile=coverage.txt ./...
 
 .PHONY: migrate-up
 migrate-up:
