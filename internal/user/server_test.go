@@ -2,13 +2,14 @@ package user
 
 import (
 	"context"
+	"testing"
+
 	"github.com/google/uuid"
-	"github.com/jxlwqq/blog-microservices/api/protobuf/user/v1"
+	v1 "github.com/jxlwqq/blog-microservices/api/protobuf/user/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/dbcontext"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestServer(t *testing.T) {
@@ -50,7 +51,7 @@ func TestServer(t *testing.T) {
 	require.EqualValues(t, getUserByUsernameResp.GetUser().GetUsername(), u.GetUsername())
 	require.NotNil(t, getUserByUsernameResp.GetUser().GetId())
 
-	deleteUserReq := &v1.DeleteUserRequest{Id: u.Id}
+	deleteUserReq := &v1.DeleteUserRequest{Id: createUserReq.GetUser().GetId()}
 	deleteUserResp, err := s.DeleteUser(context.Background(), deleteUserReq)
 	require.NoError(t, err)
 	require.True(t, deleteUserResp.GetSuccess())
