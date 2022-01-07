@@ -198,6 +198,7 @@ func isCorrectPassword(hash, password string) bool {
 func entityToProtobuf(user *User) *v1.User {
 	return &v1.User{
 		Id:        user.ID,
+		Uuid:      user.UUID,
 		Username:  user.Username,
 		Email:     user.Email,
 		Avatar:    user.Avatar,

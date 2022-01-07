@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/dbcontext"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
@@ -10,6 +11,14 @@ import (
 )
 
 func TestRepository(t *testing.T) {
+	u := &User{
+		UUID:     uuid.NewString(),
+		Username: "test",
+		Email:    "test@test.com",
+		Password: "test",
+		Avatar:   "https://test.com/avatar.png",
+	}
+
 	logger := log.New()
 	path := config.GetPath()
 	conf, err := config.Load(path)
@@ -20,12 +29,6 @@ func TestRepository(t *testing.T) {
 	require.NotNil(t, repo)
 
 	// Test Create
-	u := &User{
-		Username: "test",
-		Email:    "test@test.com",
-		Password: "test",
-		Avatar:   "https://test.com/avatar.png",
-	}
 	err = repo.Create(context.Background(), u)
 	require.NoError(t, err)
 	require.NotEmpty(t, u.ID)

@@ -67,7 +67,7 @@ func (r repository) Delete(ctx context.Context, id uint64) error {
 }
 
 func (r repository) DeleteByUUID(ctx context.Context, uuid string) error {
-	return r.db.Delete(&Comment{UUID: uuid}).Error
+	return r.db.Delete(&Comment{}, "uuid = ?", uuid).Error
 }
 
 func (r repository) ListByPostID(ctx context.Context, postID uint64, offset, limit int) ([]*Comment, error) {

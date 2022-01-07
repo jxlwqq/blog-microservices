@@ -33,7 +33,7 @@ type AuthInterceptor struct {
 func (i *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
 		i.logger.Info("--> unary interceptor: ", info.FullMethod)
-		claims, err := i.authorize(ctx, info.FullMethod)
+		claims, err := i.Authorize(ctx, info.FullMethod)
 		if err != nil {
 			return nil, err
 		}
@@ -44,7 +44,7 @@ func (i *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 	}
 }
 
-func (i *AuthInterceptor) authorize(ctx context.Context, method string) (*jwt.UserClaims, error) {
+func (i *AuthInterceptor) Authorize(ctx context.Context, method string) (*jwt.UserClaims, error) {
 	b, ok := i.authMethods[method]
 	if !ok || !b {
 		return nil, nil

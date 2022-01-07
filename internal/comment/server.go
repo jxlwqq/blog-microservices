@@ -83,14 +83,13 @@ func (s Server) GetCommentByUUID(ctx context.Context, req *v1.GetCommentByUUIDRe
 func (s Server) UpdateComment(ctx context.Context, req *v1.UpdateCommentRequest) (*v1.UpdateCommentResponse, error) {
 
 	commentID := req.GetComment().GetId()
-	_, err := s.repo.Get(ctx, commentID)
+	comment, err := s.repo.Get(ctx, commentID)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "comment %d not found: %v", commentID, err)
 	}
 
-	comment := &Comment{
-		ID:      commentID,
-		Content: req.GetComment().GetContent(),
+	if req.GetComment().GetContent() != "" {
+		comment.Content = req.GetComment().GetContent()
 	}
 
 	err = s.repo.Update(ctx, comment)
@@ -162,6 +161,7 @@ func (s Server) ListCommentsByPostID(ctx context.Context, req *v1.ListCommentsBy
 func entityToProtobuf(comment *Comment) *v1.Comment {
 	return &v1.Comment{
 		Id:        comment.ID,
+		Uuid:      comment.UUID,
 		Content:   comment.Content,
 		PostId:    comment.PostID,
 		UserId:    comment.UserID,

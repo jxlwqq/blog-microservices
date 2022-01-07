@@ -205,6 +205,7 @@ func (s Server) ListPosts(ctx context.Context, req *v1.ListPostsRequest) (*v1.Li
 func entityToProtobuf(post *Post) *v1.Post {
 	return &v1.Post{
 		Id:            post.ID,
+		Uuid:          post.UUID,
 		Title:         post.Title,
 		Content:       post.Content,
 		CommentsCount: post.CommentsCount,
