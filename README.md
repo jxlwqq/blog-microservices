@@ -2,6 +2,7 @@
 
 [![Test](https://github.com/jxlwqq/blog-microservices/actions/workflows/test.yaml/badge.svg)](https://github.com/jxlwqq/blog-microservices/actions/workflows/test.yaml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/jxlwqq/blog-microservices)](https://goreportcard.com/report/github.com/jxlwqq/blog-microservices)
+[![codecov](https://codecov.io/gh/jxlwqq/blog-microservices/branch/main/graph/badge.svg?token=RP1YOAIQC6)](https://codecov.io/gh/jxlwqq/blog-microservices)
 
 A blog microservices deployed in an Istio-enabled kubernetes cluster.
 
