@@ -2,8 +2,9 @@ package user
 
 import (
 	"context"
+
 	"github.com/google/uuid"
-	"github.com/jxlwqq/blog-microservices/api/protobuf/user/v1"
+	v1 "github.com/jxlwqq/blog-microservices/api/protobuf/user/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 
 	"golang.org/x/crypto/bcrypt"
@@ -154,9 +155,19 @@ func (s Server) UpdateUser(ctx context.Context, req *v1.UpdateUserRequest) (*v1.
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	user := &User{ID: req.GetUser().GetId()}
+	user, err := s.repo.Get(ctx, req.GetUser().GetId())
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "failed to get user: %v", err)
+	}
+
 	if req.GetUser().GetUsername() != "" {
 		user.Username = req.GetUser().GetUsername()
+	}
+	if req.GetUser().Email != "" {
+		user.Email = req.GetUser().Email
+	}
+	if req.GetUser().Avatar != "" {
+		user.Avatar = req.GetUser().Avatar
 	}
 	if req.GetUser().GetPassword() != "" {
 		password, err := generateFromPassword(req.GetUser().GetPassword())
@@ -164,12 +175,6 @@ func (s Server) UpdateUser(ctx context.Context, req *v1.UpdateUserRequest) (*v1.
 			return nil, status.Errorf(codes.Internal, "failed to bcrypt generate password: %v", err)
 		}
 		user.Password = password
-	}
-	if req.GetUser().Email != "" {
-		user.Email = req.GetUser().Email
-	}
-	if req.GetUser().Avatar != "" {
-		user.Avatar = req.GetUser().Avatar
 	}
 	err = s.repo.Update(ctx, user)
 	if err != nil {

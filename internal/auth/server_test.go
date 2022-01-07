@@ -2,12 +2,13 @@ package auth
 
 import (
 	"context"
+	"testing"
+
 	v1 "github.com/jxlwqq/blog-microservices/api/protobuf/auth/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/jwt"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestServer(t *testing.T) {
@@ -38,4 +39,10 @@ func TestServer(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.NotEmpty(t, refreshResp.GetToken())
+
+	refreshResp, err = server.RefreshToken(context.Background(), &v1.RefreshTokenRequest{
+		Token: "a.b.c",
+	})
+	require.Error(t, err)
+	require.Nil(t, refreshResp)
 }

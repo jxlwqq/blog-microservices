@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+
 	"github.com/jxlwqq/blog-microservices/internal/pkg/dbcontext"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 )
@@ -29,7 +30,7 @@ type repository struct {
 }
 
 func (r repository) ListUsersByIDs(ctx context.Context, ids []uint64) ([]*User, error) {
-	users := []*User{}
+	var users []*User
 	err := r.db.Where("id IN (?)", ids).Find(&users).Error
 	return users, err
 }

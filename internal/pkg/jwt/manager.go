@@ -1,11 +1,13 @@
 package jwt
 
 import (
-	"fmt"
+	"time"
+
 	"github.com/golang-jwt/jwt"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
-	"time"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func NewManager(logger *log.Logger, conf *config.Config) *Manager {
@@ -46,7 +48,7 @@ func (manager *Manager) Validate(tokenStr string) (*UserClaims, error) {
 		func(token *jwt.Token) (interface{}, error) {
 			_, ok := token.Method.(*jwt.SigningMethodHMAC)
 			if !ok {
-				return nil, fmt.Errorf("unexpected token signing method")
+				return nil, status.Error(codes.Unauthenticated, "invalid token")
 			}
 
 			return []byte(manager.secret), nil
@@ -54,12 +56,12 @@ func (manager *Manager) Validate(tokenStr string) (*UserClaims, error) {
 	)
 
 	if err != nil {
-		return nil, fmt.Errorf("invalid token: %w", err)
+		return nil, status.Error(codes.Unauthenticated, "invalid token")
 	}
 
 	claims, ok := token.Claims.(*UserClaims)
 	if !ok {
-		return nil, fmt.Errorf("invalid token claims")
+		return nil, status.Error(codes.Unauthenticated, "invalid token")
 	}
 
 	return claims, nil

@@ -2,12 +2,13 @@ package user
 
 import (
 	"context"
+	"testing"
+
 	"github.com/google/uuid"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/dbcontext"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestRepository(t *testing.T) {
@@ -38,6 +39,12 @@ func TestRepository(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, u.Username, u2.Username)
 	require.Equal(t, u.Email, u2.Email)
+
+	// Test ListUsersByIDs
+	users, err := repo.ListUsersByIDs(context.Background(), []uint64{u.ID})
+	require.NoError(t, err)
+	require.Equal(t, 1, len(users))
+	require.Equal(t, u.Username, users[0].Username)
 
 	// Test Update
 	u.Avatar = "https://test.com/avatar2.png"
