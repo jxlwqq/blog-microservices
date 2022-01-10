@@ -4,11 +4,11 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/jxlwqq/blog-microservices)](https://goreportcard.com/report/github.com/jxlwqq/blog-microservices)
 [![codecov](https://codecov.io/gh/jxlwqq/blog-microservices/branch/main/graph/badge.svg?token=RP1YOAIQC6)](https://codecov.io/gh/jxlwqq/blog-microservices)
 
-A blog microservices deployed in an Istio-enabled kubernetes cluster.  If you’re using this demo, please ★Star this repository to show your interest!
+这是一个可一键部署在 Kubernetes-Istio 集群中的，基于 Golang 的博客微服务 Demo，支持分布式事务。欢迎 Star 和 PR。
 
 [English](README.md) | [中文](README-zh.md)
 
-### Architecture
+### 架构
 
 ![architecture](./assets/architecture.png)
 
@@ -16,50 +16,44 @@ A blog microservices deployed in an Istio-enabled kubernetes cluster.  If you’
 
 ![kiali-console](./assets/kiali-console.png)
 
-### Project Layout
+### 目录结构
 
-This demo refers to the following project layout:
+主要遵循 [Standard Go Project Layout](https://github.com/golang-standards/project-layout) 推荐的目录分层。
 
-* [Standard Go Project Layout](https://github.com/golang-standards/project-layout)
-* [Go RESTful API Starter Kit (Boilerplate)](https://github.com/qiangxue/go-rest-api)
-* [Kratos Project Template](https://github.com/go-kratos/kratos-layout)
+### 使用的依赖:
 
-### Full list what has been used
+* [gRPC](https://github.com/grpc/grpc-go) 通信协议
+* [GORM](https://github.com/go-gorm/gorm) 数据库 ORM
+* [DTM](https://github.com/dtm-labs/dtm) 分布式事务管理器
+* [Jaeger](https://www.jaegertracing.io/) 分布式追踪
+* [Prometheus](https://prometheus.io/) 监控系统
+* [Grafana](https://grafana.com/) 数据可视化
+* [Kiali](https://kiali.io/) 可观察性工具
+* [Kubernetes](https://kubernetes.io/) 容器编排
+* [Istio](https://istio.io/) 服务网格
 
-* [gRPC](https://github.com/grpc/grpc-go) Go implementation of gRPC
-* [GORM](https://github.com/go-gorm/gorm) The fantastic ORM library for Go
-* [DTM](https://github.com/dtm-labs/dtm) Go implementation of Distributed Transaction Management Framework
-* [Jaeger](https://www.jaegertracing.io/) open source, end-to-end distributed tracing
-* [Prometheus](https://prometheus.io/) Monitoring system
-* [Grafana](https://grafana.com/) Operational dashboards
-* [Kiali](https://kiali.io/) The Console for Istio Service Mesh
-* [Kubernetes](https://kubernetes.io/) Production-Grade Container Orchestration
-* [Istio](https://istio.io/) The leading service mesh
+### Makefile 简介
 
-### Makefile
+| 命令                    | 说明                                                           |
+|-----------------------|--------------------------------------------------------------|
+| `make init`           | 安装各类 protoc-gen-* 、 wire 以及 migrate                          |
+| `make protoc`         | 基于 *.proto 文件，生成各类 *_pb.go                                   |
+| `make wire`           | 基于 wire.go 文件，生成 wire_gen.go                                 |
+| `make test`           | 测试                                                           |
+| `make migrate-up`     | 迁移数据库                                                        |
+| `make migrate-down`   | 回滚数据库                                                        |
+| `make blog-server`    | 启动 blog 服务（本地开发环境）                                           |
+| `make user-server`    | 启动 user 服务（本地开发环境）                                           |
+| `make post-server`    | 启动 post 服务（本地开发环境）                                           |
+| `make comment-server` | 启动 comment 服务（本地开发环境）                                        |
+| `make auth-server`    | 启动 auth 服务（本地开发环境）                                           |
+| `make dtm-server`     | DTM 为外部依赖，启动本地服务，请浏览 [官方文档](https://github.com/dtm-labs/dtm) |
+| `make docker-build`   | 构建 Docker 镜像                                                 |
+| `make kube-deploy`    | 在集群中部署 blog、user、post、comment、auth 以及 dtm 服务                 |
+| `make kube-delete`    | 在集群中删除上述服务                                                   |
+| `make kube-redeploy`  | 在集群中重新部署服务（⚠️ 数据库服务不会重新部署）                                   |
 
-| Command               | Description                                                                          |
-|-----------------------|--------------------------------------------------------------------------------------|
-| `make init`           | go install protoc-gen-*, wire and migrate                                            |
-| `make protoc`         | generate *_pb.go                                                                     |
-| `make wire`           | generate wire_gen.go                                                                 |
-| `make test`           | go test                                                                              |
-| `make migrate-up`     | migrate up database                                                                  |
-| `make migrate-down`   | migrate down database                                                                |
-| `make blog-server`    | start blog server in local                                                           |
-| `make user-server`    | start user server in local                                                           |
-| `make post-server`    | start post server in local                                                           |
-| `make comment-server` | start comment server in local                                                        |
-| `make auth-server`    | start auth server in local                                                           |
-| `make dtm-server`     | start dtm server in local，please see [the dtm docs](https://github.com/dtm-labs/dtm) |
-| `make docker-build`   | build docker images                                                                  |
-| `make kube-deploy`    | deploy blog, user, post, comment, auth and dtm server in kubernetes cluster          |
-| `make kube-delete`    | delete all servers in kubernetes cluster                                             |
-| `make kube-redeploy`  | redeploy all servers in kubernetes cluster (⚠ not including database servers️)       |
-
-### Development Environment in Local
-
-This is a list of development environment in local for macOS:
+### 本地环境搭建
 
 * docker-desktop >= 4.3.2
 * kubernetes >= 1.22.4
@@ -67,40 +61,40 @@ This is a list of development environment in local for macOS:
 * istioctl >= 1.12.1
 * protobuf >= 3.19.1
 
-Install the Docker Desktop，and enable Kubernetes cluster, See [the docker docs](https://docs.docker.com/desktop/kubernetes//)
+下载安装 Docker Desktop ，并启动内置的 Kubernetes 集群。
 
 ```shell
-# install Go
+# 安装 Go
 brew install go
-# install Protobuf
+# 安装 Protobuf
 brew install protobuf
-# install istioctl
+# 安装 Istio
 brew install istioctl
-# ensure you change the context so that kubectl is pointing to docker-desktop
 kubectl config use-context docker-desktop
-# install and enable istio
 istioctl install -y
 kubectl label namespace default istio-injection=enabled
 ```
 
-> Install Istio on ARM64, Please See [this](https://github.com/istio/istio/issues/21094#issuecomment-956117650).
+> ARM64 架构的用户安装 Istio，请查看 [这里](https://github.com/istio/istio/issues/21094#issuecomment-956117650) 以获取更多信息。
 
-### Deploy the demo in Kubernetes
+### 一键部署到本地集群
+
+数据库初始化，项目相关的配置已经在 `deployments` 目录中的 yaml 文件中设置好，直接一键部署即可。
+
+部署的资源比较多，请尽可能地将 Docker Desktop 的 CPU、Memory 拉高，避免 Pod 无法完成调度，详见 [这里](https://istio.io/latest/zh/docs/setup/platform-setup/docker/)。
 
 ```shell
-# build docker images
 make docker-build
-# deploy all services
 make kube-deploy
 ```
 
-Get All Pod Resources:
+查看 Pod 资源：
 
 ```shell
 kubectl get pods -A
 ```
 
-Returns:
+返回：
 
 ```shell
 NAMESPACE      NAME                                     READY   STATUS    RESTARTS          AGE
@@ -132,14 +126,13 @@ kube-system    storage-provisioner                      1/1     Running   11    
 kube-system    vpnkit-controller                        1/1     Running   177 (2m56s ago)   13d
 ```
 
-Get All Service Resources:
+查看 Service 资源：
 
 ```shell
 kubectl get services -A
 ```
 
-Returns:
-
+返回：
 ```shell
 NAMESPACE      NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                                                                      AGE
 default        auth-server            ClusterIP      10.99.64.145     <none>        50054/TCP,8054/TCP,9054/TCP                                                  15m
@@ -166,14 +159,14 @@ kube-system    kube-dns               ClusterIP      10.96.0.10       <none>    
 ```
 
 
-### Visit the microservice
+### 访问服务
 
-Install the [BloomRPC](https://github.com/bloomrpc/bloomrpc), select the `api/protobuf/blog.proto` file and start making requests! No extra steps or configuration needed.
+推荐使用 [BloomRPC](https://github.com/bloomrpc/bloomrpc) 或者 [Insomnia](https://github.com/Kong/insomnia) ，导入 api/protobuf/blog.proto 文件后， 服务地址填写 `localhost:80` 端口即可访问，如下图所示：
 
-Sign Up:
+注册：
 
 ![sign-up](./assets/bloom-rpc-sign-up.png)
 
-Create a post:
+创建文章：
 
 ![create-post](./assets/bloom-rpc-create-post.png)
