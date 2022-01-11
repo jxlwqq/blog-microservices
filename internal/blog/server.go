@@ -2,6 +2,7 @@ package blog
 
 import (
 	"context"
+
 	"github.com/dtm-labs/dtm/dtmgrpc"
 	"github.com/google/uuid"
 	authv1 "github.com/jxlwqq/blog-microservices/api/protobuf/auth/v1"
@@ -23,6 +24,7 @@ var AuthMethods = map[string]bool{
 	prefix + "CreatePost":    true, // 需要验证
 	prefix + "UpdatePost":    true,
 	prefix + "CreateComment": true,
+	prefix + "UpdateComment": true,
 	prefix + "DeleteComment": true,
 	prefix + "GetPost":       false,
 	prefix + "ListPosts":     false,
@@ -337,6 +339,45 @@ func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest)
 			},
 		},
 	}, nil
+}
+
+func (s Server) UpdateComment(ctx context.Context, req *v1.UpdateCommentRequest) (*v1.UpdateCommentResponse, error) {
+	userID, ok := ctx.Value("ID").(uint64)
+	if !ok {
+		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
+	}
+	userResp, err := s.userClient.GetUser(ctx, &userv1.GetUserRequest{
+		Id: userID,
+	})
+	if err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
+	commentResp, err := s.commentClient.GetComment(ctx, &commentv1.GetCommentRequest{
+		Id: req.GetComment().GetId(),
+	})
+	if err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
+	if commentResp.GetComment().GetUserId() != userResp.GetUser().GetId() {
+		return nil, status.Error(codes.PermissionDenied, "user not authorized")
+	}
+
+	comment := &commentv1.Comment{
+		Id:      commentResp.GetComment().GetId(),
+		Content: req.GetComment().GetContent(),
+	}
+
+	_, err = s.commentClient.UpdateComment(ctx, &commentv1.UpdateCommentRequest{
+		Comment: comment,
+	})
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &v1.UpdateCommentResponse{
+		Success: true,
+	}, nil
+
 }
 
 func (s Server) DeleteComment(ctx context.Context, req *v1.DeleteCommentRequest) (*v1.DeleteCommentResponse, error) {

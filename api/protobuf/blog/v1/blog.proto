@@ -60,6 +60,13 @@ service BlogService {
     };
   }
 
+  rpc UpdateComment (UpdateCommentRequest) returns (UpdateCommentResponse) {
+    option (google.api.http) = {
+      put: "/api.rest.blog.v1/comments/{comment.id}"
+      body: "*"
+    };
+  }
+
   rpc ListCommentsByPostID (ListCommentsByPostIDRequest) returns (ListCommentsByPostIDResponse) {
     option (google.api.http) = {
       get: "/api.rest.blog.v1/comments"
@@ -132,6 +139,15 @@ message CreateCommentRequest {
 message CreateCommentResponse {
   Comment comment = 1;
 }
+
+message UpdateCommentRequest {
+  Comment comment = 1;
+}
+
+message UpdateCommentResponse {
+  bool success = 1;
+}
+
 
 message DeleteCommentRequest {
   uint64 id = 1;

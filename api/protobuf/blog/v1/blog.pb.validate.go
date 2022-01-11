@@ -1658,6 +1658,239 @@ var _ interface {
 	ErrorName() string
 } = CreateCommentResponseValidationError{}
 
+// Validate checks the field values on UpdateCommentRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *UpdateCommentRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on UpdateCommentRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// UpdateCommentRequestMultiError, or nil if none found.
+func (m *UpdateCommentRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *UpdateCommentRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetComment()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, UpdateCommentRequestValidationError{
+					field:  "Comment",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, UpdateCommentRequestValidationError{
+					field:  "Comment",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetComment()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return UpdateCommentRequestValidationError{
+				field:  "Comment",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return UpdateCommentRequestMultiError(errors)
+	}
+	return nil
+}
+
+// UpdateCommentRequestMultiError is an error wrapping multiple validation
+// errors returned by UpdateCommentRequest.ValidateAll() if the designated
+// constraints aren't met.
+type UpdateCommentRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m UpdateCommentRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m UpdateCommentRequestMultiError) AllErrors() []error { return m }
+
+// UpdateCommentRequestValidationError is the validation error returned by
+// UpdateCommentRequest.Validate if the designated constraints aren't met.
+type UpdateCommentRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UpdateCommentRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UpdateCommentRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UpdateCommentRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UpdateCommentRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UpdateCommentRequestValidationError) ErrorName() string {
+	return "UpdateCommentRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e UpdateCommentRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUpdateCommentRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UpdateCommentRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UpdateCommentRequestValidationError{}
+
+// Validate checks the field values on UpdateCommentResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *UpdateCommentResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on UpdateCommentResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// UpdateCommentResponseMultiError, or nil if none found.
+func (m *UpdateCommentResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *UpdateCommentResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Success
+
+	if len(errors) > 0 {
+		return UpdateCommentResponseMultiError(errors)
+	}
+	return nil
+}
+
+// UpdateCommentResponseMultiError is an error wrapping multiple validation
+// errors returned by UpdateCommentResponse.ValidateAll() if the designated
+// constraints aren't met.
+type UpdateCommentResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m UpdateCommentResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m UpdateCommentResponseMultiError) AllErrors() []error { return m }
+
+// UpdateCommentResponseValidationError is the validation error returned by
+// UpdateCommentResponse.Validate if the designated constraints aren't met.
+type UpdateCommentResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UpdateCommentResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UpdateCommentResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UpdateCommentResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UpdateCommentResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UpdateCommentResponseValidationError) ErrorName() string {
+	return "UpdateCommentResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e UpdateCommentResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUpdateCommentResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UpdateCommentResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UpdateCommentResponseValidationError{}
+
 // Validate checks the field values on DeleteCommentRequest with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
