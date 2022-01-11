@@ -1,4 +1,4 @@
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
   name: blog-gateway
@@ -13,7 +13,7 @@ spec:
       hosts:
         - "*"
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: blog-virtual-service
@@ -40,7 +40,7 @@ spec:
             port:
               number: 8050
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: user-virtual-service
@@ -61,7 +61,7 @@ spec:
         attempts: 3
         perTryTimeout: 2s
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: user-destination-rule
@@ -72,7 +72,7 @@ spec:
       labels:
         version: v1
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: post-virtual-service
@@ -93,7 +93,7 @@ spec:
         attempts: 3
         perTryTimeout: 2s
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: post-destination-rule
@@ -104,7 +104,7 @@ spec:
       labels:
         version: v1
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: comment-virtual-service
@@ -125,7 +125,7 @@ spec:
         attempts: 3
         perTryTimeout: 2s
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: comment-destination-rule
@@ -136,7 +136,7 @@ spec:
       labels:
         version: v1
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: auth-virtual-service
@@ -157,7 +157,7 @@ spec:
         attempts: 3
         perTryTimeout: 2s
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: auth-destination-rule
@@ -168,7 +168,7 @@ spec:
       labels:
         version: v1
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: dtm-virtual-service
@@ -189,7 +189,7 @@ spec:
         attempts: 3
         perTryTimeout: 2s
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: dtm-destination-rule
