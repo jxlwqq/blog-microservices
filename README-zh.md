@@ -57,15 +57,18 @@
 
 * docker-desktop >= 4.3.2
 * kubernetes >= 1.22.4
-* go >= 1.17
 * istioctl >= 1.12.1
 * protobuf >= 3.19.1
+* go >= 1.17
+* mysql >= 8.0
 
 下载安装 Docker Desktop ，并启动内置的 Kubernetes 集群。
 
 ```shell
 # 安装 Go
 brew install go
+# 安装 MySQL(无 Root 密码)
+brew install mysql
 # 安装 Protobuf
 brew install protobuf
 # 安装 Istio
