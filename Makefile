@@ -30,10 +30,10 @@ wire:
 
 .PHONY: mock
 mock:
-	mockgen -source=./api/protobuf/user/v1/user_grpc.pb.go -destination=./mock/mock_user_grpc.go -package=mock
-	mockgen -source=./api/protobuf/post/v1/post_grpc.pb.go -destination=./mock/mock_post_grpc.go -package=mock
-	mockgen -source=./api/protobuf/comment/v1/comment_grpc.pb.go -destination=./mock/mock_comment_grpc.go -package=mock
-	mockgen -source=./api/protobuf/auth/v1/auth_grpc.pb.go -destination=./mock/mock_auth_grpc.go -package=mock
+	mockgen -source=./api/protobuf/user/v1/user_grpc.pb.go -destination=./mock/mock_user_grpc.pb.go -package=mock
+	mockgen -source=./api/protobuf/post/v1/post_grpc.pb.go -destination=./mock/mock_post_grpc.pb.go -package=mock
+	mockgen -source=./api/protobuf/comment/v1/comment_grpc.pb.go -destination=./mock/mock_comment_grpc.pb.go -package=mock
+	mockgen -source=./api/protobuf/auth/v1/auth_grpc.pb.go -destination=./mock/mock_auth_grpc.pb.go -package=mock
 
 .PHONY: test
 test:
