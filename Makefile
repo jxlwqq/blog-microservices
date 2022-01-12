@@ -8,6 +8,7 @@ init:
 	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
 	go install github.com/google/wire/cmd/wire@latest
 	go install -tags 'mysql' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+	go install github.com/golang/mock/mockgen@latest
 	@echo "Installing protoc-gen-validate (PGV) can currently only be done from source. See: https://github.com/envoyproxy/protoc-gen-validate#installation"
 
 .PHONY: protoc
@@ -26,6 +27,13 @@ protoc:
 .PHONY: wire
 wire:
 	wire ./...
+
+.PHONY: mock
+mock:
+	mockgen -source=./api/protobuf/user/v1/user_grpc.pb.go -destination=./mock/mock_user_grpc.go -package=mock
+	mockgen -source=./api/protobuf/post/v1/post_grpc.pb.go -destination=./mock/mock_post_grpc.go -package=mock
+	mockgen -source=./api/protobuf/comment/v1/comment_grpc.pb.go -destination=./mock/mock_comment_grpc.go -package=mock
+	mockgen -source=./api/protobuf/auth/v1/auth_grpc.pb.go -destination=./mock/mock_auth_grpc.go -package=mock
 
 .PHONY: test
 test:
