@@ -4,7 +4,8 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/jxlwqq/blog-microservices)](https://goreportcard.com/report/github.com/jxlwqq/blog-microservices)
 [![codecov](https://codecov.io/gh/jxlwqq/blog-microservices/branch/main/graph/badge.svg?token=RP1YOAIQC6)](https://codecov.io/gh/jxlwqq/blog-microservices)
 
-A blog microservices deployed in an Istio-enabled kubernetes cluster.  If you’re using this demo, please ★Star this repository to show your interest!
+A blog microservices deployed in an Istio-enabled kubernetes cluster. If you’re using this demo, please ★Star this
+repository to show your interest!
 
 [English](README.md) | [中文](README-zh.md)
 
@@ -38,24 +39,26 @@ This demo refers to the following project layout:
 
 ### Makefile
 
-| Command               | Description                                                                          |
-|-----------------------|--------------------------------------------------------------------------------------|
-| `make init`           | go install protoc-gen-*, wire and migrate                                            |
-| `make protoc`         | generate *_pb.go                                                                     |
-| `make wire`           | generate wire_gen.go                                                                 |
-| `make test`           | go test                                                                              |
-| `make migrate-up`     | migrate up database                                                                  |
-| `make migrate-down`   | migrate down database                                                                |
-| `make blog-server`    | start blog server in local                                                           |
-| `make user-server`    | start user server in local                                                           |
-| `make post-server`    | start post server in local                                                           |
-| `make comment-server` | start comment server in local                                                        |
-| `make auth-server`    | start auth server in local                                                           |
-| `make dtm-server`     | start dtm server in local，please see [the dtm docs](https://github.com/dtm-labs/dtm) |
-| `make docker-build`   | build docker images                                                                  |
-| `make kube-deploy`    | deploy blog, user, post, comment, auth and dtm server in kubernetes cluster          |
-| `make kube-delete`    | delete all servers in kubernetes cluster                                             |
-| `make kube-redeploy`  | redeploy all servers in kubernetes cluster (⚠ not including database servers️)       |
+| Command                | Description                                                                          |
+|------------------------|--------------------------------------------------------------------------------------|
+| `make init`            | go install protoc-gen-*, wire, migrate and mockgen                                   |
+| `make protoc`          | generate *pb.go                                                                      |
+| `make wire`            | generate wire_gen.go                                                                 |
+| `make mock`            | generate mock file                                                                   |
+| `make test`            | go test                                                                              |
+| `make migrate-up`      | migrate up databases                                                                 |
+| `make migrate-down`    | migrate down databases                                                               |
+| `make migrate-refresh` | migrate down and up databases                                                        |
+| `make blog-server`     | start blog server in local                                                           |
+| `make user-server`     | start user server in local                                                           |
+| `make post-server`     | start post server in local                                                           |
+| `make comment-server`  | start comment server in local                                                        |
+| `make auth-server`     | start auth server in local                                                           |
+| `make dtm-server`      | start dtm server in local，please see [the dtm docs](https://github.com/dtm-labs/dtm) |
+| `make docker-build`    | build docker images                                                                  |
+| `make kube-deploy`     | deploy blog, user, post, comment, auth and dtm server in kubernetes cluster          |
+| `make kube-delete`     | delete all servers in kubernetes cluster                                             |
+| `make kube-redeploy`   | redeploy all servers in kubernetes cluster (⚠ not including database servers️)       |
 
 ### Development Environment in Local
 
@@ -68,7 +71,8 @@ This is a list of development environment in local for macOS:
 * go >= 1.17
 * mysql >= 8.0
 
-Install the Docker Desktop，and enable Kubernetes cluster, See [the docker docs](https://docs.docker.com/desktop/kubernetes//)
+Install the Docker Desktop，and enable Kubernetes cluster,
+See [the docker docs](https://docs.docker.com/desktop/kubernetes//)
 
 ```shell
 # install Go
@@ -168,10 +172,10 @@ istio-system   zipkin                 ClusterIP      10.101.235.179   <none>    
 kube-system    kube-dns               ClusterIP      10.96.0.10       <none>        53/UDP,53/TCP,9153/TCP                                                       13d
 ```
 
-
 ### Visit the microservice
 
-Install the [BloomRPC](https://github.com/bloomrpc/bloomrpc), select the `api/protobuf/blog.proto` file and start making requests! No extra steps or configuration needed.
+Install the [BloomRPC](https://github.com/bloomrpc/bloomrpc), select the `api/protobuf/blog.proto` file and start making
+requests! No extra steps or configuration needed.
 
 Sign Up:
 

@@ -34,24 +34,26 @@
 
 ### Makefile 简介
 
-| 命令                    | 说明                                                           |
-|-----------------------|--------------------------------------------------------------|
-| `make init`           | 安装各类 protoc-gen-* 、 wire 以及 migrate                          |
-| `make protoc`         | 基于 *.proto 文件，生成各类 *_pb.go                                   |
-| `make wire`           | 基于 wire.go 文件，生成 wire_gen.go                                 |
-| `make test`           | 测试                                                           |
-| `make migrate-up`     | 迁移数据库                                                        |
-| `make migrate-down`   | 回滚数据库                                                        |
-| `make blog-server`    | 启动 blog 服务（本地开发环境）                                           |
-| `make user-server`    | 启动 user 服务（本地开发环境）                                           |
-| `make post-server`    | 启动 post 服务（本地开发环境）                                           |
-| `make comment-server` | 启动 comment 服务（本地开发环境）                                        |
-| `make auth-server`    | 启动 auth 服务（本地开发环境）                                           |
-| `make dtm-server`     | DTM 为外部依赖，启动本地服务，请浏览 [官方文档](https://github.com/dtm-labs/dtm) |
-| `make docker-build`   | 构建 Docker 镜像                                                 |
-| `make kube-deploy`    | 在集群中部署 blog、user、post、comment、auth 以及 dtm 服务                 |
-| `make kube-delete`    | 在集群中删除上述服务                                                   |
-| `make kube-redeploy`  | 在集群中重新部署服务（⚠️ 数据库服务不会重新部署）                                   |
+| 命令                     | 说明                                                           |
+|------------------------|--------------------------------------------------------------|
+| `make init`            | 安装各类 protoc-gen-* 、 wire、 migrate 以及 mockgen                 |
+| `make protoc`          | 基于 *.proto 文件，生成各类 *pb.go                                    |
+| `make wire`            | 基于 wire.go 文件，生成 wire_gen.go                                 |
+| `make mock`            | 生成 mock 文件                                                   |
+| `make test`            | 测试                                                           |
+| `make migrate-up`      | 迁移数据库                                                        |
+| `make migrate-down`    | 回滚数据库                                                        |
+| `make migrate-refresh` | 刷新数据库                                                        |
+| `make blog-server`     | 启动 blog 服务（本地开发环境）                                           |
+| `make user-server`     | 启动 user 服务（本地开发环境）                                           |
+| `make post-server`     | 启动 post 服务（本地开发环境）                                           |
+| `make comment-server`  | 启动 comment 服务（本地开发环境）                                        |
+| `make auth-server`     | 启动 auth 服务（本地开发环境）                                           |
+| `make dtm-server`      | DTM 为外部依赖，启动本地服务，请浏览 [官方文档](https://github.com/dtm-labs/dtm) |
+| `make docker-build`    | 构建 Docker 镜像                                                 |
+| `make kube-deploy`     | 在集群中部署 blog、user、post、comment、auth 以及 dtm 服务                 |
+| `make kube-delete`     | 在集群中删除上述服务                                                   |
+| `make kube-redeploy`   | 在集群中重新部署服务（⚠️ 数据库服务不会重新部署）                                   |
 
 ### 本地环境搭建
 
@@ -84,7 +86,8 @@ kubectl label namespace default istio-injection=enabled
 
 数据库初始化，项目相关的配置已经在 `deployments` 目录中的 yaml 文件中设置好，直接一键部署即可。
 
-部署的资源比较多，请尽可能地将 Docker Desktop 的 CPU、Memory 拉高，避免 Pod 无法完成调度，详见 [这里](https://istio.io/latest/zh/docs/setup/platform-setup/docker/)。
+部署的资源比较多，请尽可能地将 Docker Desktop 的 CPU、Memory 拉高，避免 Pod
+无法完成调度，详见 [这里](https://istio.io/latest/zh/docs/setup/platform-setup/docker/)。
 
 ```shell
 make docker-build
@@ -136,6 +139,7 @@ kubectl get services -A
 ```
 
 返回：
+
 ```shell
 NAMESPACE      NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                                                                      AGE
 default        auth-server            ClusterIP      10.99.64.145     <none>        50054/TCP,8054/TCP,9054/TCP                                                  15m
@@ -161,10 +165,10 @@ istio-system   zipkin                 ClusterIP      10.101.235.179   <none>    
 kube-system    kube-dns               ClusterIP      10.96.0.10       <none>        53/UDP,53/TCP,9153/TCP                                                       13d
 ```
 
-
 ### 访问服务
 
-推荐使用 [BloomRPC](https://github.com/bloomrpc/bloomrpc) 或者 [Insomnia](https://github.com/Kong/insomnia) ，导入 api/protobuf/blog.proto 文件后， 服务地址填写 `localhost:80` 端口即可访问，如下图所示：
+推荐使用 [BloomRPC](https://github.com/bloomrpc/bloomrpc) 或者 [Insomnia](https://github.com/Kong/insomnia) ，导入
+api/protobuf/blog.proto 文件后， 服务地址填写 `localhost:80` 端口即可访问，如下图所示：
 
 注册：
 
