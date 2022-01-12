@@ -4,6 +4,8 @@ import (
 	"context"
 	"testing"
 
+	commentv1 "github.com/jxlwqq/blog-microservices/api/protobuf/comment/v1"
+
 	postv1 "github.com/jxlwqq/blog-microservices/api/protobuf/post/v1"
 
 	authv1 "github.com/jxlwqq/blog-microservices/api/protobuf/auth/v1"
@@ -196,4 +198,137 @@ func TestServer_UpdatePost(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.True(t, updateResp.GetSuccess())
+}
+
+func TestServer_ListPosts(t *testing.T) {
+	s, mockUserClient, mockPostClient, _, _ := makeMock(t)
+
+	gomock.InOrder(
+		mockPostClient.EXPECT().ListPosts(context.Background(), gomock.Any()).Return(&postv1.ListPostsResponse{
+			Posts: []*postv1.Post{
+				{
+					Id:      uint64(1),
+					Uuid:    uuid.NewString(),
+					UserId:  uint64(1),
+					Title:   "test",
+					Content: "test",
+				},
+				{
+					Id:      uint64(2),
+					Uuid:    uuid.NewString(),
+					UserId:  uint64(2),
+					Title:   "test2",
+					Content: "test2",
+				},
+			},
+			Count: 2,
+		}, nil),
+		mockUserClient.EXPECT().ListUsersByIDs(context.Background(), gomock.Any()).Return(&userv1.ListUsersByIDsResponse{
+			Users: []*userv1.User{
+				{
+					Id:       uint64(1),
+					Uuid:     uuid.NewString(),
+					Username: "test",
+					Email:    "test@test.com",
+				},
+				{
+					Id:       uint64(2),
+					Uuid:     uuid.NewString(),
+					Username: "test2",
+					Email:    "test2@test.com",
+				},
+			},
+		}, nil),
+	)
+
+	listResp, err := s.ListPosts(context.Background(), &v1.ListPostsRequest{
+		Limit:  10,
+		Offset: 0,
+	})
+	require.NoError(t, err)
+	require.Equal(t, uint64(2), listResp.GetTotal())
+	require.Equal(t, uint64(1), listResp.GetPosts()[0].GetUser().GetId())
+	require.Equal(t, uint64(2), listResp.GetPosts()[1].GetUser().GetId())
+}
+
+func TestServer_UpdateComment(t *testing.T) {
+	s, mockUserClient, _, mockCommentClient, _ := makeMock(t)
+
+	ctx := context.WithValue(context.Background(), "ID", uint64(1))
+
+	gomock.InOrder(
+		mockUserClient.EXPECT().GetUser(ctx, gomock.Any()).Return(&userv1.GetUserResponse{User: &userv1.User{
+			Id:       uint64(1),
+			Uuid:     uuid.NewString(),
+			Username: "test",
+			Email:    "test@test.com",
+		}}, nil),
+		mockCommentClient.EXPECT().GetComment(ctx, gomock.Any()).Return(&commentv1.GetCommentResponse{Comment: &commentv1.Comment{
+			Id:      uint64(1),
+			Uuid:    uuid.NewString(),
+			UserId:  uint64(1),
+			Content: "Hello World",
+		}}, nil),
+		mockCommentClient.EXPECT().UpdateComment(ctx, gomock.Any()).Return(&commentv1.UpdateCommentResponse{Success: true}, nil),
+	)
+
+	updateResp, err := s.UpdateComment(ctx, &v1.UpdateCommentRequest{Comment: &v1.Comment{
+		Id:      1,
+		Content: "Hello Go",
+	}})
+
+	require.NoError(t, err)
+	require.True(t, updateResp.GetSuccess())
+}
+
+func TestServer_ListCommentsByPostID(t *testing.T) {
+	s, mockUserClient, _, mockCommentClient, _ := makeMock(t)
+
+	gomock.InOrder(
+		mockCommentClient.EXPECT().ListCommentsByPostID(context.Background(), gomock.Any()).Return(&commentv1.ListCommentsByPostIDResponse{
+			Comments: []*commentv1.Comment{
+				{
+					Id:      uint64(1),
+					Uuid:    uuid.NewString(),
+					UserId:  uint64(1),
+					Content: "Hello World",
+				},
+				{
+					Id:      uint64(2),
+					Uuid:    uuid.NewString(),
+					UserId:  uint64(2),
+					Content: "Hello Go",
+				},
+			},
+			Total: 2,
+		}, nil),
+		mockUserClient.EXPECT().ListUsersByIDs(context.Background(), gomock.Any()).Return(&userv1.ListUsersByIDsResponse{
+			Users: []*userv1.User{
+				{
+					Id:       uint64(1),
+					Uuid:     uuid.NewString(),
+					Username: "test",
+					Email:    "test@test.com",
+				},
+				{
+					Id:       uint64(2),
+					Uuid:     uuid.NewString(),
+					Username: "test2",
+					Email:    "test2@test.com",
+				},
+			},
+		}, nil),
+	)
+
+	listResp, err := s.ListCommentsByPostID(context.Background(), &v1.ListCommentsByPostIDRequest{
+		PostId: 1,
+		Offset: 0,
+		Limit:  10,
+	})
+
+	require.NoError(t, err)
+	require.Equal(t, uint64(2), listResp.GetTotal())
+	require.Equal(t, uint64(1), listResp.GetComments()[0].GetUser().GetId())
+	require.Equal(t, uint64(2), listResp.GetComments()[1].GetUser().GetId())
+
 }

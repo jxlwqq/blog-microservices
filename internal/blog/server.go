@@ -240,7 +240,7 @@ func (s Server) ListPosts(ctx context.Context, req *v1.ListPostsRequest) (*v1.Li
 
 	return &v1.ListPostsResponse{
 		Posts: posts,
-		Total: 0,
+		Total: postResp.GetCount(),
 	}, nil
 }
 
@@ -450,22 +450,39 @@ func (s Server) ListCommentsByPostID(ctx context.Context, req *v1.ListCommentsBy
 	if err != nil {
 		return nil, err
 	}
+	var commentUserIDs []uint64
+	for _, post := range commentResp.GetComments() {
+		commentUserIDs = append(commentUserIDs, post.GetUserId())
+	}
+
+	commentUserResp, err := s.userClient.ListUsersByIDs(ctx, &userv1.ListUsersByIDsRequest{
+		Ids: commentUserIDs,
+	})
 
 	var comments []*v1.Comment
 	for _, comment := range commentResp.GetComments() {
-		comments = append(comments, &v1.Comment{
-			Id:        comment.GetId(),
-			Content:   comment.GetContent(),
-			PostId:    comment.GetPostId(),
-			UserId:    comment.GetUserId(),
-			CreatedAt: comment.GetCreatedAt(),
-			UpdatedAt: comment.GetUpdatedAt(),
-		})
+		for _, user := range commentUserResp.GetUsers() {
+			if user.GetId() == comment.GetUserId() {
+				comments = append(comments, &v1.Comment{
+					Id:        comment.GetId(),
+					Content:   comment.GetContent(),
+					PostId:    comment.GetPostId(),
+					UserId:    comment.GetUserId(),
+					CreatedAt: comment.GetCreatedAt(),
+					UpdatedAt: comment.GetUpdatedAt(),
+					User: &v1.User{
+						Id:       user.GetId(),
+						Username: user.GetUsername(),
+						Avatar:   user.GetAvatar(),
+					},
+				})
+			}
+		}
 	}
 
 	return &v1.ListCommentsByPostIDResponse{
 		Comments: comments,
-		Total:    0,
+		Total:    commentResp.GetTotal(),
 	}, nil
 }
 
