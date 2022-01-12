@@ -2,6 +2,7 @@ package comment
 
 import (
 	"context"
+
 	"github.com/jxlwqq/blog-microservices/internal/pkg/dbcontext"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 )
@@ -16,6 +17,7 @@ func NewRepository(logger *log.Logger, db *dbcontext.DB) Repository {
 type Repository interface {
 	Create(ctx context.Context, comment *Comment) error
 	Update(ctx context.Context, comment *Comment) error
+	UpdateWithUnscoped(ctx context.Context, comment *Comment) error
 	Delete(ctx context.Context, id uint64) error
 	DeleteByUUID(ctx context.Context, uuid string) error
 	ListByPostID(ctx context.Context, postID uint64, offset, limit int) ([]*Comment, error)
@@ -60,6 +62,10 @@ func (r repository) Create(ctx context.Context, comment *Comment) error {
 
 func (r repository) Update(ctx context.Context, comment *Comment) error {
 	return r.db.Save(comment).Error
+}
+
+func (r repository) UpdateWithUnscoped(ctx context.Context, comment *Comment) error {
+	return r.db.Unscoped().Save(comment).Error
 }
 
 func (r repository) Delete(ctx context.Context, id uint64) error {

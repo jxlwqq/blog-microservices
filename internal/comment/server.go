@@ -2,7 +2,8 @@ package comment
 
 import (
 	"context"
-	"github.com/jxlwqq/blog-microservices/api/protobuf/comment/v1"
+
+	v1 "github.com/jxlwqq/blog-microservices/api/protobuf/comment/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -123,7 +124,7 @@ func (s Server) DeleteCommentCompensate(ctx context.Context, req *v1.DeleteComme
 		return nil, status.Errorf(codes.NotFound, "comment %d not found: %v", commentID, err)
 	}
 	comment.DeletedAt = gorm.DeletedAt{}
-	err = s.repo.Update(ctx, comment)
+	err = s.repo.UpdateWithUnscoped(ctx, comment)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "could not delete comment: %v", err)
 	}
