@@ -51,8 +51,8 @@ migrate-down:
 	migrate -path ./migrations/post -database "mysql://root:@tcp(localhost:3306)/posts" -verbose down -all
 	migrate -path ./migrations/comment -database "mysql://root:@tcp(localhost:3306)/comments" -verbose down -all
 
-.PHONY: migrate-fresh
-migrate-fresh: migrate-down migrate-up
+.PHONY: migrate-refresh
+migrate-refresh: migrate-down migrate-up
 
 .PHONY: blog-server
 blog-server:
