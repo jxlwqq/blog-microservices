@@ -3,7 +3,7 @@ module github.com/jxlwqq/blog-microservices
 go 1.17
 
 require (
-	github.com/dtm-labs/dtm v1.10.0
+	github.com/dtm-labs/dtm v1.10.1
 	github.com/envoyproxy/protoc-gen-validate v0.6.2
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang/mock v1.6.0
@@ -18,12 +18,12 @@ require (
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/zap v1.20.0
 	golang.org/x/crypto v0.0.0-20211215153901-e495a2d5b3d3
-	google.golang.org/genproto v0.0.0-20220107163113-42d7afdf6368
+	google.golang.org/genproto v0.0.0-20220111164026-67b88f271998
 	google.golang.org/grpc v1.43.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
 	google.golang.org/protobuf v1.27.1
 	gorm.io/driver/mysql v1.2.3
-	gorm.io/gorm v1.22.4
+	gorm.io/gorm v1.22.5
 )
 
 require (
@@ -53,8 +53,8 @@ require (
 	github.com/subosito/gotenv v1.2.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
-	golang.org/x/net v0.0.0-20220107192237-5cfca573fb4d // indirect
-	golang.org/x/sys v0.0.0-20220110181412-a018aaa089fe // indirect
+	golang.org/x/net v0.0.0-20220111093109-d55c255bac03 // indirect
+	golang.org/x/sys v0.0.0-20220111092808-5a964db01320 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/ini.v1 v1.66.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
