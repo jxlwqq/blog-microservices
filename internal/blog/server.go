@@ -448,7 +448,7 @@ func (s Server) ListCommentsByPostID(ctx context.Context, req *v1.ListCommentsBy
 		Limit:  int32(limit),
 	})
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 	var commentUserIDs []uint64
 	for _, post := range commentResp.GetComments() {
@@ -458,6 +458,10 @@ func (s Server) ListCommentsByPostID(ctx context.Context, req *v1.ListCommentsBy
 	commentUserResp, err := s.userClient.ListUsersByIDs(ctx, &userv1.ListUsersByIDsRequest{
 		Ids: commentUserIDs,
 	})
+
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
 
 	var comments []*v1.Comment
 	for _, comment := range commentResp.GetComments() {
