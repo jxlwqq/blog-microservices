@@ -62,6 +62,7 @@ func (m *GenerateTokenRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return GenerateTokenRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -165,6 +166,7 @@ func (m *GenerateTokenResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return GenerateTokenResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -268,6 +270,7 @@ func (m *ValidateTokenRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return ValidateTokenRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -371,6 +374,7 @@ func (m *ValidateTokenResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return ValidateTokenResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -474,6 +478,7 @@ func (m *RefreshTokenRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return RefreshTokenRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -577,6 +582,7 @@ func (m *RefreshTokenResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return RefreshTokenResponseMultiError(errors)
 	}
+
 	return nil
 }
 

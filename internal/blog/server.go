@@ -21,15 +21,17 @@ import (
 var prefix = "/" + v1.BlogService_ServiceDesc.ServiceName + "/"
 
 var AuthMethods = map[string]bool{
-	prefix + "SignUp":        false, // 不需要验证
-	prefix + "SignIn":        false,
-	prefix + "CreatePost":    true, // 需要验证
-	prefix + "UpdatePost":    true,
-	prefix + "CreateComment": true,
-	prefix + "UpdateComment": true,
-	prefix + "DeleteComment": true,
-	prefix + "GetPost":       false,
-	prefix + "ListPosts":     false,
+	prefix + "SignUp":               false, // 不需要验证
+	prefix + "SignIn":               false,
+	prefix + "CreatePost":           true, // 需要验证
+	prefix + "UpdatePost":           true,
+	prefix + "GetPost":              false,
+	prefix + "ListPosts":            false,
+	prefix + "DeletePost":           true,
+	prefix + "CreateComment":        true,
+	prefix + "UpdateComment":        true,
+	prefix + "DeleteComment":        true,
+	prefix + "ListCommentsByPostID": false,
 }
 
 func NewServer(logger *log.Logger,
@@ -243,6 +245,56 @@ func (s Server) ListPosts(ctx context.Context, req *v1.ListPostsRequest) (*v1.Li
 	return &v1.ListPostsResponse{
 		Posts: posts,
 		Total: postResp.GetCount(),
+	}, nil
+}
+
+func (s Server) DeletePost(ctx context.Context, req *v1.DeletePostRequest) (*v1.DeletePostResponse, error) {
+	userID, ok := ctx.Value(interceptor.ContextKeyID).(uint64)
+	if !ok {
+		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
+	}
+
+	userResp, err := s.userClient.GetUser(ctx, &userv1.GetUserRequest{Id: userID})
+	if err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
+
+	postResp, err := s.postClient.GetPost(ctx, &postv1.GetPostRequest{Id: req.GetId()})
+	if err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
+
+	// 授权检查，只能删除自己发布的文章
+	if userResp.GetUser().GetId() != postResp.GetPost().GetUserId() {
+		return nil, status.Error(codes.PermissionDenied, "user not authorized")
+	}
+
+	// 分布式事务(Saga 模式)
+	dtmGRPCServerAddr := s.conf.DTM.Server.Host + s.conf.DTM.Server.GRPC.Port
+	gid := dtmgrpc.MustGenGid(dtmGRPCServerAddr)
+	s.logger.Info("gid:", gid)
+	saga := dtmgrpc.NewSagaGrpc(dtmGRPCServerAddr, gid).Add(
+		s.conf.Post.Server.Host+s.conf.Post.Server.GRPC.Port+"/"+postv1.PostService_ServiceDesc.ServiceName+"/DeletePost",
+		s.conf.Post.Server.Host+s.conf.Post.Server.GRPC.Port+"/"+postv1.PostService_ServiceDesc.ServiceName+"/DeletePostCompensate",
+		&postv1.DeletePostRequest{
+			Id: req.GetId(),
+		},
+	).Add(
+		s.conf.Comment.Server.Host+s.conf.Comment.Server.GRPC.Port+"/"+commentv1.CommentService_ServiceDesc.ServiceName+"/DeleteCommentsByPostID",
+		s.conf.Comment.Server.Host+s.conf.Comment.Server.GRPC.Port+"/"+commentv1.CommentService_ServiceDesc.ServiceName+"/DeleteCommentsByPostIDCompensate",
+		&commentv1.DeleteCommentsByPostIDRequest{
+			PostId: req.GetId(),
+		},
+	)
+	saga.WaitResult = true
+	err = saga.Submit()
+	if err != nil {
+		s.logger.Error("saga submit error:", err)
+		return nil, status.Error(codes.Internal, "saga submit failed")
+	}
+
+	return &v1.DeletePostResponse{
+		Success: true,
 	}, nil
 }
 

@@ -129,6 +129,7 @@ func (m *User) validate(all bool) error {
 	if len(errors) > 0 {
 		return UserMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -227,6 +228,7 @@ func (m *ListUsersByIDsRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListUsersByIDsRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -362,6 +364,7 @@ func (m *ListUsersByIDsResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListUsersByIDsResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -465,6 +468,7 @@ func (m *GetUserRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return GetUserRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -593,6 +597,7 @@ func (m *GetUserResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return GetUserResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -706,6 +711,7 @@ func (m *GetUserByEmailRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return GetUserByEmailRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -870,6 +876,7 @@ func (m *GetUserByUsernameRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return GetUserByUsernameRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1000,6 +1007,7 @@ func (m *CreateUserRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return CreateUserRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1130,6 +1138,7 @@ func (m *CreateUserResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return CreateUserResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1260,6 +1269,7 @@ func (m *UpdateUserRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return UpdateUserRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1363,6 +1373,7 @@ func (m *UpdateUserResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return UpdateUserResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1466,6 +1477,7 @@ func (m *DeleteUserRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return DeleteUserRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1569,6 +1581,7 @@ func (m *DeleteUserResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return DeleteUserResponseMultiError(errors)
 	}
+
 	return nil
 }
 

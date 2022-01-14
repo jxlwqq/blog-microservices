@@ -2,12 +2,15 @@ package post
 
 import (
 	"context"
+	"testing"
+
+	"gorm.io/gorm"
+
 	"github.com/google/uuid"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/dbcontext"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestRepository(t *testing.T) {
@@ -61,7 +64,20 @@ func TestRepository(t *testing.T) {
 	// Test Delete
 	err = repo.Delete(context.Background(), p1.ID)
 	require.NoError(t, err)
+
+	// Test DeleteByUUID
 	err = repo.DeleteByUUID(context.Background(), p2.UUID)
 	require.NoError(t, err)
 
+	// Test GetWithUnscoped
+	deletedPost, err := repo.GetWithUnscoped(context.Background(), p1.ID)
+	require.NoError(t, err)
+	require.Equal(t, p1.ID, deletedPost.ID)
+
+	// Test UpdateWithUnscoped
+	p1.DeletedAt = gorm.DeletedAt{}
+	err = repo.UpdateWithUnscoped(context.Background(), p1)
+	require.NoError(t, err)
+	err = repo.Delete(context.Background(), p1.ID)
+	require.NoError(t, err)
 }

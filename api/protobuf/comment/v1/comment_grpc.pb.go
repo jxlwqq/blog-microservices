@@ -25,6 +25,8 @@ type CommentServiceClient interface {
 	UpdateComment(ctx context.Context, in *UpdateCommentRequest, opts ...grpc.CallOption) (*UpdateCommentResponse, error)
 	DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*DeleteCommentResponse, error)
 	DeleteCommentCompensate(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*DeleteCommentResponse, error)
+	DeleteCommentsByPostID(ctx context.Context, in *DeleteCommentsByPostIDRequest, opts ...grpc.CallOption) (*DeleteCommentsByPostIDResponse, error)
+	DeleteCommentsByPostIDCompensate(ctx context.Context, in *DeleteCommentsByPostIDRequest, opts ...grpc.CallOption) (*DeleteCommentsByPostIDResponse, error)
 	ListCommentsByPostID(ctx context.Context, in *ListCommentsByPostIDRequest, opts ...grpc.CallOption) (*ListCommentsByPostIDResponse, error)
 }
 
@@ -99,6 +101,24 @@ func (c *commentServiceClient) DeleteCommentCompensate(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *commentServiceClient) DeleteCommentsByPostID(ctx context.Context, in *DeleteCommentsByPostIDRequest, opts ...grpc.CallOption) (*DeleteCommentsByPostIDResponse, error) {
+	out := new(DeleteCommentsByPostIDResponse)
+	err := c.cc.Invoke(ctx, "/api.protobuf.comment.v1.CommentService/DeleteCommentsByPostID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *commentServiceClient) DeleteCommentsByPostIDCompensate(ctx context.Context, in *DeleteCommentsByPostIDRequest, opts ...grpc.CallOption) (*DeleteCommentsByPostIDResponse, error) {
+	out := new(DeleteCommentsByPostIDResponse)
+	err := c.cc.Invoke(ctx, "/api.protobuf.comment.v1.CommentService/DeleteCommentsByPostIDCompensate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *commentServiceClient) ListCommentsByPostID(ctx context.Context, in *ListCommentsByPostIDRequest, opts ...grpc.CallOption) (*ListCommentsByPostIDResponse, error) {
 	out := new(ListCommentsByPostIDResponse)
 	err := c.cc.Invoke(ctx, "/api.protobuf.comment.v1.CommentService/ListCommentsByPostID", in, out, opts...)
@@ -119,6 +139,8 @@ type CommentServiceServer interface {
 	UpdateComment(context.Context, *UpdateCommentRequest) (*UpdateCommentResponse, error)
 	DeleteComment(context.Context, *DeleteCommentRequest) (*DeleteCommentResponse, error)
 	DeleteCommentCompensate(context.Context, *DeleteCommentRequest) (*DeleteCommentResponse, error)
+	DeleteCommentsByPostID(context.Context, *DeleteCommentsByPostIDRequest) (*DeleteCommentsByPostIDResponse, error)
+	DeleteCommentsByPostIDCompensate(context.Context, *DeleteCommentsByPostIDRequest) (*DeleteCommentsByPostIDResponse, error)
 	ListCommentsByPostID(context.Context, *ListCommentsByPostIDRequest) (*ListCommentsByPostIDResponse, error)
 	mustEmbedUnimplementedCommentServiceServer()
 }
@@ -147,6 +169,12 @@ func (UnimplementedCommentServiceServer) DeleteComment(context.Context, *DeleteC
 }
 func (UnimplementedCommentServiceServer) DeleteCommentCompensate(context.Context, *DeleteCommentRequest) (*DeleteCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteCommentCompensate not implemented")
+}
+func (UnimplementedCommentServiceServer) DeleteCommentsByPostID(context.Context, *DeleteCommentsByPostIDRequest) (*DeleteCommentsByPostIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteCommentsByPostID not implemented")
+}
+func (UnimplementedCommentServiceServer) DeleteCommentsByPostIDCompensate(context.Context, *DeleteCommentsByPostIDRequest) (*DeleteCommentsByPostIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteCommentsByPostIDCompensate not implemented")
 }
 func (UnimplementedCommentServiceServer) ListCommentsByPostID(context.Context, *ListCommentsByPostIDRequest) (*ListCommentsByPostIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListCommentsByPostID not implemented")
@@ -290,6 +318,42 @@ func _CommentService_DeleteCommentCompensate_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CommentService_DeleteCommentsByPostID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteCommentsByPostIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CommentServiceServer).DeleteCommentsByPostID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.protobuf.comment.v1.CommentService/DeleteCommentsByPostID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CommentServiceServer).DeleteCommentsByPostID(ctx, req.(*DeleteCommentsByPostIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CommentService_DeleteCommentsByPostIDCompensate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteCommentsByPostIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CommentServiceServer).DeleteCommentsByPostIDCompensate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.protobuf.comment.v1.CommentService/DeleteCommentsByPostIDCompensate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CommentServiceServer).DeleteCommentsByPostIDCompensate(ctx, req.(*DeleteCommentsByPostIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _CommentService_ListCommentsByPostID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListCommentsByPostIDRequest)
 	if err := dec(in); err != nil {
@@ -342,6 +406,14 @@ var CommentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteCommentCompensate",
 			Handler:    _CommentService_DeleteCommentCompensate_Handler,
+		},
+		{
+			MethodName: "DeleteCommentsByPostID",
+			Handler:    _CommentService_DeleteCommentsByPostID_Handler,
+		},
+		{
+			MethodName: "DeleteCommentsByPostIDCompensate",
+			Handler:    _CommentService_DeleteCommentsByPostIDCompensate_Handler,
 		},
 		{
 			MethodName: "ListCommentsByPostID",

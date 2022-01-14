@@ -136,6 +136,7 @@ func (m *Comment) validate(all bool) error {
 	if len(errors) > 0 {
 		return CommentMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -263,6 +264,7 @@ func (m *CreateCommentRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return CreateCommentRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -393,6 +395,7 @@ func (m *CreateCommentResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return CreateCommentResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -523,6 +526,7 @@ func (m *UpdateCommentRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return UpdateCommentRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -626,6 +630,7 @@ func (m *UpdateCommentResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return UpdateCommentResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -729,6 +734,7 @@ func (m *DeleteCommentRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return DeleteCommentRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -832,6 +838,7 @@ func (m *DeleteCommentResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return DeleteCommentResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -908,6 +915,216 @@ var _ interface {
 	ErrorName() string
 } = DeleteCommentResponseValidationError{}
 
+// Validate checks the field values on DeleteCommentsByPostIDRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *DeleteCommentsByPostIDRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DeleteCommentsByPostIDRequest with
+// the rules defined in the proto definition for this message. If any rules
+// are violated, the result is a list of violation errors wrapped in
+// DeleteCommentsByPostIDRequestMultiError, or nil if none found.
+func (m *DeleteCommentsByPostIDRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DeleteCommentsByPostIDRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for PostId
+
+	if len(errors) > 0 {
+		return DeleteCommentsByPostIDRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// DeleteCommentsByPostIDRequestMultiError is an error wrapping multiple
+// validation errors returned by DeleteCommentsByPostIDRequest.ValidateAll()
+// if the designated constraints aren't met.
+type DeleteCommentsByPostIDRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DeleteCommentsByPostIDRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DeleteCommentsByPostIDRequestMultiError) AllErrors() []error { return m }
+
+// DeleteCommentsByPostIDRequestValidationError is the validation error
+// returned by DeleteCommentsByPostIDRequest.Validate if the designated
+// constraints aren't met.
+type DeleteCommentsByPostIDRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DeleteCommentsByPostIDRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DeleteCommentsByPostIDRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DeleteCommentsByPostIDRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DeleteCommentsByPostIDRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DeleteCommentsByPostIDRequestValidationError) ErrorName() string {
+	return "DeleteCommentsByPostIDRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DeleteCommentsByPostIDRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDeleteCommentsByPostIDRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DeleteCommentsByPostIDRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DeleteCommentsByPostIDRequestValidationError{}
+
+// Validate checks the field values on DeleteCommentsByPostIDResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *DeleteCommentsByPostIDResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DeleteCommentsByPostIDResponse with
+// the rules defined in the proto definition for this message. If any rules
+// are violated, the result is a list of violation errors wrapped in
+// DeleteCommentsByPostIDResponseMultiError, or nil if none found.
+func (m *DeleteCommentsByPostIDResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DeleteCommentsByPostIDResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Success
+
+	if len(errors) > 0 {
+		return DeleteCommentsByPostIDResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// DeleteCommentsByPostIDResponseMultiError is an error wrapping multiple
+// validation errors returned by DeleteCommentsByPostIDResponse.ValidateAll()
+// if the designated constraints aren't met.
+type DeleteCommentsByPostIDResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DeleteCommentsByPostIDResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DeleteCommentsByPostIDResponseMultiError) AllErrors() []error { return m }
+
+// DeleteCommentsByPostIDResponseValidationError is the validation error
+// returned by DeleteCommentsByPostIDResponse.Validate if the designated
+// constraints aren't met.
+type DeleteCommentsByPostIDResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DeleteCommentsByPostIDResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DeleteCommentsByPostIDResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DeleteCommentsByPostIDResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DeleteCommentsByPostIDResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DeleteCommentsByPostIDResponseValidationError) ErrorName() string {
+	return "DeleteCommentsByPostIDResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DeleteCommentsByPostIDResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDeleteCommentsByPostIDResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DeleteCommentsByPostIDResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DeleteCommentsByPostIDResponseValidationError{}
+
 // Validate checks the field values on ListCommentsByPostIDRequest with the
 // rules defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
@@ -939,6 +1156,7 @@ func (m *ListCommentsByPostIDRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListCommentsByPostIDRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1077,6 +1295,7 @@ func (m *ListCommentsByPostIDResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListCommentsByPostIDResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1181,6 +1400,7 @@ func (m *GetCommentRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return GetCommentRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1311,6 +1531,7 @@ func (m *GetCommentResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return GetCommentResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1414,6 +1635,7 @@ func (m *GetCommentByUUIDRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return GetCommentByUUIDRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1544,6 +1766,7 @@ func (m *GetCommentByUUIDResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return GetCommentByUUIDResponseMultiError(errors)
 	}
+
 	return nil
 }
 

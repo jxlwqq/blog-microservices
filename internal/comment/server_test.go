@@ -2,13 +2,14 @@ package comment
 
 import (
 	"context"
+	"testing"
+
 	"github.com/google/uuid"
 	v1 "github.com/jxlwqq/blog-microservices/api/protobuf/comment/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/dbcontext"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestServer(t *testing.T) {
@@ -107,13 +108,24 @@ func TestServer(t *testing.T) {
 	// Test DeleteCompensate
 	deleteCompensateResp1, err := s.DeleteCommentCompensate(context.Background(), &v1.DeleteCommentRequest{Id: createResp1.GetComment().GetId()})
 	require.NoError(t, err)
-	require.NotNil(t, deleteCompensateResp1)
-	getResp1, err = s.GetComment(context.Background(), &v1.GetCommentRequest{Id: createResp1.GetComment().GetId()})
+	require.True(t, deleteCompensateResp1.GetSuccess())
+	deleteCompensateResp2, err := s.DeleteCommentCompensate(context.Background(), &v1.DeleteCommentRequest{Id: createResp2.GetComment().GetId()})
 	require.NoError(t, err)
-	require.NotNil(t, getResp1)
-	require.Equal(t, c1.Uuid, getResp1.Comment.Uuid)
-	deleteResp1, err = s.DeleteComment(context.Background(), &v1.DeleteCommentRequest{Id: createResp1.GetComment().GetId()})
-	require.NoError(t, err)
-	require.NotNil(t, deleteResp1)
+	require.True(t, deleteCompensateResp2.GetSuccess())
 
+	// Test DeleteCommentsByPostID
+	deleteCommentsByPostIDResp, err := s.DeleteCommentsByPostID(context.Background(), &v1.DeleteCommentsByPostIDRequest{PostId: uint64(1)})
+	require.NoError(t, err)
+	require.True(t, deleteCommentsByPostIDResp.GetSuccess())
+	_, err = s.GetComment(context.Background(), &v1.GetCommentRequest{Id: createResp1.GetComment().GetId()})
+	require.Error(t, err)
+
+	// Test DeleteCommentsByPostIDCompensate
+	deleteCommentsByPostIDCompensateResp, err := s.DeleteCommentsByPostIDCompensate(context.Background(), &v1.DeleteCommentsByPostIDRequest{PostId: uint64(1)})
+	require.NoError(t, err)
+	require.True(t, deleteCommentsByPostIDCompensateResp.GetSuccess())
+	_, err = s.GetComment(context.Background(), &v1.GetCommentRequest{Id: createResp1.GetComment().GetId()})
+	require.NotNil(t, err)
+	_, err = s.DeleteCommentsByPostID(context.Background(), &v1.DeleteCommentsByPostIDRequest{PostId: uint64(1)})
+	require.NoError(t, err)
 }

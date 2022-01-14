@@ -2,8 +2,10 @@ package post
 
 import (
 	"context"
-	"github.com/jxlwqq/blog-microservices/api/protobuf/post/v1"
+
+	v1 "github.com/jxlwqq/blog-microservices/api/protobuf/post/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
+	"gorm.io/gorm"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -166,6 +168,31 @@ func (s Server) DeletePost(ctx context.Context, req *v1.DeletePostRequest) (*v1.
 	err = s.repo.Delete(ctx, post.ID)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to delete post: %v", err)
+	}
+
+	resp := &v1.DeletePostResponse{
+		Success: true,
+	}
+
+	return resp, nil
+}
+
+func (s Server) DeletePostCompensate(ctx context.Context, req *v1.DeletePostRequest) (*v1.DeletePostResponse, error) {
+	err := req.ValidateAll()
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+	post, err := s.repo.GetWithUnscoped(ctx, req.GetId())
+
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "post %d not found", req.GetId())
+	}
+
+	post.DeletedAt = gorm.DeletedAt{}
+
+	err = s.repo.UpdateWithUnscoped(ctx, post)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to restore post: %v", err)
 	}
 
 	resp := &v1.DeletePostResponse{

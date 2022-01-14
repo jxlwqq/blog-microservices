@@ -65,6 +65,7 @@ func (m *User) validate(all bool) error {
 	if len(errors) > 0 {
 		return UserMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -277,6 +278,7 @@ func (m *Post) validate(all bool) error {
 	if len(errors) > 0 {
 		return PostMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -507,6 +509,7 @@ func (m *Comment) validate(all bool) error {
 	if len(errors) > 0 {
 		return CommentMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -630,6 +633,7 @@ func (m *SignUpRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return SignUpRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -781,6 +785,7 @@ func (m *SignUpResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return SignUpResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -913,6 +918,7 @@ func (m *SignInRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return SignInRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1064,6 +1070,7 @@ func (m *SignInResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return SignInResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1192,6 +1199,7 @@ func (m *CreatePostRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return CreatePostRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1322,6 +1330,7 @@ func (m *CreatePostResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return CreatePostResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1398,6 +1407,214 @@ var _ interface {
 	ErrorName() string
 } = CreatePostResponseValidationError{}
 
+// Validate checks the field values on DeletePostRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *DeletePostRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DeletePostRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// DeletePostRequestMultiError, or nil if none found.
+func (m *DeletePostRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DeletePostRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	if len(errors) > 0 {
+		return DeletePostRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// DeletePostRequestMultiError is an error wrapping multiple validation errors
+// returned by DeletePostRequest.ValidateAll() if the designated constraints
+// aren't met.
+type DeletePostRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DeletePostRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DeletePostRequestMultiError) AllErrors() []error { return m }
+
+// DeletePostRequestValidationError is the validation error returned by
+// DeletePostRequest.Validate if the designated constraints aren't met.
+type DeletePostRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DeletePostRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DeletePostRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DeletePostRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DeletePostRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DeletePostRequestValidationError) ErrorName() string {
+	return "DeletePostRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DeletePostRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDeletePostRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DeletePostRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DeletePostRequestValidationError{}
+
+// Validate checks the field values on DeletePostResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *DeletePostResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DeletePostResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// DeletePostResponseMultiError, or nil if none found.
+func (m *DeletePostResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DeletePostResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Success
+
+	if len(errors) > 0 {
+		return DeletePostResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// DeletePostResponseMultiError is an error wrapping multiple validation errors
+// returned by DeletePostResponse.ValidateAll() if the designated constraints
+// aren't met.
+type DeletePostResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DeletePostResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DeletePostResponseMultiError) AllErrors() []error { return m }
+
+// DeletePostResponseValidationError is the validation error returned by
+// DeletePostResponse.Validate if the designated constraints aren't met.
+type DeletePostResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DeletePostResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DeletePostResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DeletePostResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DeletePostResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DeletePostResponseValidationError) ErrorName() string {
+	return "DeletePostResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DeletePostResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDeletePostResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DeletePostResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DeletePostResponseValidationError{}
+
 // Validate checks the field values on CreateCommentRequest with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
@@ -1452,6 +1669,7 @@ func (m *CreateCommentRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return CreateCommentRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1582,6 +1800,7 @@ func (m *CreateCommentResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return CreateCommentResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1712,6 +1931,7 @@ func (m *UpdateCommentRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return UpdateCommentRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1815,6 +2035,7 @@ func (m *UpdateCommentResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return UpdateCommentResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1918,6 +2139,7 @@ func (m *DeleteCommentRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return DeleteCommentRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -2021,6 +2243,7 @@ func (m *DeleteCommentResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return DeleteCommentResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -2124,6 +2347,7 @@ func (m *GetPostRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return GetPostRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -2252,6 +2476,7 @@ func (m *GetPostResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return GetPostResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -2380,6 +2605,7 @@ func (m *UpdatePostRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return UpdatePostRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -2483,6 +2709,7 @@ func (m *UpdatePostResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return UpdatePostResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -2588,6 +2815,7 @@ func (m *ListPostsRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListPostsRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -2723,6 +2951,7 @@ func (m *ListPostsResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListPostsResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -2830,6 +3059,7 @@ func (m *ListCommentsByPostIDRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListCommentsByPostIDRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -2968,6 +3198,7 @@ func (m *ListCommentsByPostIDResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListCommentsByPostIDResponseMultiError(errors)
 	}
+
 	return nil
 }
 

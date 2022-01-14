@@ -133,6 +133,29 @@ func (s Server) DeleteCommentCompensate(ctx context.Context, req *v1.DeleteComme
 	}, nil
 }
 
+func (s Server) DeleteCommentsByPostID(ctx context.Context, req *v1.DeleteCommentsByPostIDRequest) (*v1.DeleteCommentsByPostIDResponse, error) {
+	postID := req.GetPostId()
+	err := s.repo.DeleteByPostID(ctx, postID)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "could not delete comments: %v", err)
+	}
+	return &v1.DeleteCommentsByPostIDResponse{
+		Success: true,
+	}, nil
+}
+
+func (s Server) DeleteCommentsByPostIDCompensate(ctx context.Context, req *v1.DeleteCommentsByPostIDRequest) (*v1.DeleteCommentsByPostIDResponse, error) {
+	postID := req.GetPostId()
+
+	err := s.repo.UpdateByPostIDWithUnscoped(ctx, postID, Comment{DeletedAt: gorm.DeletedAt{}})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "could not delete comments: %v", err)
+	}
+	return &v1.DeleteCommentsByPostIDResponse{
+		Success: true,
+	}, nil
+}
+
 func (s Server) ListCommentsByPostID(ctx context.Context, req *v1.ListCommentsByPostIDRequest) (*v1.ListCommentsByPostIDResponse, error) {
 	postID := req.GetPostId()
 	offset := req.GetOffset()

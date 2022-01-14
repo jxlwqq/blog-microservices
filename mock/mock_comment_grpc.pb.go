@@ -116,6 +116,46 @@ func (mr *MockCommentServiceClientMockRecorder) DeleteCommentCompensate(ctx, in 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCommentCompensate", reflect.TypeOf((*MockCommentServiceClient)(nil).DeleteCommentCompensate), varargs...)
 }
 
+// DeleteCommentsByPostID mocks base method.
+func (m *MockCommentServiceClient) DeleteCommentsByPostID(ctx context.Context, in *v1.DeleteCommentsByPostIDRequest, opts ...grpc.CallOption) (*v1.DeleteCommentsByPostIDResponse, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, in}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteCommentsByPostID", varargs...)
+	ret0, _ := ret[0].(*v1.DeleteCommentsByPostIDResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteCommentsByPostID indicates an expected call of DeleteCommentsByPostID.
+func (mr *MockCommentServiceClientMockRecorder) DeleteCommentsByPostID(ctx, in interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, in}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCommentsByPostID", reflect.TypeOf((*MockCommentServiceClient)(nil).DeleteCommentsByPostID), varargs...)
+}
+
+// DeleteCommentsByPostIDCompensate mocks base method.
+func (m *MockCommentServiceClient) DeleteCommentsByPostIDCompensate(ctx context.Context, in *v1.DeleteCommentsByPostIDRequest, opts ...grpc.CallOption) (*v1.DeleteCommentsByPostIDResponse, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, in}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteCommentsByPostIDCompensate", varargs...)
+	ret0, _ := ret[0].(*v1.DeleteCommentsByPostIDResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteCommentsByPostIDCompensate indicates an expected call of DeleteCommentsByPostIDCompensate.
+func (mr *MockCommentServiceClientMockRecorder) DeleteCommentsByPostIDCompensate(ctx, in interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, in}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCommentsByPostIDCompensate", reflect.TypeOf((*MockCommentServiceClient)(nil).DeleteCommentsByPostIDCompensate), varargs...)
+}
+
 // GetComment mocks base method.
 func (m *MockCommentServiceClient) GetComment(ctx context.Context, in *v1.GetCommentRequest, opts ...grpc.CallOption) (*v1.GetCommentResponse, error) {
 	m.ctrl.T.Helper()
@@ -277,6 +317,36 @@ func (m *MockCommentServiceServer) DeleteCommentCompensate(arg0 context.Context,
 func (mr *MockCommentServiceServerMockRecorder) DeleteCommentCompensate(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCommentCompensate", reflect.TypeOf((*MockCommentServiceServer)(nil).DeleteCommentCompensate), arg0, arg1)
+}
+
+// DeleteCommentsByPostID mocks base method.
+func (m *MockCommentServiceServer) DeleteCommentsByPostID(arg0 context.Context, arg1 *v1.DeleteCommentsByPostIDRequest) (*v1.DeleteCommentsByPostIDResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteCommentsByPostID", arg0, arg1)
+	ret0, _ := ret[0].(*v1.DeleteCommentsByPostIDResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteCommentsByPostID indicates an expected call of DeleteCommentsByPostID.
+func (mr *MockCommentServiceServerMockRecorder) DeleteCommentsByPostID(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCommentsByPostID", reflect.TypeOf((*MockCommentServiceServer)(nil).DeleteCommentsByPostID), arg0, arg1)
+}
+
+// DeleteCommentsByPostIDCompensate mocks base method.
+func (m *MockCommentServiceServer) DeleteCommentsByPostIDCompensate(arg0 context.Context, arg1 *v1.DeleteCommentsByPostIDRequest) (*v1.DeleteCommentsByPostIDResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteCommentsByPostIDCompensate", arg0, arg1)
+	ret0, _ := ret[0].(*v1.DeleteCommentsByPostIDResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteCommentsByPostIDCompensate indicates an expected call of DeleteCommentsByPostIDCompensate.
+func (mr *MockCommentServiceServerMockRecorder) DeleteCommentsByPostIDCompensate(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCommentsByPostIDCompensate", reflect.TypeOf((*MockCommentServiceServer)(nil).DeleteCommentsByPostIDCompensate), arg0, arg1)
 }
 
 // GetComment mocks base method.

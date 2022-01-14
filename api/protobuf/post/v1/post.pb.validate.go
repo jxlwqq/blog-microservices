@@ -147,6 +147,7 @@ func (m *Post) validate(all bool) error {
 	if len(errors) > 0 {
 		return PostMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -247,6 +248,7 @@ func (m *GetPostRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return GetPostRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -375,6 +377,7 @@ func (m *GetPostResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return GetPostResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -503,6 +506,7 @@ func (m *CreatePostRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return CreatePostRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -633,6 +637,7 @@ func (m *CreatePostResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return CreatePostResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -763,6 +768,7 @@ func (m *UpdatePostRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return UpdatePostRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -866,6 +872,7 @@ func (m *UpdatePostResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return UpdatePostResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -969,6 +976,7 @@ func (m *DeletePostRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return DeletePostRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1072,6 +1080,7 @@ func (m *DeletePostResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return DeletePostResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1177,6 +1186,7 @@ func (m *ListPostsRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListPostsRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1312,6 +1322,7 @@ func (m *ListPostsResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListPostsResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1415,6 +1426,7 @@ func (m *IncrementCommentsCountRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return IncrementCommentsCountRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1519,6 +1531,7 @@ func (m *IncrementCommentsCountResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return IncrementCommentsCountResponseMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1623,6 +1636,7 @@ func (m *DecrementCommentsCountRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return DecrementCommentsCountRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -1727,6 +1741,7 @@ func (m *DecrementCommentsCountResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return DecrementCommentsCountResponseMultiError(errors)
 	}
+
 	return nil
 }
 

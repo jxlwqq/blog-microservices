@@ -47,6 +47,12 @@ service BlogService {
     };
   }
 
+  rpc DeletePost (DeletePostRequest) returns (DeletePostResponse) {
+    option (google.api.http) = {
+      delete: "/api.rest.blog.v1/posts/{id}"
+    };
+  }
+
   rpc CreateComment (CreateCommentRequest) returns (CreateCommentResponse) {
     option (google.api.http) = {
       post: "/api.rest.blog.v1/comments"
@@ -130,6 +136,14 @@ message CreatePostRequest {
 
 message CreatePostResponse {
   Post post = 1;
+}
+
+message DeletePostRequest {
+  uint64 id = 1;
+}
+
+message DeletePostResponse {
+  bool success = 1;
 }
 
 message CreateCommentRequest {

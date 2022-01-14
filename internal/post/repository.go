@@ -2,6 +2,7 @@ package post
 
 import (
 	"context"
+
 	"github.com/jxlwqq/blog-microservices/internal/pkg/dbcontext"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 )
@@ -15,8 +16,10 @@ func NewRepository(logger *log.Logger, db *dbcontext.DB) Repository {
 
 type Repository interface {
 	Get(ctx context.Context, id uint64) (*Post, error)
+	GetWithUnscoped(ctx context.Context, id uint64) (*Post, error)
 	Create(ctx context.Context, post *Post) error
 	Update(ctx context.Context, post *Post) error
+	UpdateWithUnscoped(ctx context.Context, post *Post) error
 	Delete(ctx context.Context, id uint64) error
 	DeleteByUUID(ctx context.Context, uuid string) error
 	List(ctx context.Context, offset, limit int) ([]*Post, error)
@@ -34,12 +37,22 @@ func (r repository) Get(ctx context.Context, id uint64) (*Post, error) {
 	return post, err
 }
 
+func (r repository) GetWithUnscoped(ctx context.Context, id uint64) (*Post, error) {
+	post := &Post{}
+	err := r.db.Unscoped().First(post, id).Error
+	return post, err
+}
+
 func (r repository) Create(ctx context.Context, post *Post) error {
 	return r.db.Create(post).Error
 }
 
 func (r repository) Update(ctx context.Context, post *Post) error {
 	return r.db.Save(post).Error
+}
+
+func (r repository) UpdateWithUnscoped(ctx context.Context, post *Post) error {
+	return r.db.Unscoped().Save(post).Error
 }
 
 func (r repository) Delete(ctx context.Context, id uint64) error {

@@ -12,6 +12,7 @@ service PostService {
   rpc CreatePost(CreatePostRequest) returns (CreatePostResponse) {}
   rpc UpdatePost(UpdatePostRequest) returns (UpdatePostResponse) {}
   rpc DeletePost(DeletePostRequest) returns (DeletePostResponse) {}
+  rpc DeletePostCompensate(DeletePostRequest) returns (DeletePostResponse) {}
   rpc ListPosts(ListPostsRequest) returns (ListPostsResponse) {}
   rpc IncrementCommentsCount(IncrementCommentsCountRequest) returns (IncrementCommentsCountResponse) {}
   rpc IncrementCommentsCountCompensate(IncrementCommentsCountRequest) returns (IncrementCommentsCountResponse) {}

@@ -18,9 +18,12 @@ type Repository interface {
 	Create(ctx context.Context, comment *Comment) error
 	Update(ctx context.Context, comment *Comment) error
 	UpdateWithUnscoped(ctx context.Context, comment *Comment) error
+	UpdateByPostIDWithUnscoped(ctx context.Context, postID uint64, comment Comment) error
 	Delete(ctx context.Context, id uint64) error
 	DeleteByUUID(ctx context.Context, uuid string) error
+	DeleteByPostID(ctx context.Context, postID uint64) error
 	ListByPostID(ctx context.Context, postID uint64, offset, limit int) ([]*Comment, error)
+	ListByPostIDWithUnscoped(ctx context.Context, postID uint64) ([]*Comment, error)
 	Get(ctx context.Context, id uint64) (*Comment, error)
 	GetWithUnscoped(ctx context.Context, id uint64) (*Comment, error)
 	GetByUUID(ctx context.Context, uuid string) (*Comment, error)
@@ -68,6 +71,10 @@ func (r repository) UpdateWithUnscoped(ctx context.Context, comment *Comment) er
 	return r.db.Unscoped().Save(comment).Error
 }
 
+func (r repository) UpdateByPostIDWithUnscoped(ctx context.Context, postID uint64, comment Comment) error {
+	return r.db.Unscoped().Model(&Comment{}).Where("post_id = ?", postID).Updates(comment).Error
+}
+
 func (r repository) Delete(ctx context.Context, id uint64) error {
 	return r.db.Delete(&Comment{ID: id}).Error
 }
@@ -76,8 +83,19 @@ func (r repository) DeleteByUUID(ctx context.Context, uuid string) error {
 	return r.db.Delete(&Comment{}, "uuid = ?", uuid).Error
 }
 
+func (r repository) DeleteByPostID(ctx context.Context, postID uint64) error {
+	return r.db.Delete(&Comment{}, "post_id = ?", postID).Error
+}
+
 func (r repository) ListByPostID(ctx context.Context, postID uint64, offset, limit int) ([]*Comment, error) {
 	var comments []*Comment
 	err := r.db.Where("post_id = ?", postID).Offset(offset).Limit(limit).Find(&comments).Error
 	return comments, err
+}
+
+func (r repository) ListByPostIDWithUnscoped(ctx context.Context, postID uint64) ([]*Comment, error) {
+	var comments []*Comment
+	err := r.db.Unscoped().Where("post_id = ?", postID).Find(&comments).Error
+	return comments, err
+
 }

@@ -116,6 +116,26 @@ func (mr *MockPostServiceClientMockRecorder) DeletePost(ctx, in interface{}, opt
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePost", reflect.TypeOf((*MockPostServiceClient)(nil).DeletePost), varargs...)
 }
 
+// DeletePostCompensate mocks base method.
+func (m *MockPostServiceClient) DeletePostCompensate(ctx context.Context, in *v1.DeletePostRequest, opts ...grpc.CallOption) (*v1.DeletePostResponse, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, in}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeletePostCompensate", varargs...)
+	ret0, _ := ret[0].(*v1.DeletePostResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeletePostCompensate indicates an expected call of DeletePostCompensate.
+func (mr *MockPostServiceClientMockRecorder) DeletePostCompensate(ctx, in interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, in}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePostCompensate", reflect.TypeOf((*MockPostServiceClient)(nil).DeletePostCompensate), varargs...)
+}
+
 // GetPost mocks base method.
 func (m *MockPostServiceClient) GetPost(ctx context.Context, in *v1.GetPostRequest, opts ...grpc.CallOption) (*v1.GetPostResponse, error) {
 	m.ctrl.T.Helper()
@@ -297,6 +317,21 @@ func (m *MockPostServiceServer) DeletePost(arg0 context.Context, arg1 *v1.Delete
 func (mr *MockPostServiceServerMockRecorder) DeletePost(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePost", reflect.TypeOf((*MockPostServiceServer)(nil).DeletePost), arg0, arg1)
+}
+
+// DeletePostCompensate mocks base method.
+func (m *MockPostServiceServer) DeletePostCompensate(arg0 context.Context, arg1 *v1.DeletePostRequest) (*v1.DeletePostResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeletePostCompensate", arg0, arg1)
+	ret0, _ := ret[0].(*v1.DeletePostResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeletePostCompensate indicates an expected call of DeletePostCompensate.
+func (mr *MockPostServiceServerMockRecorder) DeletePostCompensate(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePostCompensate", reflect.TypeOf((*MockPostServiceServer)(nil).DeletePostCompensate), arg0, arg1)
 }
 
 // GetPost mocks base method.

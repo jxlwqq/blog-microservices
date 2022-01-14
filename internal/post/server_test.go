@@ -3,13 +3,14 @@ package post
 import (
 	"context"
 	"fmt"
+	"testing"
+
 	"github.com/google/uuid"
 	v1 "github.com/jxlwqq/blog-microservices/api/protobuf/post/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/dbcontext"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestServer(t *testing.T) {
@@ -36,7 +37,7 @@ func TestServer(t *testing.T) {
 	s := NewServer(logger, repo)
 	require.NotNil(t, s)
 
-	// Test Create
+	// Test CreatePost
 	createResp, err := s.CreatePost(context.Background(), &v1.CreatePostRequest{Post: p1})
 	require.NoError(t, err)
 	require.NotNil(t, createResp.GetPost().GetId())
@@ -44,14 +45,14 @@ func TestServer(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, createResp2.GetPost().GetId())
 
-	// Test Get
+	// Test GetPost
 	getResp, err := s.GetPost(context.Background(), &v1.GetPostRequest{Id: createResp.GetPost().GetId()})
 	fmt.Println(getResp.GetPost().GetUuid())
 	require.NoError(t, err)
 	require.NotNil(t, getResp.GetPost().GetTitle())
 	require.Equal(t, p1.Uuid, getResp.GetPost().GetUuid())
 
-	// Test Update
+	// Test UpdatePost
 	p3 := getResp.GetPost()
 	p3.Title = "Hello World2"
 	updateResp, err := s.UpdatePost(context.Background(), &v1.UpdatePostRequest{Post: p3})
@@ -89,18 +90,26 @@ func TestServer(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, uint32(1), getResp.GetPost().GetCommentsCount())
 
-	// Test List
+	// Test ListPosts
 	listResp, err := s.ListPosts(context.Background(), &v1.ListPostsRequest{Limit: 10, Offset: 0})
 	require.NoError(t, err)
 	require.Equal(t, 2, len(listResp.GetPosts()))
 	require.Equal(t, p1.Uuid, listResp.GetPosts()[0].GetUuid())
 	require.Equal(t, p2.Uuid, listResp.GetPosts()[1].GetUuid())
 
-	// Test Delete
+	// Test DeletePost
 	deleteResp, err := s.DeletePost(context.Background(), &v1.DeletePostRequest{Id: createResp.GetPost().GetId()})
 	require.NoError(t, err)
 	require.True(t, deleteResp.GetSuccess())
 	deleteResp2, err := s.DeletePost(context.Background(), &v1.DeletePostRequest{Id: createResp2.GetPost().GetId()})
 	require.NoError(t, err)
 	require.True(t, deleteResp2.GetSuccess())
+
+	// Test DeletePostCompensate
+	deleteResp, err = s.DeletePostCompensate(context.Background(), &v1.DeletePostRequest{Id: createResp.GetPost().GetId()})
+	require.NoError(t, err)
+	require.True(t, deleteResp.GetSuccess())
+	getResp, err = s.GetPost(context.Background(), &v1.GetPostRequest{Id: createResp.GetPost().GetId()})
+	require.NoError(t, err)
+	require.NotNil(t, getResp.GetPost().GetId())
 }
