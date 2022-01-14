@@ -4,6 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/jxlwqq/blog-microservices/internal/pkg/interceptor"
+
 	commentv1 "github.com/jxlwqq/blog-microservices/api/protobuf/comment/v1"
 
 	postv1 "github.com/jxlwqq/blog-microservices/api/protobuf/post/v1"
@@ -115,7 +117,7 @@ func TestServer_SignIn_WithEmail(t *testing.T) {
 func TestServer_CreatePost(t *testing.T) {
 	s, mockUserClient, mockPostClient, _, _ := makeMock(t)
 
-	ctx := context.WithValue(context.Background(), "ID", uint64(1))
+	ctx := context.WithValue(context.Background(), interceptor.ContextKeyID, uint64(1))
 
 	gomock.InOrder(
 		mockUserClient.EXPECT().GetUser(ctx, gomock.Any()).Return(&userv1.GetUserResponse{User: &userv1.User{
@@ -172,7 +174,7 @@ func TestServer_GetPost(t *testing.T) {
 
 func TestServer_UpdatePost(t *testing.T) {
 	s, mockUserClient, mockPostClient, _, _ := makeMock(t)
-	ctx := context.WithValue(context.Background(), "ID", uint64(1))
+	ctx := context.WithValue(context.Background(), interceptor.ContextKeyID, uint64(1))
 	gomock.InOrder(
 		mockUserClient.EXPECT().GetUser(ctx, gomock.Any()).Return(&userv1.GetUserResponse{User: &userv1.User{
 			Id:       uint64(1),
@@ -254,7 +256,7 @@ func TestServer_ListPosts(t *testing.T) {
 func TestServer_UpdateComment(t *testing.T) {
 	s, mockUserClient, _, mockCommentClient, _ := makeMock(t)
 
-	ctx := context.WithValue(context.Background(), "ID", uint64(1))
+	ctx := context.WithValue(context.Background(), interceptor.ContextKeyID, uint64(1))
 
 	gomock.InOrder(
 		mockUserClient.EXPECT().GetUser(ctx, gomock.Any()).Return(&userv1.GetUserResponse{User: &userv1.User{

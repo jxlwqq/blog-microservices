@@ -3,6 +3,8 @@ package blog
 import (
 	"context"
 
+	"github.com/jxlwqq/blog-microservices/internal/pkg/interceptor"
+
 	"github.com/dtm-labs/dtm/dtmgrpc"
 	"github.com/google/uuid"
 	authv1 "github.com/jxlwqq/blog-microservices/api/protobuf/auth/v1"
@@ -62,7 +64,7 @@ func (s Server) CreatePost(ctx context.Context, req *v1.CreatePostRequest) (*v1.
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	userID, ok := ctx.Value("ID").(uint64)
+	userID, ok := ctx.Value(interceptor.ContextKeyID).(uint64)
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
 	}
@@ -142,7 +144,7 @@ func (s Server) GetPost(ctx context.Context, req *v1.GetPostRequest) (*v1.GetPos
 }
 
 func (s Server) UpdatePost(ctx context.Context, req *v1.UpdatePostRequest) (*v1.UpdatePostResponse, error) {
-	userID, ok := ctx.Value("ID").(uint64)
+	userID, ok := ctx.Value(interceptor.ContextKeyID).(uint64)
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
 	}
@@ -181,7 +183,7 @@ func (s Server) UpdatePost(ctx context.Context, req *v1.UpdatePostRequest) (*v1.
 	})
 
 	if err != nil || !updatePostResp.GetSuccess() {
-		return nil, status.Error(codes.Internal, "hhhh")
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	return &v1.UpdatePostResponse{
@@ -245,7 +247,7 @@ func (s Server) ListPosts(ctx context.Context, req *v1.ListPostsRequest) (*v1.Li
 }
 
 func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest) (*v1.CreateCommentResponse, error) {
-	userID, ok := ctx.Value("ID").(uint64)
+	userID, ok := ctx.Value(interceptor.ContextKeyID).(uint64)
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
 	}
@@ -342,7 +344,7 @@ func (s Server) CreateComment(ctx context.Context, req *v1.CreateCommentRequest)
 }
 
 func (s Server) UpdateComment(ctx context.Context, req *v1.UpdateCommentRequest) (*v1.UpdateCommentResponse, error) {
-	userID, ok := ctx.Value("ID").(uint64)
+	userID, ok := ctx.Value(interceptor.ContextKeyID).(uint64)
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
 	}
@@ -381,7 +383,7 @@ func (s Server) UpdateComment(ctx context.Context, req *v1.UpdateCommentRequest)
 }
 
 func (s Server) DeleteComment(ctx context.Context, req *v1.DeleteCommentRequest) (*v1.DeleteCommentResponse, error) {
-	userID, ok := ctx.Value("ID").(uint64)
+	userID, ok := ctx.Value(interceptor.ContextKeyID).(uint64)
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
 	}

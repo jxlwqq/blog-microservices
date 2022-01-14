@@ -2,18 +2,22 @@ package interceptor
 
 import (
 	"context"
+	"strings"
+
 	"github.com/jxlwqq/blog-microservices/internal/pkg/jwt"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-	"strings"
 )
+
+type contextKey string
 
 var (
 	expectedScheme  = "bearer"
 	headerAuthorize = "authorization"
+	ContextKeyID    = contextKey("ID")
 )
 
 func NewAuthInterceptor(logger *log.Logger, jwtManager *jwt.Manager, authMethods map[string]bool) *AuthInterceptor {
@@ -38,7 +42,7 @@ func (i *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 			return nil, err
 		}
 		if claims != nil {
-			ctx = context.WithValue(ctx, "ID", claims.ID)
+			ctx = context.WithValue(ctx, ContextKeyID, claims.ID)
 		}
 		return handler(ctx, req)
 	}
