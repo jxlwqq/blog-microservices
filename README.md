@@ -175,7 +175,7 @@ kube-system    kube-dns               ClusterIP      10.96.0.10       <none>    
 
 ### Visit the microservice
 
-Install the [BloomRPC](https://github.com/bloomrpc/bloomrpc), select the `api/protobuf/blog.proto` file and start making
+Install the [BloomRPC](https://github.com/bloomrpc/bloomrpc), select the `api/protobuf/blog/v1/blog.proto` file and start making
 requests! No extra steps or configuration needed.
 
 Sign Up:
