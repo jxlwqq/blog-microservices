@@ -62,10 +62,6 @@ type Server struct {
 }
 
 func (s Server) CreatePost(ctx context.Context, req *v1.CreatePostRequest) (*v1.CreatePostResponse, error) {
-	err := req.ValidateAll()
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
 	userID, ok := ctx.Value(interceptor.ContextKeyID).(uint64)
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
@@ -545,10 +541,6 @@ func (s Server) ListCommentsByPostID(ctx context.Context, req *v1.ListCommentsBy
 }
 
 func (s Server) SignUp(ctx context.Context, req *v1.SignUpRequest) (*v1.SignUpResponse, error) {
-	err := req.ValidateAll()
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
 	username := req.GetUsername()
 	email := req.GetEmail()
 	password := req.GetPassword()
@@ -595,10 +587,6 @@ func (s Server) SignUp(ctx context.Context, req *v1.SignUpRequest) (*v1.SignUpRe
 }
 
 func (s Server) SignIn(ctx context.Context, req *v1.SignInRequest) (*v1.SignInResponse, error) {
-	err := req.ValidateAll()
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
 	email := req.GetEmail()
 	username := req.GetUsername()
 	password := req.GetPassword()

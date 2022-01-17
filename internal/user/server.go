@@ -38,10 +38,6 @@ func (s Server) DeleteUser(ctx context.Context, req *v1.DeleteUserRequest) (*v1.
 }
 
 func (s Server) ListUsersByIDs(ctx context.Context, req *v1.ListUsersByIDsRequest) (*v1.ListUsersByIDsResponse, error) {
-	err := req.ValidateAll()
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
 	ids := req.GetIds()
 	users, err := s.repo.ListUsersByIDs(ctx, ids)
 	if err != nil {
@@ -58,10 +54,6 @@ func (s Server) ListUsersByIDs(ctx context.Context, req *v1.ListUsersByIDsReques
 }
 
 func (s Server) GetUser(ctx context.Context, req *v1.GetUserRequest) (*v1.GetUserResponse, error) {
-	err := req.ValidateAll()
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
 	id := req.GetId()
 	user, err := s.repo.Get(ctx, id)
 	if err != nil {
@@ -75,10 +67,6 @@ func (s Server) GetUser(ctx context.Context, req *v1.GetUserRequest) (*v1.GetUse
 }
 
 func (s Server) GetUserByEmail(ctx context.Context, req *v1.GetUserByEmailRequest) (*v1.GetUserResponse, error) {
-	err := req.ValidateAll()
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
 	email := req.GetEmail()
 	user, err := s.repo.GetByEmail(ctx, email)
 	if err != nil {
@@ -99,10 +87,6 @@ func (s Server) GetUserByEmail(ctx context.Context, req *v1.GetUserByEmailReques
 }
 
 func (s Server) GetUserByUsername(ctx context.Context, req *v1.GetUserByUsernameRequest) (*v1.GetUserResponse, error) {
-	err := req.ValidateAll()
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
 	username := req.GetUsername()
 	user, err := s.repo.GetByUsername(ctx, username)
 	if err != nil {
@@ -124,10 +108,6 @@ func (s Server) GetUserByUsername(ctx context.Context, req *v1.GetUserByUsername
 }
 
 func (s Server) CreateUser(ctx context.Context, req *v1.CreateUserRequest) (*v1.CreateUserResponse, error) {
-	err := req.ValidateAll()
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
 	password, err := generateFromPassword(req.GetUser().GetPassword())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to bcrypt generate password: %v", err)
@@ -151,10 +131,6 @@ func (s Server) CreateUser(ctx context.Context, req *v1.CreateUserRequest) (*v1.
 }
 
 func (s Server) UpdateUser(ctx context.Context, req *v1.UpdateUserRequest) (*v1.UpdateUserResponse, error) {
-	err := req.ValidateAll()
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
 	user, err := s.repo.Get(ctx, req.GetUser().GetId())
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "failed to get user: %v", err)

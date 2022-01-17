@@ -81,10 +81,6 @@ func (s Server) DecrementCommentsCountCompensate(ctx context.Context, req *v1.De
 }
 
 func (s Server) GetPost(ctx context.Context, req *v1.GetPostRequest) (*v1.GetPostResponse, error) {
-	err := req.ValidateAll()
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
 	post, err := s.repo.Get(ctx, req.GetId())
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "post not found: %v", err)
@@ -98,18 +94,13 @@ func (s Server) GetPost(ctx context.Context, req *v1.GetPostRequest) (*v1.GetPos
 }
 
 func (s Server) CreatePost(ctx context.Context, req *v1.CreatePostRequest) (*v1.CreatePostResponse, error) {
-	err := req.ValidateAll()
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
 	post := &Post{
 		UUID:    req.GetPost().GetUuid(),
 		Title:   req.GetPost().GetTitle(),
 		Content: req.GetPost().GetContent(),
 		UserID:  req.GetPost().GetUserId(),
 	}
-	err = s.repo.Create(ctx, post)
+	err := s.repo.Create(ctx, post)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create post: %v", err)
 	}
@@ -122,11 +113,6 @@ func (s Server) CreatePost(ctx context.Context, req *v1.CreatePostRequest) (*v1.
 }
 
 func (s Server) UpdatePost(ctx context.Context, req *v1.UpdatePostRequest) (*v1.UpdatePostResponse, error) {
-	err := req.ValidateAll()
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
 	postID := req.GetPost().GetId()
 	post, err := s.repo.Get(ctx, postID)
 	if err != nil {
@@ -156,10 +142,6 @@ func (s Server) UpdatePost(ctx context.Context, req *v1.UpdatePostRequest) (*v1.
 }
 
 func (s Server) DeletePost(ctx context.Context, req *v1.DeletePostRequest) (*v1.DeletePostResponse, error) {
-	err := req.ValidateAll()
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
 	post, err := s.repo.Get(ctx, req.GetId())
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "post %d not found", req.GetId())
@@ -178,10 +160,6 @@ func (s Server) DeletePost(ctx context.Context, req *v1.DeletePostRequest) (*v1.
 }
 
 func (s Server) DeletePostCompensate(ctx context.Context, req *v1.DeletePostRequest) (*v1.DeletePostResponse, error) {
-	err := req.ValidateAll()
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
 	post, err := s.repo.GetWithUnscoped(ctx, req.GetId())
 
 	if err != nil {
@@ -203,10 +181,6 @@ func (s Server) DeletePostCompensate(ctx context.Context, req *v1.DeletePostRequ
 }
 
 func (s Server) ListPosts(ctx context.Context, req *v1.ListPostsRequest) (*v1.ListPostsResponse, error) {
-	err := req.ValidateAll()
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
 	list, err := s.repo.List(ctx, int(req.GetOffset()), int(req.GetLimit()))
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to list posts: %v", err)

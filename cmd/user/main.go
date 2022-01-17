@@ -3,10 +3,19 @@ package main
 import (
 	"context"
 	"fmt"
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	"net"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
-	"github.com/jxlwqq/blog-microservices/api/protobuf/user/v1"
+	v1 "github.com/jxlwqq/blog-microservices/api/protobuf/user/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -14,12 +23,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
-	"net"
-	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
 )
 
 var flagConfig = flag.String("config", "./configs/config.yaml", "path to config file")
@@ -41,6 +44,7 @@ func main() {
 
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
 		grpc_prometheus.UnaryServerInterceptor,
+		grpc_validator.UnaryServerInterceptor(),
 		grpc_recovery.UnaryServerInterceptor(),
 	)))
 	v1.RegisterUserServiceServer(grpcServer, userServer)
