@@ -5,7 +5,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/jxlwqq/blog-microservices)](https://goreportcard.com/report/github.com/jxlwqq/blog-microservices)
 [![Codecov](https://codecov.io/gh/jxlwqq/blog-microservices/branch/main/graph/badge.svg?token=RP1YOAIQC6)](https://codecov.io/gh/jxlwqq/blog-microservices)
 
-A blog microservices deployed in an Istio-enabled kubernetes cluster. If you’re using this demo, please ★Star this
+A blog microservices written in Golang, which can be deployed in an Istio-enabled kubernetes cluster. If you’re using this demo, please ★Star this
 repository to show your interest!
 
 [English](README.md) | [中文](README-zh.md)
