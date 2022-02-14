@@ -2,6 +2,10 @@
 FROM --platform=$TARGETPLATFORM golang:1.17-alpine as builder
 ARG TARGETARCH
 ARG TARGETOS
+# 启用 Go Modules 功能
+RUN go env -w GO111MODULE=on
+# go 设置国内源
+RUN go env -w GOPROXY=https://mirrors.aliyun.com/goproxy/,direct
 WORKDIR /workspace
 RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go install github.com/grpc-ecosystem/grpc-health-probe@latest
 COPY go.mod go.mod
