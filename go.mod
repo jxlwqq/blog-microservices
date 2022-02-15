@@ -17,8 +17,8 @@ require (
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/zap v1.21.0
-	golang.org/x/crypto v0.0.0-20220210151621-f4118a5b28e2
-	google.golang.org/genproto v0.0.0-20220210181026-6fee9acbd336
+	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
+	google.golang.org/genproto v0.0.0-20220211171837-173942840c17
 	google.golang.org/grpc v1.44.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
 	google.golang.org/protobuf v1.27.1
