@@ -61,7 +61,7 @@
 * kubernetes >= 1.22.4
 * istioctl >= 1.12.1
 * protobuf >= 3.19.1
-* go >= 1.17
+* go >= 1.18
 * mysql >= 8.0
 
 下载安装 Docker Desktop ，并启动内置的 Kubernetes 集群。

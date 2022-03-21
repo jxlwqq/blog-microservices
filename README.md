@@ -69,7 +69,7 @@ This is a list of development environment in local for macOS:
 * kubernetes >= 1.22.4
 * istioctl >= 1.12.1
 * protobuf >= 3.19.1
-* go >= 1.17
+* go >= 1.18
 * mysql >= 8.0
 
 Install the Docker Desktop，and enable Kubernetes cluster,
