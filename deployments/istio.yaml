@@ -39,6 +39,13 @@ spec:
             host: blog-server.default.svc.cluster.local
             port:
               number: 8050
+      corsPolicy:
+        allowOrigins:
+          - exact: "*"
+        allowMethods:
+          - "*"
+        allowHeaders:
+          - "*"
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
