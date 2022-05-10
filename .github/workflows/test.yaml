@@ -21,7 +21,7 @@ jobs:
       - name: Create databases
         run: mysql --host 127.0.0.1 --port 3306 -uroot -e "CREATE DATABASE users;CREATE DATABASE posts;CREATE DATABASE comments;"
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: 1.18
       - name: Install golang-migrate
