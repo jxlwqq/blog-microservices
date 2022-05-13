@@ -49,34 +49,43 @@ func (i *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 }
 
 func (i *AuthInterceptor) Authorize(ctx context.Context, method string) (*jwt.UserClaims, error) {
-	b, ok := i.authMethods[method]
-	if !ok || !b {
-		return nil, nil
+	b := i.authMethods[method]
+
+	token, err := i.ParseTokenFromContext(ctx)
+
+	if b && err != nil {
+		return nil, err
 	}
+
+	claims, err := i.jwtManager.Validate(token)
+
+	if b && err != nil {
+		return nil, err
+	}
+
+	return claims, nil
+}
+
+func (i *AuthInterceptor) ParseTokenFromContext(ctx context.Context) (string, error) {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
-		return nil, status.Errorf(codes.Unauthenticated, "missing metadata")
+		return "", status.Errorf(codes.Unauthenticated, "missing metadata")
 	}
 	values := md[headerAuthorize]
 	if len(values) == 0 {
-		return nil, status.Errorf(codes.Unauthenticated, "authorization token is not provided")
+		return "", status.Errorf(codes.Unauthenticated, "authorization token is not provided")
 	}
 
 	splits := strings.SplitN(values[0], " ", 2)
 
 	if len(splits) < 2 {
-		return nil, status.Errorf(codes.Unauthenticated, "Bad authorization string")
+		return "", status.Errorf(codes.Unauthenticated, "bad authorization string")
 	}
 
 	if !strings.EqualFold(splits[0], expectedScheme) {
-		return nil, status.Errorf(codes.Unauthenticated, "Request unauthenticated with "+expectedScheme)
+		return "", status.Errorf(codes.Unauthenticated, "request unauthenticated with "+expectedScheme)
 	}
 
 	token := splits[1]
-	claims, err := i.jwtManager.Validate(token)
-	if err != nil {
-		return nil, status.Errorf(codes.Unauthenticated, "authorization token is invalid")
-	}
-
-	return claims, nil
+	return token, nil
 }

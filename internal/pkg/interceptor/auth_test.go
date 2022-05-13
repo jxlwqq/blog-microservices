@@ -60,4 +60,15 @@ func TestAuthInterceptor(t *testing.T) {
 
 	_, err = i.Authorize(ctx, "Get")
 	require.NoError(t, err)
+
+	header = metadata.New(map[string]string{headerAuthorize: expectedScheme + " " + token})
+	ctx = metadata.NewIncomingContext(context.Background(), header)
+	claims, err := i.Authorize(ctx, "Get")
+	require.NoError(t, err)
+	require.Equal(t, uint64(1), claims.ID)
+
+	header = metadata.New(map[string]string{headerAuthorize: expectedScheme + " " + "a.b.c"})
+	ctx = metadata.NewIncomingContext(context.Background(), header)
+	_, err = i.Authorize(ctx, "Get")
+	require.NoError(t, err)
 }
