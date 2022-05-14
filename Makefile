@@ -11,6 +11,11 @@ init:
 	go install github.com/golang/mock/mockgen@latest
 	@echo "Installing protoc-gen-validate (PGV) can currently only be done from source. See: https://github.com/envoyproxy/protoc-gen-validate#installation"
 
+.PHONY: update
+update:
+	go get -u ./...
+	go mod tidy
+
 .PHONY: protoc
 protoc:
 	for file in $$(find api -name '*.proto'); do \
