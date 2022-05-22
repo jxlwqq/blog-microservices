@@ -41,9 +41,9 @@ func main() {
 	healthServer := health.NewServer()
 
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+		grpc_recovery.UnaryServerInterceptor(),
 		grpc_prometheus.UnaryServerInterceptor,
 		grpc_validator.UnaryServerInterceptor(),
-		grpc_recovery.UnaryServerInterceptor(),
 	)))
 
 	v1.RegisterPostServiceServer(grpcServer, postServer)

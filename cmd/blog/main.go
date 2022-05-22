@@ -9,9 +9,10 @@ import (
 	"syscall"
 	"time"
 
+	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
+
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	v1 "github.com/jxlwqq/blog-microservices/api/protobuf/blog/v1"
@@ -48,10 +49,10 @@ func main() {
 	authInterceptor := interceptor.NewAuthInterceptor(logger, jwtManager, blog.AuthMethods)
 
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-		authInterceptor.Unary(),
+		grpc_recovery.UnaryServerInterceptor(),
 		grpc_prometheus.UnaryServerInterceptor,
 		grpc_validator.UnaryServerInterceptor(),
-		grpc_recovery.UnaryServerInterceptor(),
+		authInterceptor.Unary(),
 	)))
 
 	v1.RegisterBlogServiceServer(grpcServer, blogServer)
