@@ -86,7 +86,7 @@ kubectl label namespace default istio-injection=enabled
 
 数据库初始化，项目相关的配置已经在 `deployments` 目录中的 yaml 文件中设置好，直接一键部署即可。
 
-部署的资源比较多，请尽可能地将 Docker Desktop 的 CPU、Memory 拉高，避免 Pod
+部署的资源比较多，请尽可能地将 Docker Desktop 的 CPU、Memory、Disk 拉高，避免 Pod
 无法完成调度，详见 [这里](https://istio.io/latest/zh/docs/setup/platform-setup/docker/)。
 
 ```shell
