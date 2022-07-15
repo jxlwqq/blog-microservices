@@ -5,7 +5,7 @@ import (
 
 	"github.com/jxlwqq/blog-microservices/internal/pkg/interceptor"
 
-	"github.com/dtm-labs/dtm/dtmgrpc"
+	"github.com/dtm-labs/client/dtmgrpc"
 	"github.com/google/uuid"
 	authv1 "github.com/jxlwqq/blog-microservices/api/protobuf/auth/v1"
 	v1 "github.com/jxlwqq/blog-microservices/api/protobuf/blog/v1"
