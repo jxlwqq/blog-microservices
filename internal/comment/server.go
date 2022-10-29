@@ -159,7 +159,10 @@ func (s Server) DeleteCommentsByPostIDCompensate(ctx context.Context, req *v1.De
 func (s Server) ListCommentsByPostID(ctx context.Context, req *v1.ListCommentsByPostIDRequest) (*v1.ListCommentsByPostIDResponse, error) {
 	postID := req.GetPostId()
 	offset := req.GetOffset()
-	limit := req.GetLimit()
+	limit := req.GetOffset()
+	if limit == 0 {
+		limit = 10 // default limit
+	}
 	list, err := s.repo.ListByPostID(ctx, postID, int(offset), int(limit))
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "could not get comments: %v", err)
