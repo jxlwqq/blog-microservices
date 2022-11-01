@@ -65,10 +65,10 @@ This demo refers to the following project layout:
 
 This is a list of development environment in local for macOS:
 
-* docker-desktop >= 4.3.2
-* kubernetes >= 1.22.4
-* istioctl >= 1.12.1
-* protobuf >= 3.19.1
+* docker-desktop >= 4.13.1
+* kubernetes >= 1.25.2
+* istioctl >= 1.15.3
+* protobuf >= 21.8
 * go >= 1.19
 * mysql >= 8.0
 
@@ -90,8 +90,6 @@ kubectl config use-context docker-desktop
 istioctl install -y
 kubectl label namespace default istio-injection=enabled
 ```
-
-> Install Istio on ARM64, Please See [this](https://github.com/istio/istio/issues/21094#issuecomment-956117650).
 
 ### Deploy the demo in Kubernetes
 
