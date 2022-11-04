@@ -1179,9 +1179,9 @@ func (m *ListPostsRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Limit
-
 	// no validation rules for Offset
+
+	// no validation rules for Limit
 
 	if len(errors) > 0 {
 		return ListPostsRequestMultiError(errors)

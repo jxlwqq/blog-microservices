@@ -1149,9 +1149,9 @@ func (m *ListCommentsByPostIDRequest) validate(all bool) error {
 
 	// no validation rules for PostId
 
-	// no validation rules for Limit
-
 	// no validation rules for Offset
+
+	// no validation rules for Limit
 
 	if len(errors) > 0 {
 		return ListCommentsByPostIDRequestMultiError(errors)
