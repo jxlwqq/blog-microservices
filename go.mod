@@ -1,6 +1,6 @@
 module github.com/jxlwqq/blog-microservices
 
-go 1.19
+go 1.20
 
 require (
 	github.com/dtm-labs/client v1.16.1
