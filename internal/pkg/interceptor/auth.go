@@ -20,7 +20,7 @@ var (
 	ContextKeyID    = contextKey("ID")
 )
 
-func NewAuthInterceptor(logger *log.Logger, jwtManager *jwt.Manager, authMethods map[string]bool) *AuthInterceptor {
+func NewAuthInterceptor(logger log.Logger, jwtManager *jwt.Manager, authMethods map[string]bool) *AuthInterceptor {
 	return &AuthInterceptor{
 		logger:      logger,
 		jwtManager:  jwtManager,
@@ -29,7 +29,7 @@ func NewAuthInterceptor(logger *log.Logger, jwtManager *jwt.Manager, authMethods
 }
 
 type AuthInterceptor struct {
-	logger      *log.Logger
+	logger      log.Logger
 	jwtManager  *jwt.Manager
 	authMethods map[string]bool
 }

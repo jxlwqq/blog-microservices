@@ -14,10 +14,14 @@ import (
 	"github.com/jxlwqq/blog-microservices/internal/post"
 )
 
+import (
+	_ "go.uber.org/automaxprocs"
+)
+
 // Injectors from wire.go:
 
-func InitServer(logger *log.Logger, conf *config.Config) (v1.PostServiceServer, error) {
-	db, err := dbcontext.NewPostDB(conf)
+func InitServer(logger log.Logger, conf *config.Config) (v1.PostServiceServer, error) {
+	db, err := dbcontext.NewPostDB(conf, logger)
 	if err != nil {
 		return nil, err
 	}

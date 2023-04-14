@@ -7,7 +7,7 @@ import (
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 )
 
-func NewRepository(logger *log.Logger, db *dbcontext.DB) Repository {
+func NewRepository(logger log.Logger, db *dbcontext.DB) Repository {
 	return repository{
 		logger: logger,
 		db:     db,
@@ -31,7 +31,7 @@ type Repository interface {
 }
 
 type repository struct {
-	logger *log.Logger
+	logger log.Logger
 	db     *dbcontext.DB
 }
 

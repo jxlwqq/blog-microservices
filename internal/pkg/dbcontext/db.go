@@ -2,7 +2,11 @@ package dbcontext
 
 import (
 	"fmt"
+
+	"moul.io/zapgorm2"
+
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
+	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -11,17 +15,21 @@ type DB struct {
 	*gorm.DB
 }
 
-func NewDB(dsn string) (*DB, error) {
+func NewDB(dsn string, logger log.Logger) (*DB, error) {
 	params := "?charset=utf8mb4&parseTime=True&loc=Local"
 	dsn = dsn + params
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	l := zapgorm2.New(logger.GetZapLogger())
+	l.SetAsDefault() // optional: configure gorm to use this zapgorm.Logger for callbacks
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: l,
+	})
 	if err != nil {
 		return nil, err
 	}
 	return &DB{db}, nil
 }
 
-func NewUserDB(conf *config.Config) (*DB, error) {
+func NewUserDB(conf *config.Config, logger log.Logger) (*DB, error) {
 	dsn := fmt.Sprintf(
 		"%s:%s@tcp(%s%s)/%s",
 		conf.User.DB.User,
@@ -30,10 +38,10 @@ func NewUserDB(conf *config.Config) (*DB, error) {
 		conf.User.DB.Port,
 		conf.User.DB.Name,
 	)
-	return NewDB(dsn)
+	return NewDB(dsn, logger)
 }
 
-func NewPostDB(conf *config.Config) (*DB, error) {
+func NewPostDB(conf *config.Config, logger log.Logger) (*DB, error) {
 	dsn := fmt.Sprintf(
 		"%s:%s@tcp(%s%s)/%s",
 		conf.Post.DB.User,
@@ -42,10 +50,10 @@ func NewPostDB(conf *config.Config) (*DB, error) {
 		conf.Post.DB.Port,
 		conf.Post.DB.Name,
 	)
-	return NewDB(dsn)
+	return NewDB(dsn, logger)
 }
 
-func NewCommentDB(conf *config.Config) (*DB, error) {
+func NewCommentDB(conf *config.Config, logger log.Logger) (*DB, error) {
 	dsn := fmt.Sprintf(
 		"%s:%s@tcp(%s%s)/%s",
 		conf.Comment.DB.User,
@@ -54,5 +62,5 @@ func NewCommentDB(conf *config.Config) (*DB, error) {
 		conf.Comment.DB.Port,
 		conf.Comment.DB.Name,
 	)
-	return NewDB(dsn)
+	return NewDB(dsn, logger)
 }

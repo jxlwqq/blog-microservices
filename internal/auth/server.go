@@ -2,14 +2,15 @@ package auth
 
 import (
 	"context"
-	"github.com/jxlwqq/blog-microservices/api/protobuf/auth/v1"
+
+	v1 "github.com/jxlwqq/blog-microservices/api/protobuf/auth/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/jwt"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func NewServer(logger *log.Logger, jwtManager *jwt.Manager) v1.AuthServiceServer {
+func NewServer(logger log.Logger, jwtManager *jwt.Manager) v1.AuthServiceServer {
 	return &Server{
 		logger:     logger,
 		jwtManager: jwtManager,
@@ -18,7 +19,7 @@ func NewServer(logger *log.Logger, jwtManager *jwt.Manager) v1.AuthServiceServer
 
 type Server struct {
 	v1.UnimplementedAuthServiceServer
-	logger     *log.Logger
+	logger     log.Logger
 	jwtManager *jwt.Manager
 }
 

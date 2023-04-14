@@ -12,13 +12,13 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func NewServer(logger *log.Logger, repo Repository) v1.PostServiceServer {
+func NewServer(logger log.Logger, repo Repository) v1.PostServiceServer {
 	return &Server{logger: logger, repo: repo}
 }
 
 type Server struct {
 	v1.UnimplementedPostServiceServer
-	logger *log.Logger
+	logger log.Logger
 	repo   Repository
 }
 

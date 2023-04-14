@@ -15,7 +15,7 @@ import (
 	"github.com/jxlwqq/blog-microservices/internal/user"
 )
 
-func InitServer(logger *log.Logger, conf *config.Config) (v1.BlogServiceServer, error) {
+func InitServer(logger log.Logger, conf *config.Config) (v1.BlogServiceServer, error) {
 	wire.Build(
 		user.NewClient,
 		auth.NewClient,

@@ -14,10 +14,14 @@ import (
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 )
 
+import (
+	_ "go.uber.org/automaxprocs"
+)
+
 // Injectors from wire.go:
 
-func InitServer(logger *log.Logger, conf *config.Config) (v1.CommentServiceServer, error) {
-	db, err := dbcontext.NewCommentDB(conf)
+func InitServer(logger log.Logger, conf *config.Config) (v1.CommentServiceServer, error) {
+	db, err := dbcontext.NewCommentDB(conf, logger)
 	if err != nil {
 		return nil, err
 	}

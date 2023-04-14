@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewServer(logger *log.Logger, repo Repository) v1.CommentServiceServer {
+func NewServer(logger log.Logger, repo Repository) v1.CommentServiceServer {
 	return &Server{
 		logger: logger,
 		repo:   repo,
@@ -20,7 +20,7 @@ func NewServer(logger *log.Logger, repo Repository) v1.CommentServiceServer {
 
 type Server struct {
 	v1.UnimplementedCommentServiceServer
-	logger *log.Logger
+	logger log.Logger
 	repo   Repository
 }
 

@@ -14,9 +14,13 @@ import (
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 )
 
+import (
+	_ "go.uber.org/automaxprocs"
+)
+
 // Injectors from wire.go:
 
-func InitServer(logger *log.Logger, conf *config.Config) (v1.AuthServiceServer, error) {
+func InitServer(logger log.Logger, conf *config.Config) (v1.AuthServiceServer, error) {
 	manager := jwt.NewManager(logger, conf)
 	authServiceServer := auth.NewServer(logger, manager)
 	return authServiceServer, nil

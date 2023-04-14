@@ -34,7 +34,7 @@ var AuthMethods = map[string]bool{
 	prefix + "ListCommentsByPostID": false,
 }
 
-func NewServer(logger *log.Logger,
+func NewServer(logger log.Logger,
 	conf *config.Config,
 	userClient userv1.UserServiceClient,
 	postClient postv1.PostServiceClient,
@@ -53,7 +53,7 @@ func NewServer(logger *log.Logger,
 
 type Server struct {
 	v1.UnimplementedBlogServiceServer
-	logger        *log.Logger
+	logger        log.Logger
 	conf          *config.Config
 	userClient    userv1.UserServiceClient
 	postClient    postv1.PostServiceClient

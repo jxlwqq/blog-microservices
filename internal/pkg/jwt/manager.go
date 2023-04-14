@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func NewManager(logger *log.Logger, conf *config.Config) *Manager {
+func NewManager(logger log.Logger, conf *config.Config) *Manager {
 	return &Manager{
 		secret:  conf.JWT.Secret,
 		expires: conf.JWT.Expires,
@@ -21,7 +21,7 @@ func NewManager(logger *log.Logger, conf *config.Config) *Manager {
 type Manager struct {
 	secret  string
 	expires time.Duration
-	logger  *log.Logger
+	logger  log.Logger
 }
 
 type UserClaims struct {

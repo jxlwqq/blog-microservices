@@ -17,9 +17,13 @@ import (
 	"github.com/jxlwqq/blog-microservices/internal/user"
 )
 
+import (
+	_ "go.uber.org/automaxprocs"
+)
+
 // Injectors from wire.go:
 
-func InitServer(logger *log.Logger, conf *config.Config) (v1.BlogServiceServer, error) {
+func InitServer(logger log.Logger, conf *config.Config) (v1.BlogServiceServer, error) {
 	userServiceClient, err := user.NewClient(logger, conf)
 	if err != nil {
 		return nil, err
