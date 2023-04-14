@@ -38,7 +38,7 @@ func TestServer(t *testing.T) {
 	path := config.GetPath()
 	conf, err := config.Load(path)
 	require.NoError(t, err)
-	db, err := dbcontext.NewCommentDB(conf)
+	db, err := dbcontext.NewCommentDB(conf, logger)
 	require.NoError(t, err)
 	repo := NewRepository(logger, db)
 	require.NotNil(t, repo)

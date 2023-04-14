@@ -1,9 +1,11 @@
 package dbcontext
 
 import (
-	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
+	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNew(t *testing.T) {
@@ -11,15 +13,16 @@ func TestNew(t *testing.T) {
 	conf, err := config.Load(path)
 	require.NoError(t, err)
 
-	userDB, err := NewUserDB(conf)
+	logger := log.New()
+	userDB, err := NewUserDB(conf, logger)
 	require.NoError(t, err)
 	require.NotNil(t, userDB)
 
-	postDB, err := NewPostDB(conf)
+	postDB, err := NewPostDB(conf, logger)
 	require.NoError(t, err)
 	require.NotNil(t, postDB)
 
-	commentDB, err := NewCommentDB(conf)
+	commentDB, err := NewCommentDB(conf, logger)
 	require.NoError(t, err)
 	require.NotNil(t, commentDB)
 

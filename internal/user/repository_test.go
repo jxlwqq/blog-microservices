@@ -24,7 +24,7 @@ func TestRepository(t *testing.T) {
 	path := config.GetPath()
 	conf, err := config.Load(path)
 	require.NoError(t, err)
-	db, err := dbcontext.NewUserDB(conf)
+	db, err := dbcontext.NewUserDB(conf, logger)
 	require.NoError(t, err)
 	repo := NewRepository(logger, db)
 	require.NotNil(t, repo)

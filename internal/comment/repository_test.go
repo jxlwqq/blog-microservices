@@ -2,12 +2,13 @@ package comment
 
 import (
 	"context"
+	"testing"
+
 	"github.com/google/uuid"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/dbcontext"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestRepository(t *testing.T) {
@@ -29,7 +30,7 @@ func TestRepository(t *testing.T) {
 	path := config.GetPath()
 	conf, err := config.Load(path)
 	require.NoError(t, err)
-	db, err := dbcontext.NewCommentDB(conf)
+	db, err := dbcontext.NewCommentDB(conf, logger)
 	require.NoError(t, err)
 	repo := NewRepository(logger, db)
 
