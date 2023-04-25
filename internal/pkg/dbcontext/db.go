@@ -20,6 +20,7 @@ func NewDB(dsn string, logger log.Logger) (*DB, error) {
 	dsn = dsn + params
 	l := zapgorm2.New(logger.GetZapLogger())
 	l.SetAsDefault() // optional: configure gorm to use this zapgorm.Logger for callbacks
+	l.IgnoreRecordNotFoundError = true
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: l,
 	})
