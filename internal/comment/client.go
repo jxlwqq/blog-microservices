@@ -20,7 +20,6 @@ func NewClient(logger log.Logger, conf *config.Config) (v1.CommentServiceClient,
 		ctx,
 		conf.Comment.Server.Host+conf.Comment.Server.GRPC.Port,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock(),
 		grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(
 			grpc_zap.UnaryClientInterceptor(logger.GetZapLogger()),
 		)),
