@@ -40,6 +40,10 @@ mock:
 	mockgen -source=./api/protobuf/comment/v1/comment_grpc.pb.go -destination=./mock/mock_comment_grpc.pb.go -package=mock
 	mockgen -source=./api/protobuf/auth/v1/auth_grpc.pb.go -destination=./mock/mock_auth_grpc.pb.go -package=mock
 
+.PHONY: lint
+lint:
+	golangci-lint run --timeout=5m
+
 .PHONY: test
 test:
 	go test -cover -race -covermode=atomic -coverprofile=coverage.txt ./...
