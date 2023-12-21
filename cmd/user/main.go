@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net"
 	"net/http"
@@ -93,7 +94,7 @@ func main() {
 		Handler: metricsMux,
 	}
 	go func() {
-		if err = metricsServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err = metricsServer.ListenAndServe(); err != nil && !errors.Is(http.ErrServerClosed, err) {
 			logger.Fatal(err)
 		}
 	}()
