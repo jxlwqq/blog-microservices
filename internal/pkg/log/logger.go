@@ -1,6 +1,9 @@
 package log
 
 import (
+	"context"
+
+	grpclogging "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"go.uber.org/zap"
 )
 
@@ -34,6 +37,7 @@ type Logger interface {
 	Fatalf(template string, args ...interface{})
 	Fatalw(msg string, keysAndValues ...interface{})
 	Fatalln(args ...interface{})
+	Log(ctx context.Context, level grpclogging.Level, msg string, fields ...any)
 }
 
 type logger struct {
@@ -46,6 +50,19 @@ func New() Logger {
 	return &logger{
 		zapLogger:        l,
 		zapSugaredLogger: l.Sugar(),
+	}
+}
+
+func (l logger) Log(ctx context.Context, level grpclogging.Level, msg string, fields ...any) {
+	switch level {
+	case grpclogging.LevelDebug:
+		l.Debugw(msg, fields)
+	case grpclogging.LevelInfo:
+		l.Infow(msg, fields)
+	case grpclogging.LevelWarn:
+		l.Warnw(msg, fields)
+	case grpclogging.LevelError:
+		l.Errorw(msg, fields)
 	}
 }
 

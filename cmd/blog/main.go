@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"net"
 	"net/http"
 	"os"
@@ -9,11 +10,10 @@ import (
 	"syscall"
 	"time"
 
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
-	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	grpcprometheus "github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus"
+	grpclogging "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
+	grpcrecovery "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
+	grpcvalidator "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/validator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	v1 "github.com/jxlwqq/blog-microservices/api/protobuf/blog/v1"
 	"github.com/jxlwqq/blog-microservices/internal/blog"
@@ -21,6 +21,7 @@ import (
 	"github.com/jxlwqq/blog-microservices/internal/pkg/interceptor"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/jwt"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	flag "github.com/spf13/pflag"
 	_ "go.uber.org/automaxprocs"
@@ -39,6 +40,15 @@ func main() {
 		logger.Fatal("load config failed", err)
 	}
 
+	// Setup metrics.
+	srvMetrics := grpcprometheus.NewServerMetrics(
+		grpcprometheus.WithServerHandlingTimeHistogram(
+			grpcprometheus.WithHistogramBuckets([]float64{0.001, 0.01, 0.1, 0.3, 0.6, 1, 3, 6, 9, 20, 30, 60, 90, 120}),
+		),
+	)
+	reg := prometheus.NewRegistry()
+	reg.MustRegister(srvMetrics)
+
 	blogServer, err := InitServer(logger, conf)
 	if err != nil {
 		logger.Fatal("init server failed", err)
@@ -49,13 +59,13 @@ func main() {
 	jwtManager := jwt.NewManager(logger, conf)
 	authInterceptor := interceptor.NewAuthInterceptor(logger, jwtManager, blog.AuthMethods)
 
-	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-		grpc_recovery.UnaryServerInterceptor(),
-		grpc_prometheus.UnaryServerInterceptor,
-		grpc_validator.UnaryServerInterceptor(),
-		grpc_zap.UnaryServerInterceptor(logger.GetZapLogger()),
+	grpcServer := grpc.NewServer(grpc.ChainUnaryInterceptor(
+		grpcrecovery.UnaryServerInterceptor(),
+		srvMetrics.UnaryServerInterceptor(),
+		grpcvalidator.UnaryServerInterceptor(),
+		grpclogging.UnaryServerInterceptor(logger),
 		authInterceptor.Unary(),
-	)))
+	))
 
 	v1.RegisterBlogServiceServer(grpcServer, blogServer)
 	grpc_health_v1.RegisterHealthServer(grpcServer, healthServer)
@@ -87,7 +97,7 @@ func main() {
 		Handler: httpMux,
 	}
 	go func() {
-		if err = httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err = httpServer.ListenAndServe(); err != nil && !errors.Is(http.ErrServerClosed, err) {
 			logger.Fatal(err)
 		}
 	}()
@@ -95,7 +105,13 @@ func main() {
 	// Start Metrics server
 	logger.Infof("Metrics Listening on port %s", conf.Blog.Server.Metrics.Port)
 	metricsMux := http.NewServeMux()
-	metricsMux.Handle("/metrics", promhttp.Handler())
+	metricsMux.Handle("/metrics", promhttp.HandlerFor(
+		reg,
+		promhttp.HandlerOpts{
+			// Opt into OpenMetrics e.g. to support exemplars.
+			EnableOpenMetrics: true,
+		},
+	))
 	metricsServer := &http.Server{
 		Addr:    conf.Blog.Server.Metrics.Port,
 		Handler: metricsMux,

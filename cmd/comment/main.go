@@ -10,14 +10,14 @@ import (
 	"syscall"
 	"time"
 
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
-	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	grpcprometheus "github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus"
+	grpclogging "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
+	grpcrecovery "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
+	grpcvalidator "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/validator"
 	v1 "github.com/jxlwqq/blog-microservices/api/protobuf/comment/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	flag "github.com/spf13/pflag"
 	_ "go.uber.org/automaxprocs"
@@ -36,18 +36,27 @@ func main() {
 		logger.Fatal(err)
 	}
 
+	// Setup metrics.
+	srvMetrics := grpcprometheus.NewServerMetrics(
+		grpcprometheus.WithServerHandlingTimeHistogram(
+			grpcprometheus.WithHistogramBuckets([]float64{0.001, 0.01, 0.1, 0.3, 0.6, 1, 3, 6, 9, 20, 30, 60, 90, 120}),
+		),
+	)
+	reg := prometheus.NewRegistry()
+	reg.MustRegister(srvMetrics)
+
 	commentServer, err := InitServer(logger, conf)
 	if err != nil {
 		logger.Fatal(err)
 	}
 	healthServer := health.NewServer()
 
-	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-		grpc_recovery.UnaryServerInterceptor(),
-		grpc_prometheus.UnaryServerInterceptor,
-		grpc_validator.UnaryServerInterceptor(),
-		grpc_zap.UnaryServerInterceptor(logger.GetZapLogger()),
-	)))
+	grpcServer := grpc.NewServer(grpc.ChainUnaryInterceptor(
+		grpcrecovery.UnaryServerInterceptor(),
+		srvMetrics.UnaryServerInterceptor(),
+		grpcvalidator.UnaryServerInterceptor(),
+		grpclogging.UnaryServerInterceptor(logger),
+	))
 	v1.RegisterCommentServiceServer(grpcServer, commentServer)
 	grpc_health_v1.RegisterHealthServer(grpcServer, healthServer)
 
@@ -70,7 +79,13 @@ func main() {
 	// Start Metrics server
 	logger.Infof("Metrics Listening on port %s", conf.Comment.Server.Metrics.Port)
 	metricsMux := http.NewServeMux()
-	metricsMux.Handle("/metrics", promhttp.Handler())
+	metricsMux.Handle("/metrics", promhttp.HandlerFor(
+		reg,
+		promhttp.HandlerOpts{
+			// Opt into OpenMetrics e.g. to support exemplars.
+			EnableOpenMetrics: true,
+		},
+	))
 	metricsServer := &http.Server{
 		Addr:    conf.Comment.Server.Metrics.Port,
 		Handler: metricsMux,

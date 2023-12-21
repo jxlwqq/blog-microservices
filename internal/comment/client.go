@@ -4,8 +4,7 @@ import (
 	"context"
 	"time"
 
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpclogging "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	v1 "github.com/jxlwqq/blog-microservices/api/protobuf/comment/v1"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/config"
 	"github.com/jxlwqq/blog-microservices/internal/pkg/log"
@@ -20,9 +19,9 @@ func NewClient(logger log.Logger, conf *config.Config) (v1.CommentServiceClient,
 		ctx,
 		conf.Comment.Server.Host+conf.Comment.Server.GRPC.Port,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(
-			grpc_zap.UnaryClientInterceptor(logger.GetZapLogger()),
-		)),
+		grpc.WithChainUnaryInterceptor(
+			grpclogging.UnaryClientInterceptor(logger),
+		),
 	)
 	if err != nil {
 		logger.Error("grpc dial error", err)
