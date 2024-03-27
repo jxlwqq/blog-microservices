@@ -82,6 +82,8 @@ brew install go
 brew install mysql
 # install Protobuf
 brew install protobuf
+# install Buf
+brew install bufbuild/buf/buf
 # install istioctl
 brew install istioctl
 # ensure you change the context so that kubectl is pointing to docker-desktop

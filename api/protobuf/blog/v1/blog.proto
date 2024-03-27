@@ -4,9 +4,10 @@ package api.protobuf.blog.v1;
 
 option go_package = "github.com/jxlwqq/blog-microservices/api/protobuf/blog/v1";
 
-import "validate/validate.proto";
 import "google/protobuf/timestamp.proto";
 import "google/api/annotations.proto";
+import "buf/validate/validate.proto";
+
 
 service BlogService {
   rpc SignUp (SignUpRequest) returns (SignUpResponse) {
@@ -88,8 +89,8 @@ message User {
 
 message Post {
   uint64 id = 1;
-  string title = 2 [(validate.rules).string = {min_len: 1, max_len: 140}];
-  string content = 3 [(validate.rules).string = {min_len: 1, max_len: 3000}];
+  string title = 2 [(buf.validate.field).string.min_len = 1, (buf.validate.field).string.max_len = 140];
+  string content = 3 [(buf.validate.field).string.min_len = 1, (buf.validate.field).string.max_len = 3000];
   uint64 user_id = 4;
   uint32 comments_count = 5;
   google.protobuf.Timestamp created_at = 6;
@@ -99,7 +100,7 @@ message Post {
 
 message Comment {
   uint64 id = 1;
-  string content = 2 [(validate.rules).string = {min_len: 1, max_len: 140}];
+  string content = 2 [(buf.validate.field).string.min_len = 1, (buf.validate.field).string.max_len = 140];
   uint64 post_id = 3;
   uint64 user_id = 4;
   google.protobuf.Timestamp created_at = 5;
@@ -109,8 +110,8 @@ message Comment {
 }
 
 message SignUpRequest {
-  string username = 1 [(validate.rules).string = {min_len: 1, max_len: 30}];
-  string email = 2 [(validate.rules).string.email = true];
+  string username = 1 [(buf.validate.field).string.min_len = 1, (buf.validate.field).string.max_len = 30];
+  string email = 2 [(buf.validate.field).string.email = true];
   string password = 3;
 }
 
@@ -120,8 +121,8 @@ message SignUpResponse {
 
 message SignInRequest {
   oneof request {
-    string username = 1 [(validate.rules).string = {min_len: 1, max_len: 30}];
-    string email = 2 [(validate.rules).string.email = true];
+    string username = 1 [(buf.validate.field).string.min_len = 1, (buf.validate.field).string.max_len = 30];
+    string email = 2 [(buf.validate.field).string.email = true];
   }
   string password = 3;
 }

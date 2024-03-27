@@ -1,0 +1,147 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "api/protobuf/post/v1/post.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "PostService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1CreatePostResponse": {
+      "type": "object",
+      "properties": {
+        "post": {
+          "$ref": "#/definitions/v1Post"
+        }
+      }
+    },
+    "v1DecrementCommentsCountResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1DeletePostResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1GetPostResponse": {
+      "type": "object",
+      "properties": {
+        "post": {
+          "$ref": "#/definitions/v1Post"
+        }
+      }
+    },
+    "v1IncrementCommentsCountResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1ListPostsResponse": {
+      "type": "object",
+      "properties": {
+        "posts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Post"
+          }
+        },
+        "count": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "v1Post": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "uuid": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "commentsCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1UpdatePostResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

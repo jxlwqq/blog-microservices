@@ -5,7 +5,7 @@ package api.protobuf.post.v1;
 option go_package = "github.com/jxlwqq/blog-microservices/api/protobuf/post/v1";
 
 import "google/protobuf/timestamp.proto";
-import "validate/validate.proto";
+import "buf/validate/validate.proto";
 
 service PostService {
   rpc GetPost(GetPostRequest) returns (GetPostResponse) {}
@@ -23,8 +23,8 @@ service PostService {
 message Post {
   uint64 id = 1;
   string uuid = 2;
-  string title = 3 [(validate.rules).string = {min_len: 1, max_len: 140}];
-  string content = 4 [(validate.rules).string = {min_len: 1, max_len: 3000}];
+  string title = 3[(buf.validate.field).string.min_len = 1, (buf.validate.field).string.max_len = 140];
+  string content = 4 [(buf.validate.field).string.min_len = 1, (buf.validate.field).string.max_len = 3000];
   uint64 user_id = 5;
   uint32 comments_count = 6;
   google.protobuf.Timestamp created_at = 7;

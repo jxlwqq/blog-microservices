@@ -1,0 +1,721 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "api/protobuf/blog/v1/blog.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "BlogService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api.rest.blog.v1/comments": {
+      "get": {
+        "operationId": "BlogService_ListCommentsByPostID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListCommentsByPostIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "BlogService"
+        ]
+      },
+      "post": {
+        "operationId": "BlogService_CreateComment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateCommentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateCommentRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BlogService"
+        ]
+      }
+    },
+    "/api.rest.blog.v1/comments/{comment.id}": {
+      "put": {
+        "operationId": "BlogService_UpdateComment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateCommentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "comment.id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "comment": {
+                  "type": "object",
+                  "properties": {
+                    "content": {
+                      "type": "string"
+                    },
+                    "postId": {
+                      "type": "string",
+                      "format": "uint64"
+                    },
+                    "userId": {
+                      "type": "string",
+                      "format": "uint64"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "post": {
+                      "$ref": "#/definitions/v1Post"
+                    },
+                    "user": {
+                      "$ref": "#/definitions/v1User"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "BlogService"
+        ]
+      }
+    },
+    "/api.rest.blog.v1/comments/{id}": {
+      "delete": {
+        "operationId": "BlogService_DeleteComment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteCommentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "BlogService"
+        ]
+      }
+    },
+    "/api.rest.blog.v1/posts": {
+      "get": {
+        "operationId": "BlogService_ListPosts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListPostsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "BlogService"
+        ]
+      },
+      "post": {
+        "operationId": "BlogService_CreatePost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreatePostResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreatePostRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BlogService"
+        ]
+      }
+    },
+    "/api.rest.blog.v1/posts/{id}": {
+      "get": {
+        "operationId": "BlogService_GetPost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetPostResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "BlogService"
+        ]
+      },
+      "delete": {
+        "operationId": "BlogService_DeletePost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeletePostResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "BlogService"
+        ]
+      }
+    },
+    "/api.rest.blog.v1/posts/{post.id}": {
+      "put": {
+        "operationId": "BlogService_UpdatePost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdatePostResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "post.id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "post": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    },
+                    "content": {
+                      "type": "string"
+                    },
+                    "userId": {
+                      "type": "string",
+                      "format": "uint64"
+                    },
+                    "commentsCount": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "user": {
+                      "$ref": "#/definitions/v1User"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "BlogService"
+        ]
+      }
+    },
+    "/api.rest.blog.v1/sign-in": {
+      "post": {
+        "operationId": "BlogService_SignIn",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SignInResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1SignInRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BlogService"
+        ]
+      }
+    },
+    "/api.rest.blog.v1/sign-up": {
+      "post": {
+        "operationId": "BlogService_SignUp",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SignUpResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1SignUpRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BlogService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1Comment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "content": {
+          "type": "string"
+        },
+        "postId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "userId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "post": {
+          "$ref": "#/definitions/v1Post"
+        },
+        "user": {
+          "$ref": "#/definitions/v1User"
+        }
+      }
+    },
+    "v1CreateCommentRequest": {
+      "type": "object",
+      "properties": {
+        "comment": {
+          "$ref": "#/definitions/v1Comment"
+        }
+      }
+    },
+    "v1CreateCommentResponse": {
+      "type": "object",
+      "properties": {
+        "comment": {
+          "$ref": "#/definitions/v1Comment"
+        }
+      }
+    },
+    "v1CreatePostRequest": {
+      "type": "object",
+      "properties": {
+        "post": {
+          "$ref": "#/definitions/v1Post"
+        }
+      }
+    },
+    "v1CreatePostResponse": {
+      "type": "object",
+      "properties": {
+        "post": {
+          "$ref": "#/definitions/v1Post"
+        }
+      }
+    },
+    "v1DeleteCommentResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1DeletePostResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1GetPostResponse": {
+      "type": "object",
+      "properties": {
+        "post": {
+          "$ref": "#/definitions/v1Post"
+        }
+      }
+    },
+    "v1ListCommentsByPostIDResponse": {
+      "type": "object",
+      "properties": {
+        "comments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Comment"
+          }
+        },
+        "total": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "v1ListPostsResponse": {
+      "type": "object",
+      "properties": {
+        "posts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Post"
+          }
+        },
+        "total": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "v1Post": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "commentsCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "user": {
+          "$ref": "#/definitions/v1User"
+        }
+      }
+    },
+    "v1SignInRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "v1SignInResponse": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "v1SignUpRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "v1SignUpResponse": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "v1UpdateCommentResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1UpdatePostResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "username": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

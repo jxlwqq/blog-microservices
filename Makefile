@@ -9,7 +9,6 @@ init:
 	go install github.com/google/wire/cmd/wire@latest
 	go install -tags 'mysql' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 	go install github.com/golang/mock/mockgen@latest
-	@echo "Installing protoc-gen-validate (PGV) can currently only be done from source. See: https://github.com/envoyproxy/protoc-gen-validate#installation"
 
 .PHONY: update
 update:
@@ -18,16 +17,8 @@ update:
 
 .PHONY: protoc
 protoc:
-	for file in $$(find api -name '*.proto'); do \
-		protoc \
-		-I $$(dirname $$file) \
-		-I ./third_party \
-		--go_out=:$$(dirname $$file) --go_opt=paths=source_relative \
-		--go-grpc_out=:$$(dirname $$file) --go-grpc_opt=paths=source_relative \
-		--validate_out="lang=go:$$(dirname $$file)" --validate_opt=paths=source_relative \
-		--grpc-gateway_out=:$$(dirname $$file) --grpc-gateway_opt=paths=source_relative \
-		$$file; \
-	done
+	buf mod update
+	buf generate
 
 .PHONY: wire
 wire:

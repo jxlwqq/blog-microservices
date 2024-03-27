@@ -5,7 +5,7 @@ package api.protobuf.comment.v1;
 option go_package = "github.com/jxlwqq/blog-microservices/api/protobuf/comment/v1";
 
 import 'google/protobuf/timestamp.proto';
-import "validate/validate.proto";
+import "buf/validate/validate.proto";
 
 service CommentService {
   rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse) {}
@@ -23,7 +23,7 @@ service CommentService {
 message Comment {
   uint64 id = 1;
   string uuid = 2;
-  string content = 3 [(validate.rules).string = {min_len: 1, max_len: 140}];
+  string content = 3 [(buf.validate.field).string.min_len = 1, (buf.validate.field).string.max_len = 140];
   uint64 post_id = 4;
   uint64 user_id = 5;
   google.protobuf.Timestamp created_at = 6;

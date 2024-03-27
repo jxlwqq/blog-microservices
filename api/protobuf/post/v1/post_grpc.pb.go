@@ -421,5 +421,5 @@ var PostService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "post.proto",
+	Metadata: "api/protobuf/post/v1/post.proto",
 }

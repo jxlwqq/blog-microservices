@@ -1,0 +1,144 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "api/protobuf/comment/v1/comment.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "CommentService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1Comment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "uuid": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "postId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "userId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1CreateCommentResponse": {
+      "type": "object",
+      "properties": {
+        "comment": {
+          "$ref": "#/definitions/v1Comment"
+        }
+      }
+    },
+    "v1DeleteCommentResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1DeleteCommentsByPostIDResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1GetCommentByUUIDResponse": {
+      "type": "object",
+      "properties": {
+        "comment": {
+          "$ref": "#/definitions/v1Comment"
+        }
+      }
+    },
+    "v1GetCommentResponse": {
+      "type": "object",
+      "properties": {
+        "comment": {
+          "$ref": "#/definitions/v1Comment"
+        }
+      }
+    },
+    "v1ListCommentsByPostIDResponse": {
+      "type": "object",
+      "properties": {
+        "comments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Comment"
+          }
+        },
+        "total": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "v1UpdateCommentResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}
